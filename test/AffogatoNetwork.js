@@ -14,14 +14,24 @@ contract(AffogatoNetwork,function(accounts){
 	it('Inserts Coffee Batch',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
-			return tokenInstance.addCoffeeBatch(571, "93.43", "Fabio Antonio Caballero Martinez", "San Francisco", "San Francisco", "Marcala", "La Paz", "Honduras", "11.7", 1350, "Lavado", "Geisha Emperador");
+			return tokenInstance.addCoffeeBatch(571, "93.43", "11.7", 1350, "Lavado", "Geisha Emperador",0);
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
       		assert.equal(receipt.logs[0].event, 'AddCoffeeBatch', 'should be the "AddCoffeeBatch" event');
-      		assert.equal(receipt.logs[0].args._id, 0, 'logs the inserted batch id');
-      		return tokenInstance.count();
-		}).then(function(count){
-			assert.equal(count,1,"Count should increase");
+      		assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted batch id');
+      		return tokenInstance.coffeeBatches(0);
+		}).then(function(coffeeBatch){
+      		assert.equal(coffeeBatch[0].toNumber(),0,"Id is equal to inserted");
+			assert.equal(coffeeBatch[1].toNumber(),571,"auditCode is equal to inserted");
+			assert.equal(coffeeBatch[2],"93.43","cuppingFinalNote is equal to inserted");
+			assert.equal(coffeeBatch[3],"11.7","batchSize is equal to inserted");
+			assert.equal(coffeeBatch[4].toNumber(),1350,"altitude is equal to inserted");
+			assert.equal(coffeeBatch[5],"Lavado","process is equal to inserted");
+			assert.equal(coffeeBatch[6],"Geisha Emperador","variety is equal to inserted");
+			assert.equal(coffeeBatch[7],0,"farm ID is equal to inserted");
+      		return tokenInstance.addCoffeeBatch(572, "93.43", "20.7", 1350, "Lavado", "Geisha Emperador",0);
+		}).then(function(receipt){
+			assert.equal(receipt.logs[0].args._id.toNumber(), 2, 'logs the inserted incremented id');
 		});
 	});
 });
