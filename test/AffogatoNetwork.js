@@ -19,7 +19,7 @@ contract(AffogatoNetwork,function(accounts){
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
       		assert.equal(receipt.logs[0].event, 'AddFarm', 'should be the "AddFarm" event');
-      		assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted farm id');
+      		assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted farm id');
       		return tokenInstance.farms(0);
 		}).then(function(farm){
       		assert.equal(farm[0].toNumber(),0,"Id is equal to inserted");
@@ -34,7 +34,7 @@ contract(AffogatoNetwork,function(accounts){
 			assert.equal(farmBatches.length, 0,"Batches are empty"); 
 			return tokenInstance.addFarm("Remiery Orlando Carvajal Guevara", "Los Pinos", "Esquinpara", "San Andres", "Lempira", "Honduras");
 		}).then(function(receipt){
-			assert.equal(receipt.logs[0].args._id.toNumber(), 2, 'logs the inserted incremented id');
+			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
 		});
 	});
 
@@ -45,7 +45,7 @@ contract(AffogatoNetwork,function(accounts){
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
       		assert.equal(receipt.logs[0].event, 'AddCoffeeBatch', 'should be the "AddCoffeeBatch" event');
-      		assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted batch id');
+      		assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted batch id');
       		return tokenInstance.coffeeBatches(0);
 		}).then(function(coffeeBatch){
       		assert.equal(coffeeBatch[0].toNumber(),0,"Id is equal to inserted");
@@ -55,11 +55,15 @@ contract(AffogatoNetwork,function(accounts){
 			assert.equal(coffeeBatch[4].toNumber(),1350,"altitude is equal to inserted");
 			assert.equal(coffeeBatch[5],"Lavado","process is equal to inserted");
 			assert.equal(coffeeBatch[6],"Geisha Emperador","variety is equal to inserted");
-			assert.equal(coffeeBatch[7],0,"farm ID is equal to inserted");
-      		return tokenInstance.addCoffeeBatch(261, "92.64", "14.37", 1600, "Lavado", "Typica",1);
+			assert.equal(coffeeBatch[7].toNumber(),0,"farm ID is equal to inserted");
+      		return tokenInstance.addCoffeeBatch(261, "92.64", "14.37", 1600, "Lavado", "Typica",0);
 		}).then(function(receipt){
-			assert.equal(receipt.logs[0].args._id.toNumber(), 2, 'logs the inserted incremented id');
-			//TODO: Validate 
+			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
+			return tokenInstance.getFarmBatches.call(0);
+		}).then(function(farmBatches){
+			assert.equal(farmBatches[0].toNumber(), 0,"First value should be 0");
+			assert.equal(farmBatches[1], 1,"Second value should be 1");
+			assert.equal(farmBatches.length, 2,"There should be 2 batches");
 		});
 	});
 

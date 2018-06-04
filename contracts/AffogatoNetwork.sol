@@ -50,8 +50,10 @@ contract AffogatoNetwork {
     uint256 _farmId
   ) public {    
    //TODO: Farm must exists
-    coffeeBatches.push(CoffeeBatch(coffeeBatches.length, _auditCode, _cuppingFinalNote, _batchSize, _altitude, _process, _variety, _farmId));
-    emit AddCoffeeBatch(coffeeBatches.length);
+    uint currentId = coffeeBatches.length;
+    coffeeBatches.push(CoffeeBatch(currentId, _auditCode, _cuppingFinalNote, _batchSize, _altitude, _process, _variety, _farmId));
+    farms[_farmId].coffeeBatchesIds.push(currentId);
+    emit AddCoffeeBatch(currentId);
   }
 
   //Inserts Farm and emits AddFarm event
@@ -63,13 +65,14 @@ contract AffogatoNetwork {
     string _department,
     string _country
   ) public {
-    Farm memory farm = Farm(farms.length, _producerName, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
+    uint currentId = farms.length;
+    Farm memory farm = Farm(currentId, _producerName, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
     farms.push(farm);  
-    emit AddFarm(farms.length);
+    emit AddFarm(currentId);
   }
 
   //Gets farm batches
-  function getFarmBatches(uint256 _index) public returns (uint256[]) {
+  function getFarmBatches(uint256 _index) public view returns (uint256[]) {
       return farms[_index].coffeeBatchesIds;
   }
 
