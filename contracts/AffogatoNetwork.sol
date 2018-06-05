@@ -48,8 +48,9 @@ contract AffogatoNetwork {
     string _process,
     string _variety,
     uint256 _farmId
-  ) public {    
-   //TODO: Farm must exists
+  ) public {
+    require(farms.length >= _farmId);
+    require(!isEmpty(_cuppingFinalNote) && !isEmpty(_batchSize) && !isEmpty(_process) && !isEmpty(_variety));
     uint currentId = coffeeBatches.length;
     coffeeBatches.push(CoffeeBatch(currentId, _auditCode, _cuppingFinalNote, _batchSize, _altitude, _process, _variety, _farmId));
     farms[_farmId].coffeeBatchesIds.push(currentId);
@@ -65,6 +66,7 @@ contract AffogatoNetwork {
     string _department,
     string _country
   ) public {
+    require(!isEmpty(_producerName) && !isEmpty(_farmName) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_country));
     uint currentId = farms.length;
     Farm memory farm = Farm(currentId, _producerName, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
     farms.push(farm);  
@@ -74,6 +76,16 @@ contract AffogatoNetwork {
   //Gets farm batches
   function getFarmBatches(uint256 _index) public view returns (uint256[]) {
       return farms[_index].coffeeBatchesIds;
+  }
+
+
+  function isEmpty(string _empty) internal pure returns (bool){
+    bytes memory tempEmptyString = bytes(_empty); // Uses memory
+    if (tempEmptyString.length == 0) {
+        return true;
+    } else {
+        return false;
+    }
   }
 
 }

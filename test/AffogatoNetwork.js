@@ -15,6 +15,9 @@ contract(AffogatoNetwork,function(accounts){
 	it('Inserts and returns Farm',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
+			return tokenInstance.addFarm("", "", "", "", "", "");
+		}).then(assert.fail).catch(function(error){
+			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
 			return tokenInstance.addFarm("Fabio Antonio Caballero Martinez", "San Francisco", "San Francisco", "Marcala", "La Paz", "Honduras");
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
@@ -41,6 +44,12 @@ contract(AffogatoNetwork,function(accounts){
 	it('Inserts and return Coffee Batch',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
+			return tokenInstance.addCoffeeBatch(571, "93.43", "11.7", 1350, "Lavado", "Geisha Emperador",99999999);
+		}).then(assert.fail).catch(function(error){
+			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
+			return tokenInstance.addCoffeeBatch(0, "", "", 0, "", "",0);
+		}).then(assert.fail).catch(function(error){
+			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
 			return tokenInstance.addCoffeeBatch(571, "93.43", "11.7", 1350, "Lavado", "Geisha Emperador",0);
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
