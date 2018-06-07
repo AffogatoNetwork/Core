@@ -1,0 +1,16 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+  <mat-toolbar-row *ngIf="resolution <= 1000">
+    <div class="branding">
+      <img src="..\assets\images\affogato.png" alt="Affogato" class="navbar-brand">
+      _{{version}}
+    </div>
+    <span class="example-spacer"></span>
+  </mat-toolbar-row>
+  <mat-toolbar-row class="toolbar-big" *ngIf="resolution > 1000">
+    <div class="branding">
+      <img src="..\assets\images\affogato.png" alt="Affogato" class="navbar-brand">
+      _{{version}}
+    </div>
+    <span class="example-spacer"></span>
+  </mat-toolbar-row>
+</mat-toolbar>

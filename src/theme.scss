@@ -1,0 +1,10 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$affogato-primary: mat-palette($mat-brown, 500);
+$affogato-accent:  mat-palette($mat-deep-orange, 100);
+$affogato-warn:    mat-palette($mat-deep-orange);
+
+$affogato-theme: mat-light-theme($affogato-primary, $affogato-accent, $affogato-warn);
+
+@include angular-material-theme($affogato-theme);

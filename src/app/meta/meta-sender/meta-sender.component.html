@@ -1,27 +1,96 @@
-<mat-card>
-  <mat-card-header>Balance</mat-card-header>
-  <mat-card-content>
-    <mat-form-field id="address-selector" class="address-field">
-      <mat-select name="account" (selectionChange)="refreshBalance()" [(value)]="model.account" placeholder="Address">
-        <mat-option *ngFor="let account of accounts" [value]="account">{{account}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+<div class="form">
+  <mat-card class="coffe-box">
+  <mat-tab-group>
+  <mat-tab label="Fincas">
+    <mat-card *ngIf="showqrfarm">
+      <mat-card-content  fxLayout="column" fxLayoutAlign="space-around">
+        <qrcode [qrdata]="'data'" [size]="256" [level]="'M'"></qrcode>
+      </mat-card-content>
+    </mat-card>
 
-    <p>You have <span id="balance">{{model.balance}}</span> META</p>
-  </mat-card-content>
+    <mat-card *ngIf="!showqrfarm">
+      <mat-card-content  fxLayout="column" fxLayoutAlign="space-around">
+      <div class="mb-1">
+        <mat-card-header>Ingresar Informacion de Finca</mat-card-header>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="producerName" placeholder="Nombre del productor" (change)="setProducer($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="farmName" placeholder="Nombre de la Finca" (change)="setFarmN($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="village" placeholder="Aldea" (change)="setVillage($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="municipality" placeholder="Municipio" (change)="setMuni($event)">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="department" placeholder="Departamento" (change)="setDepart($event)">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="country" placeholder="Pais" (change)="setCountry($event)">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="batchSize" placeholder="Tamaño del Lote" (change)="setSize($event)">
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="send">
+        <button mat-raised-button color="accent" id="send" (click)="addFarm()" class="submit">Enviar Informacion</button>
+    </div>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-tab>
+  <mat-tab label="Catación">
+    <mat-card *ngIf="showqrcoffe">
+      <mat-card-content  fxLayout="column" fxLayoutAlign="space-around">
+        <qrcode [qrdata]="'data'" [size]="256" [level]="'M'"></qrcode>
+      </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="!showqrcoffe">
+      <mat-card-content  fxLayout="column" fxLayoutAlign="space-around">
+        <div class="mb-1">
+          <mat-card-header>Ingresar información de cafe</mat-card-header>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="cuppingFinalNote" placeholder="Nota final de catacion " (change)="setNote($event)">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-select placeholder="Nombre de la finca" id="farmName" (change)="setFarmN($event)">
+            <mat-option *ngFor="let farm of farms" [value]="farm.value">
+              {{farm.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="batchSize" placeholder="Tamaño del Lote" (change)="setSize($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="altitude" placeholder="Altura" (change)="setAltitude($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="process" placeholder="Proceso de Café" (change)="setProces($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="text" matInput id="variety" placeholder="Variedad de Café" (change)="setVariety($event)">
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="send">
+        <button mat-raised-button color="accent" id="send" (click)="addCoffeeBatch()" class="submit">Enviar Informacion</button>
+    </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>
 </mat-card>
-
-<mat-card>
-  <mat-card-header>Send MetaCoin</mat-card-header>
-  <mat-card-content>
-    <mat-form-field>
-      <input type="text" matInput id="amount" placeholder="Amount" (change)="setAmount($event)">
-    </mat-form-field>
-    <mat-form-field class="address-field">
-      <input type="text" matInput id="receiver" placeholder="Receiver Address" (change)="setReceiver($event)">
-    </mat-form-field>
-    <button mat-button id="send" (click)="sendCoin()">Send MetaCoin</button>
-  </mat-card-content>
-</mat-card>
-
-
+</div>
