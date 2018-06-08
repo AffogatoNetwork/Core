@@ -87,5 +87,4 @@ contract AffogatoNetwork {
         return false;
     }
   }
-
 }
