@@ -6,16 +6,17 @@ contract AffogatoNetwork {
   address admin;
 
   //Actors, Owners
-  struct producer{
+  struct Producer{
     uint256 id;
     string producerName;
+    string history;
     uint256[] farms; //IDs of ownerd farms
   }
 
-  struct processor{
+  struct Processor{
     uint256 id;
-    string type; //Beneficio, Cooperativa, Finca
     string name;
+    string typeOfProcessor; //Beneficio, Cooperativa, Finca
     string village;
     string municipality;
     string department;
@@ -34,50 +35,60 @@ contract AffogatoNetwork {
   }
 
   //Coffee Process
-  struct cut{
-    uint256 finalBatchSize;
+  struct Cut{
+    uint256 finalBatchSize; 
+    bool isProcessComplete;
   }
 
-  struct depulped{
+  struct Depulped{
     uint256 finalBatchSize;
     bool isProcessedByFarm;
     string processorId;
+    bool isProcessComplete;
   }
 
-  struct fermented{
+  struct Fermented{
     uint256 finalBatchSize;
     bool isProcessedByFarm;
     string processorId;
     string typeOfFermented;
+    bool isProcessComplete;
   }
 
-  struct washed{
+  struct Washed{
     uint256 finalBatchSize;
     bool isProcessedByFarm;
     string processorId;
+    bool isProcessComplete;
   }
 
-  struct drying{
+  struct Drying{
     uint256 finalBatchSize;
     string typeOfDrying;
     bool isProcessedByFarm;
     string processorId;
+    bool isProcessComplete;
   }
 
-  struct trite{
+  struct Trite{
     uint256 finalBatchSize;
     bool isProcessedByFarm;
     string processorId;
+    bool isProcessComplete;
   }
 
-  struct cupProfile{
+  struct CupProfile{
     string frangance;
     string flavor;
     string acidity;
     string body;
     string sweetness;
     string cuppingNote;
+    string defects;
+    string grainSize;
   }
+
+  // End of Coffee Process
 
   struct CoffeeBatch {
     uint256 id;
@@ -85,29 +96,55 @@ contract AffogatoNetwork {
     uint256 altitude;
     string process;
     string variety;
-    cut cut;
-    depulped depulped;
-    fermented fermented;
-    washed washed;
-    drying drying;
-    trite trite;
-    cupProfile cupProfile;
+    Cut cut;
+    Depulped depulped;
+    Fermented fermented;
+    Washed washed;
+    Drying drying;
+    Trite trite;
+    CupProfile cupProfile;
   }
 
-  
-
-  
-
-  CoffeeBatch[] public coffeeBatches;
+  Producer[] public producers;
   Farm[] public farms;
+  Processor[] public processors;
+  CoffeeBatch[] public coffeeBatches;
+ 
 
   //Event Definition
-  event AddCoffeeBatch(uint256 indexed _id);
+  event AddProducer(uint256 indexed _id);
   event AddFarm(uint256 indexed _id);
+  event AddCoffeeBatch(uint256 indexed _id);
+  event AddProcessor(uint256 indexed _id);
 
   //Constructor, initialices the values
   constructor() public{
     admin = msg.sender;
+  }
+
+  //Inserts Producer and emits AddProducer event
+  function addProducer(string _producerName, string _history) public {
+    require(!isEmpty(_producerName) && !isEmpty(_history));
+    uint currentId = producers.length;
+    Producer memory producer = Producer(currentId, _producerName,_history, new uint[](0)); 
+    producers.push(producer);  
+    emit AddProducer(currentId);
+  }
+
+  //Inserts Farm and emits AddFarm event
+  function addProcessor(
+    string _name,
+    string _typeOfProcessor,
+    string _village,
+    string _municipality,
+    string _department,
+    string _country
+  ) public {
+    require(!isEmpty(_typeOfProcessor) && !isEmpty(_name) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_department) && !isEmpty(_country));
+    uint currentId = processors.length;
+    Processor memory processor = Processor(currentId, _name, _typeOfProcessor, _village, _municipality, _department, _country); 
+    processors.push(processor);  
+    emit AddProcessor(currentId);
   }
 
   //Inserts Batch of coffee, updates farm batches and emits AddCoffeeBatch event
@@ -123,8 +160,8 @@ contract AffogatoNetwork {
     require(farms.length >= _farmId);
     require(!isEmpty(_cuppingFinalNote) && !isEmpty(_batchSize) && !isEmpty(_process) && !isEmpty(_variety));
     uint currentId = coffeeBatches.length;
-    coffeeBatches.push(CoffeeBatch(currentId, _auditCode, _cuppingFinalNote, _batchSize, _altitude, _process, _variety, _farmId));
-    farms[_farmId].coffeeBatchesIds.push(currentId);
+  //  coffeeBatches.push(CoffeeBatch(currentId, _auditCode, _cuppingFinalNote, _batchSize, _altitude, _process, _variety, _farmId));
+   // farms[_farmId].coffeeBatchesIds.push(currentId);
     emit AddCoffeeBatch(currentId);
   }
 
@@ -139,14 +176,19 @@ contract AffogatoNetwork {
   ) public {
     require(!isEmpty(_producerName) && !isEmpty(_farmName) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_country));
     uint currentId = farms.length;
-    Farm memory farm = Farm(currentId, _producerName, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
-    farms.push(farm);  
+//    Farm memory farm = Farm(currentId, _producerName, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
+ //   farms.push(farm);  
     emit AddFarm(currentId);
+  }
+
+  //Gets Producer Farms 
+  function getProducerFarms(uint256 _index) public view returns (uint256[]) {
+      return producers[_index].farms;
   }
 
   //Gets farm batches
   function getFarmBatches(uint256 _index) public view returns (uint256[]) {
-      return farms[_index].coffeeBatchesIds;
+      return farms[_index].coffeeBatches;
   }
 
 

@@ -12,7 +12,58 @@ contract(AffogatoNetwork,function(accounts){
 		});
 	});*/
 
-	it('Inserts and returns Farm',function(){
+	it('Inserts and returns a Producer',function(){
+		return AffogatoNetwork.deployed().then(function(instance){
+			tokenInstance = instance;
+			return tokenInstance.addProducer("","");
+		}).then(assert.fail).catch(function(error){
+			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
+			return tokenInstance.addProducer("Enrique Ferrufino","In Matagalpa, Nicaragua, Don Enrique Ferrufino and his son, Enrique, work tirelessly to run a family farming operation that produces high quality coffee year after year.");
+		}).then(function(receipt){
+			assert.equal(receipt.logs.length, 1, 'triggers one event');
+      		assert.equal(receipt.logs[0].event, 'AddProducer', 'should be the "AddProducer" event');
+      		assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted producer id');
+      		return tokenInstance.producers(0);
+		}).then(function(producer){
+      		assert.equal(producer[0].toNumber(),0,"Id is equal to inserted");
+			assert.equal(producer[1],"Enrique Ferrufino","producerName is equal to inserted");
+			assert.equal(producer[2],"In Matagalpa, Nicaragua, Don Enrique Ferrufino and his son, Enrique, work tirelessly to run a family farming operation that produces high quality coffee year after year.","history is equal to inserted")
+			return tokenInstance.getProducerFarms.call(0);      		
+		}).then(function(farms){
+			assert.equal(farms.length, 0,"Farms are empty"); 
+			return tokenInstance.addProducer("Remiery Orlando Carvajal Guevara","In Matagalpa, Nicaragua, Don Enrique Ferrufino and his son, Enrique, work tirelessly to run a family farming operation that produces high quality coffee year after year.");
+		}).then(function(receipt){
+			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
+		});
+	});
+
+	it('Inserts and returns a Processor',function(){
+		return AffogatoNetwork.deployed().then(function(instance){
+			tokenInstance = instance;
+			return tokenInstance.addProcessor("", "", "", "", "", "");
+		}).then(assert.fail).catch(function(error){
+			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
+			return tokenInstance.addProcessor("Beneficio Caballero","Beneficio", "San Francisco", "Marcala", "La Paz", "Honduras");
+		}).then(function(receipt){
+			assert.equal(receipt.logs.length, 1, 'triggers one event');
+      		assert.equal(receipt.logs[0].event, 'AddProcessor', 'should be the "AddProcessor" event');
+      		assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted farm id');
+      		return tokenInstance.processors(0);
+		}).then(function(processor){
+      		assert.equal(processor[0].toNumber(),0,"Id is equal to inserted");
+			assert.equal(processor[1],"Beneficio Caballero","name is equal to inserted");
+			assert.equal(processor[2],"Beneficio","typeOfProcessor is equal to inserted");
+			assert.equal(processor[3],"San Francisco","village is equal to inserted");
+			assert.equal(processor[4],"Marcala","municipality is equal to inserted");
+			assert.equal(processor[5],"La Paz","department is equal to inserted");
+			assert.equal(processor[6],"Honduras","country is equal to inserted");
+			return tokenInstance.addProcessor("Cooperativa Pedro","Cooperativa", "Nueva Guinea", "Marcala", "La Paz", "Honduras");	
+		}).then(function(receipt){
+			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
+		});
+	});
+/*
+	it('Inserts and returns a Farm',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
 			return tokenInstance.addFarm("", "", "", "", "", "");
@@ -39,9 +90,9 @@ contract(AffogatoNetwork,function(accounts){
 		}).then(function(receipt){
 			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
 		});
-	});
+	});*/
 
-	it('Inserts and return Coffee Batch',function(){
+/*	it('Inserts and return Coffee Batch',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
 			return tokenInstance.addCoffeeBatch(571, "93.43", "11.7", 1350, "Lavado", "Geisha Emperador",99999999);
@@ -74,7 +125,7 @@ contract(AffogatoNetwork,function(accounts){
 			assert.equal(farmBatches[1], 1,"Second value should be 1");
 			assert.equal(farmBatches.length, 2,"There should be 2 batches");
 		});
-	});
+	});*/
 
 	
 });
