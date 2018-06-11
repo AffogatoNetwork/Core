@@ -5,27 +5,98 @@ contract AffogatoNetwork {
 
   address admin;
 
-  struct CoffeeBatch {
+  //Actors, Owners
+  struct producer{
     uint256 id;
-    uint256 auditCode;
-    string cuppingFinalNote;
-    string batchSize;
-    uint256 altitude;
-    string process;
-    string variety;
-    uint256 farmId;
+    string producerName;
+    uint256[] farms; //IDs of ownerd farms
+  }
+
+  struct processor{
+    uint256 id;
+    string type; //Beneficio, Cooperativa, Finca
+    string name;
+    string village;
+    string municipality;
+    string department;
+    string country;
   }
 
   struct Farm{
     uint256 id;
-    string producerName;
+    uint256 producerId;
     string farmName;
     string village;
     string municipality;
     string department;
     string country;
-    uint256[] coffeeBatchesIds;
+    uint256[] coffeeBatches; //IDs of Coffee Batches
   }
+
+  //Coffee Process
+  struct cut{
+    uint256 finalBatchSize;
+  }
+
+  struct depulped{
+    uint256 finalBatchSize;
+    bool isProcessedByFarm;
+    string processorId;
+  }
+
+  struct fermented{
+    uint256 finalBatchSize;
+    bool isProcessedByFarm;
+    string processorId;
+    string typeOfFermented;
+  }
+
+  struct washed{
+    uint256 finalBatchSize;
+    bool isProcessedByFarm;
+    string processorId;
+  }
+
+  struct drying{
+    uint256 finalBatchSize;
+    string typeOfDrying;
+    bool isProcessedByFarm;
+    string processorId;
+  }
+
+  struct trite{
+    uint256 finalBatchSize;
+    bool isProcessedByFarm;
+    string processorId;
+  }
+
+  struct cupProfile{
+    string frangance;
+    string flavor;
+    string acidity;
+    string body;
+    string sweetness;
+    string cuppingNote;
+  }
+
+  struct CoffeeBatch {
+    uint256 id;
+    uint256 farmId;
+    uint256 altitude;
+    string process;
+    string variety;
+    cut cut;
+    depulped depulped;
+    fermented fermented;
+    washed washed;
+    drying drying;
+    trite trite;
+    cupProfile cupProfile;
+  }
+
+  
+
+  
 
   CoffeeBatch[] public coffeeBatches;
   Farm[] public farms;
