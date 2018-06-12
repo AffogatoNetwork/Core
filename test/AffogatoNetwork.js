@@ -62,14 +62,17 @@ contract(AffogatoNetwork,function(accounts){
 			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
 		});
 	});
-/*
+
 	it('Inserts and returns a Farm',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
-			return tokenInstance.addFarm("", "", "", "", "", "");
+			return tokenInstance.addFarm(0, "", "", "", "", "");
 		}).then(assert.fail).catch(function(error){
 			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
-			return tokenInstance.addFarm("Fabio Antonio Caballero Martinez", "San Francisco", "San Francisco", "Marcala", "La Paz", "Honduras");
+			return tokenInstance.addFarm(9999999999999999999, "San Francisco", "San Francisco", "Marcala", "La Paz", "Honduras");
+		}).then(assert.fail).catch(function(error){
+			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
+			return tokenInstance.addFarm(0, "San Francisco", "San Francisco", "Marcala", "La Paz", "Honduras");
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
       		assert.equal(receipt.logs[0].event, 'AddFarm', 'should be the "AddFarm" event');
@@ -77,7 +80,7 @@ contract(AffogatoNetwork,function(accounts){
       		return tokenInstance.farms(0);
 		}).then(function(farm){
       		assert.equal(farm[0].toNumber(),0,"Id is equal to inserted");
-			assert.equal(farm[1],"Fabio Antonio Caballero Martinez","producerName is equal to inserted");
+			assert.equal(farm[1],0,"producerId is equal to inserted");
 			assert.equal(farm[2],"San Francisco","farmName is equal to inserted");
 			assert.equal(farm[3],"San Francisco","village is equal to inserted");
 			assert.equal(farm[4],"Marcala","municipality is equal to inserted");
@@ -86,37 +89,41 @@ contract(AffogatoNetwork,function(accounts){
 			return tokenInstance.getFarmBatches.call(0);      		
 		}).then(function(farmBatches){
 			assert.equal(farmBatches.length, 0,"Batches are empty"); 
-			return tokenInstance.addFarm("Remiery Orlando Carvajal Guevara", "Los Pinos", "Esquinpara", "San Andres", "Lempira", "Honduras");
+			return tokenInstance.addFarm(0, "Los Pinos", "Esquinpara", "San Andres", "Lempira", "Honduras");
 		}).then(function(receipt){
 			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
+			return tokenInstance.getProducerFarms.call(0);
+		}).then(function(producerFarms){
+			assert.equal(producerFarms[0].toNumber(), 0,"First value should be 0");
+			assert.equal(producerFarms[1], 1,"Second value should be 1");
+			assert.equal(producerFarms.length, 2,"There should be 2 batches");
 		});
-	});*/
+	});
 
-/*	it('Inserts and return Coffee Batch',function(){
+	it('Inserts and return Coffee Batch',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
 			tokenInstance = instance;
-			return tokenInstance.addCoffeeBatch(571, "93.43", "11.7", 1350, "Lavado", "Geisha Emperador",99999999);
+			return tokenInstance.addCoffeeBatch(99999999, 1350, "Lavado", "Geisha Emperador");
 		}).then(assert.fail).catch(function(error){
 			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
-			return tokenInstance.addCoffeeBatch(0, "", "", 0, "", "",0);
+			return tokenInstance.addCoffeeBatch(0, 0, "", "");
 		}).then(assert.fail).catch(function(error){
 			assert(error.message.indexOf('revert') >= 0, "Error message must contain revert");
-			return tokenInstance.addCoffeeBatch(571, "93.43", "11.7", 1350, "Lavado", "Geisha Emperador",0);
+			return tokenInstance.addCoffeeBatch(0, 1350, "Lavado", "Geisha Emperador");
 		}).then(function(receipt){
 			assert.equal(receipt.logs.length, 1, 'triggers one event');
       		assert.equal(receipt.logs[0].event, 'AddCoffeeBatch', 'should be the "AddCoffeeBatch" event');
       		assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted batch id');
-      		return tokenInstance.coffeeBatches(0);
+      		
+      		//TODO: return struct with structs not supported, need to create a new function that only returns the strings
+      		return tokenInstance.getCoffeeBatchId(0);
 		}).then(function(coffeeBatch){
-      		assert.equal(coffeeBatch[0].toNumber(),0,"Id is equal to inserted");
-			assert.equal(coffeeBatch[1].toNumber(),571,"auditCode is equal to inserted");
-			assert.equal(coffeeBatch[2],"93.43","cuppingFinalNote is equal to inserted");
-			assert.equal(coffeeBatch[3],"11.7","batchSize is equal to inserted");
-			assert.equal(coffeeBatch[4].toNumber(),1350,"altitude is equal to inserted");
-			assert.equal(coffeeBatch[5],"Lavado","process is equal to inserted");
-			assert.equal(coffeeBatch[6],"Geisha Emperador","variety is equal to inserted");
-			assert.equal(coffeeBatch[7].toNumber(),0,"farm ID is equal to inserted");
-      		return tokenInstance.addCoffeeBatch(261, "92.64", "14.37", 1600, "Lavado", "Typica",0);
+      		assert.equal(coffeeBatch.toNumber(),0,"Id is equal to inserted");
+		//	assert.equal(coffeeBatch[1].toNumber(),0,"farmId is equal to inserted");
+	//		assert.equal(coffeeBatch[2].toNumber(),1350,"altitude is equal to inserted");
+//			assert.equal(coffeeBatch[3],"Lavado","process is equal to inserted");
+//			assert.equal(coffeeBatch[4],"Geisha Emperador","variety is equal to inserted");
+      		return tokenInstance.addCoffeeBatch(0, 1600, "Lavado", "Typica");
 		}).then(function(receipt){
 			assert.equal(receipt.logs[0].args._id.toNumber(), 1, 'logs the inserted incremented id');
 			return tokenInstance.getFarmBatches.call(0);
@@ -125,7 +132,7 @@ contract(AffogatoNetwork,function(accounts){
 			assert.equal(farmBatches[1], 1,"Second value should be 1");
 			assert.equal(farmBatches.length, 2,"There should be 2 batches");
 		});
-	});*/
+	});
 
 	
 });

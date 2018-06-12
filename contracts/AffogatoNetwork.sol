@@ -149,35 +149,51 @@ contract AffogatoNetwork {
 
   //Inserts Batch of coffee, updates farm batches and emits AddCoffeeBatch event
   function addCoffeeBatch(
-    uint256 _auditCode,
-    string _cuppingFinalNote,
-    string _batchSize,
+    uint256 _farmId,
     uint256 _altitude,
     string _process,
-    string _variety,
-    uint256 _farmId
+    string _variety
   ) public {
+
     require(farms.length >= _farmId);
-    require(!isEmpty(_cuppingFinalNote) && !isEmpty(_batchSize) && !isEmpty(_process) && !isEmpty(_variety));
+    require(!isEmpty(_process) && !isEmpty(_variety));
+
     uint currentId = coffeeBatches.length;
-  //  coffeeBatches.push(CoffeeBatch(currentId, _auditCode, _cuppingFinalNote, _batchSize, _altitude, _process, _variety, _farmId));
-   // farms[_farmId].coffeeBatchesIds.push(currentId);
+    
+    //initialices empty structs
+    Cut memory cut = Cut(0,false);
+    Depulped memory depulped = Depulped(0,false,"",false);
+    Fermented memory fermented = Fermented(0,false,"","",false);
+    Washed memory washed = Washed(0,false,"",false);
+    Drying memory drying = Drying(0,"",false,"",false);
+    Trite memory trite = Trite(0,false,"",false);
+    CupProfile memory cupProfile = CupProfile("","","","","","","","");
+    CoffeeBatch memory coffeeBatch = CoffeeBatch(currentId, _farmId, _altitude, _process, _variety, cut, depulped, fermented, washed, drying,trite,cupProfile);
+    coffeeBatches.push(coffeeBatch);
+    farms[_farmId].coffeeBatches.push(currentId);
     emit AddCoffeeBatch(currentId);
   }
 
+  function getCoffeeBatchId(uint _index) public constant returns(uint256) {
+      return coffeeBatches[_index].id;
+  }
+
+
   //Inserts Farm and emits AddFarm event
   function addFarm(
-    string _producerName,
+    uint _producerId,
     string _farmName,
     string _village,
     string _municipality,
     string _department,
     string _country
   ) public {
-    require(!isEmpty(_producerName) && !isEmpty(_farmName) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_country));
+    require(producers.length >= _producerId);
+    require(!isEmpty(_farmName) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_country));
     uint currentId = farms.length;
-//    Farm memory farm = Farm(currentId, _producerName, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
- //   farms.push(farm);  
+    Farm memory farm = Farm(currentId, _producerId, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
+    farms.push(farm);  
+    producers[_producerId].farms.push(currentId);
     emit AddFarm(currentId);
   }
 
