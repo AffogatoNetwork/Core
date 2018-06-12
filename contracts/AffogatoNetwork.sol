@@ -38,43 +38,47 @@ contract AffogatoNetwork {
   struct Cut{
     uint256 finalBatchSize; 
     bool isProcessComplete;
+    //Sell price - Cereza
   }
 
   struct Depulped{
+    uint256 processorId;
     uint256 finalBatchSize;
-    bool isProcessedByFarm;
-    string processorId;
+    bool isProcessedByFarm; 
     bool isProcessComplete;
   }
 
   struct Fermented{
+    uint256 processorId;
     uint256 finalBatchSize;
     bool isProcessedByFarm;
-    string processorId;
     string typeOfFermented;
     bool isProcessComplete;
   }
 
   struct Washed{
+    uint256 processorId;
     uint256 finalBatchSize;
     bool isProcessedByFarm;
-    string processorId;
     bool isProcessComplete;
+    //Sell Price - Humedo
   }
 
   struct Drying{
+    uint256 processorId;
     uint256 finalBatchSize;
-    string typeOfDrying;
     bool isProcessedByFarm;
-    string processorId;
+    string typeOfDrying;
     bool isProcessComplete;
+    //Sell Price - Pergamino Seco
   }
 
   struct Trite{
+    uint256 processorId;
     uint256 finalBatchSize;
     bool isProcessedByFarm;
-    string processorId;
     bool isProcessComplete;
+    //Sell Price - Oro
   }
 
   struct CupProfile{
@@ -82,7 +86,6 @@ contract AffogatoNetwork {
     string flavor;
     string acidity;
     string body;
-    string sweetness;
     string cuppingNote;
     string defects;
     string grainSize;
@@ -116,6 +119,13 @@ contract AffogatoNetwork {
   event AddFarm(uint256 indexed _id);
   event AddCoffeeBatch(uint256 indexed _id);
   event AddProcessor(uint256 indexed _id);
+  event UpdateCoffeeBatchCut(uint256 indexed _batchId, uint256 _finalBatchSize, bool _isProcessComplete);
+  event UpdateCoffeeBatchDepulped(uint256 indexed _batchId, uint256 indexed _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete);
+  event UpdateCoffeeBatchFermented(uint256 indexed _batchId, uint256 indexed _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, string _typeOfFermented, bool _isProcessComplete);
+  event UpdateCoffeeBatchWashed(uint256 indexed _batchId, uint256 indexed _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete);
+  event UpdateCoffeeBatchDrying(uint256 indexed _batchId, uint256 indexed _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, string _typeOfDrying, bool _isProcessComplete);
+  event UpdateCoffeeBatchTrite(uint256 indexed _batchId, uint256 indexed _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete);
+  event UpdateCupProfile(uint256 indexed _batchId, string _frangance, string _flavor, string _acidity, string _body, string _cuppingNote, string _defects, string _grainSize);
 
   //Constructor, initialices the values
   constructor() public{
@@ -162,22 +172,201 @@ contract AffogatoNetwork {
     
     //initialices empty structs
     Cut memory cut = Cut(0,false);
-    Depulped memory depulped = Depulped(0,false,"",false);
-    Fermented memory fermented = Fermented(0,false,"","",false);
-    Washed memory washed = Washed(0,false,"",false);
-    Drying memory drying = Drying(0,"",false,"",false);
-    Trite memory trite = Trite(0,false,"",false);
-    CupProfile memory cupProfile = CupProfile("","","","","","","","");
+    Depulped memory depulped = Depulped(0,0,false,false);
+    Fermented memory fermented = Fermented(0,0,false,"",false);
+    Washed memory washed = Washed(0,0,false,false);
+    Drying memory drying = Drying(0,0,false,"",false);
+    Trite memory trite = Trite(0,0,false,false);
+    CupProfile memory cupProfile = CupProfile("","","","","","","");
     CoffeeBatch memory coffeeBatch = CoffeeBatch(currentId, _farmId, _altitude, _process, _variety, cut, depulped, fermented, washed, drying,trite,cupProfile);
     coffeeBatches.push(coffeeBatch);
     farms[_farmId].coffeeBatches.push(currentId);
     emit AddCoffeeBatch(currentId);
   }
 
-  function getCoffeeBatchId(uint _index) public constant returns(uint256) {
-      return coffeeBatches[_index].id;
+  function getCoffeeBatchInfo(uint _index) public constant 
+  returns(uint256,uint256,uint256,string,string) {
+      CoffeeBatch memory coffeeBatch = coffeeBatches[_index];
+      return( coffeeBatch.id,
+              coffeeBatch.farmId, 
+              coffeeBatch.altitude, 
+              coffeeBatch.process, 
+              coffeeBatch.variety
+      );
   }
 
+  function getCoffeeBatchCut(uint _index) public constant 
+  returns(uint256,bool) {
+      Cut memory cut = coffeeBatches[_index].cut;
+      return( cut.finalBatchSize, 
+              cut.isProcessComplete
+      );
+  }
+
+  function updateCoffeeBatchCut(uint _index, uint256 _finalBatchSize, bool _isProcessComplete) public { 
+      require(coffeeBatches.length >= _index);
+
+      Cut storage cut = coffeeBatches[_index].cut;
+      cut.finalBatchSize = _finalBatchSize;
+      cut.isProcessComplete = _isProcessComplete;
+      emit UpdateCoffeeBatchCut(_index,cut.finalBatchSize,cut.isProcessComplete);
+  }
+
+  function getCoffeeBatchDepulped(uint _index) public constant 
+  returns(uint256,uint256,bool,bool) {
+      Depulped memory depulped = coffeeBatches[_index].depulped;
+      return( depulped.processorId, 
+              depulped.finalBatchSize, 
+              depulped.isProcessedByFarm, 
+              depulped.isProcessComplete
+      );
+  }
+
+  function updateCoffeeBatchDepulped(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete) public { 
+      require(coffeeBatches.length >= _index);
+      require(processors.length >= _processorId);
+
+      Depulped storage depulped = coffeeBatches[_index].depulped;
+      depulped.processorId = _processorId;
+      depulped.finalBatchSize = _finalBatchSize;
+      depulped.isProcessedByFarm = _isProcessedByFarm;
+      depulped.isProcessComplete = _isProcessComplete;
+
+      emit UpdateCoffeeBatchDepulped(_index,depulped.processorId,depulped.finalBatchSize,depulped.isProcessedByFarm,depulped.isProcessComplete);
+  }
+
+  function getCoffeeBatchFermented(uint _index) public constant 
+  returns(uint256,uint256,bool,string,bool) {
+      Fermented memory fermented = coffeeBatches[_index].fermented;
+      return( fermented.processorId, 
+              fermented.finalBatchSize, 
+              fermented.isProcessedByFarm, 
+              fermented.typeOfFermented,
+              fermented.isProcessComplete
+      );
+  }
+
+  function updateCoffeeBatchFermented(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, string _typeOfFermented, bool _isProcessComplete) public { 
+      require(coffeeBatches.length >= _index);
+      require(processors.length >= _processorId);
+
+      Fermented storage fermented = coffeeBatches[_index].fermented;
+      fermented.processorId = _processorId;
+      fermented.finalBatchSize = _finalBatchSize;
+      fermented.isProcessedByFarm = _isProcessedByFarm;
+      fermented.typeOfFermented = _typeOfFermented;
+      fermented.isProcessComplete = _isProcessComplete;
+
+      emit UpdateCoffeeBatchFermented(_index,fermented.processorId,fermented.finalBatchSize,fermented.isProcessedByFarm, fermented.typeOfFermented,fermented.isProcessComplete);
+  }
+
+  function getCoffeeBatchWashed(uint _index) public constant 
+  returns(uint256,uint256,bool,bool) {
+      Washed memory washed = coffeeBatches[_index].washed;
+      return( washed.processorId, 
+              washed.finalBatchSize, 
+              washed.isProcessedByFarm, 
+              washed.isProcessComplete
+      );
+  }
+
+  function updateCoffeeBatchWashed(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete) public { 
+      require(coffeeBatches.length >= _index);
+      require(processors.length >= _processorId);
+
+      Washed storage washed = coffeeBatches[_index].washed;
+      washed.processorId = _processorId;
+      washed.finalBatchSize = _finalBatchSize;
+      washed.isProcessedByFarm = _isProcessedByFarm;
+      washed.isProcessComplete = _isProcessComplete;
+
+      emit UpdateCoffeeBatchWashed(_index, washed.processorId, washed.finalBatchSize, washed.isProcessedByFarm, washed.isProcessComplete);
+  }
+
+  function getCoffeeBatchDrying(uint _index) public constant 
+  returns(uint256,uint256,bool,string,bool) {
+      Drying memory drying = coffeeBatches[_index].drying;
+      return( drying.processorId, 
+              drying.finalBatchSize, 
+              drying.isProcessedByFarm, 
+              drying.typeOfDrying,
+              drying.isProcessComplete
+      );
+  }
+
+  function updateCoffeeBatchDrying(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, string _typeOfDrying, bool _isProcessComplete) public { 
+      require(coffeeBatches.length >= _index);
+      require(processors.length >= _processorId);
+
+      Drying storage drying = coffeeBatches[_index].drying;
+      drying.processorId = _processorId;
+      drying.finalBatchSize = _finalBatchSize;
+      drying.typeOfDrying = _typeOfDrying;
+      drying.isProcessedByFarm = _isProcessedByFarm;
+      drying.isProcessComplete = _isProcessComplete;
+
+      emit UpdateCoffeeBatchDrying(_index, drying.processorId, drying.finalBatchSize, drying.isProcessedByFarm, drying.typeOfDrying, drying.isProcessComplete);
+  }
+
+  function getCoffeeBatchTrite(uint _index) public constant 
+  returns(uint256,uint256,bool,bool) {
+      Trite memory trite = coffeeBatches[_index].trite;
+      return( trite.processorId, 
+              trite.finalBatchSize, 
+              trite.isProcessedByFarm, 
+              trite.isProcessComplete
+      );
+  }
+
+  function updateCoffeeBatchTrite(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete) public { 
+      require(coffeeBatches.length >= _index);
+      require(processors.length >= _processorId);
+
+      Trite storage trite = coffeeBatches[_index].trite;
+      trite.processorId = _processorId;
+      trite.finalBatchSize = _finalBatchSize;
+      trite.isProcessedByFarm = _isProcessedByFarm;
+      trite.isProcessComplete = _isProcessComplete;
+
+      emit UpdateCoffeeBatchTrite(_index, trite.processorId, trite.finalBatchSize, trite.isProcessedByFarm, trite.isProcessComplete);
+  }
+
+  function getCupProfile(uint _index) public constant 
+  returns(string,string,string,string,string,string,string) {
+      CupProfile memory cupProfile = coffeeBatches[_index].cupProfile;
+      return (cupProfile.frangance,
+              cupProfile.flavor,
+              cupProfile.acidity,
+              cupProfile.body,
+              cupProfile.cuppingNote,
+              cupProfile.defects,
+              cupProfile.grainSize
+      );
+  }
+
+  function updateCupProfile(
+    uint _index,
+    string _frangance, 
+    string _flavor, 
+    string _acidity, 
+    string _body, 
+    string _cuppingNote, 
+    string _defects, 
+    string _grainSize
+  ) public { 
+      require(coffeeBatches.length >= _index);
+
+      CupProfile storage cupProfile = coffeeBatches[_index].cupProfile;
+      cupProfile.frangance = _frangance;
+      cupProfile.flavor = _flavor;
+      cupProfile.acidity = _acidity;
+      cupProfile.body = _body;
+      cupProfile.cuppingNote = _cuppingNote;
+      cupProfile.defects = _defects;
+      cupProfile.grainSize = _grainSize;
+
+      emit UpdateCupProfile(_index, cupProfile.frangance, cupProfile.flavor, cupProfile.acidity, cupProfile.body, cupProfile.cuppingNote, cupProfile.defects, cupProfile.grainSize);
+  }
 
   //Inserts Farm and emits AddFarm event
   function addFarm(
@@ -190,10 +379,12 @@ contract AffogatoNetwork {
   ) public {
     require(producers.length >= _producerId);
     require(!isEmpty(_farmName) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_country));
+
     uint currentId = farms.length;
     Farm memory farm = Farm(currentId, _producerId, _farmName, _village, _municipality, _department, _country, new uint[](0)); 
     farms.push(farm);  
     producers[_producerId].farms.push(currentId);
+
     emit AddFarm(currentId);
   }
 
