@@ -5,14 +5,14 @@ contract AffogatoNetwork {
 
   address admin;
 
-  //Actors, Owners
+  //Producers are the owner of the farms
   struct Producer{
     uint256 id;
     string producerName;
     string history;
     uint256[] farms; //IDs of ownerd farms
   }
-
+  //Processors are actors who do process for farmers with no resources
   struct Processor{
     uint256 id;
     string name;
@@ -22,7 +22,7 @@ contract AffogatoNetwork {
     string department;
     string country;
   }
-
+  //Farm where coffee batches are produced
   struct Farm{
     uint256 id;
     uint256 producerId;
@@ -34,13 +34,16 @@ contract AffogatoNetwork {
     uint256[] coffeeBatches; //IDs of Coffee Batches
   }
 
-  //Coffee Process
+  //Start of Coffee Process
+  //The size of the batch gets reduced in each step
+  //First you cut the cherry in the farm
   struct Cut{
     uint256 finalBatchSize; 
     bool isProcessComplete;
-    //Sell price - Cereza
+    //TODO: Sell price - Cereza
   }
 
+  //Then you depulp it
   struct Depulped{
     uint256 processorId;
     uint256 finalBatchSize;
@@ -48,6 +51,7 @@ contract AffogatoNetwork {
     bool isProcessComplete;
   }
 
+  //Then you Ferment it
   struct Fermented{
     uint256 processorId;
     uint256 finalBatchSize;
@@ -56,6 +60,7 @@ contract AffogatoNetwork {
     bool isProcessComplete;
   }
 
+  //Then you wash it
   struct Washed{
     uint256 processorId;
     uint256 finalBatchSize;
@@ -64,22 +69,26 @@ contract AffogatoNetwork {
     //Sell Price - Humedo
   }
 
+  //Then you dry it
   struct Drying{
     uint256 processorId;
     uint256 finalBatchSize;
     bool isProcessedByFarm;
     string typeOfDrying;
     bool isProcessComplete;
-    //Sell Price - Pergamino Seco
+    //TODO: Sell Price - Pergamino Seco
   }
 
+  //Then you trite it
   struct Trite{
     uint256 processorId;
     uint256 finalBatchSize;
     bool isProcessedByFarm;
     bool isProcessComplete;
-    //Sell Price - Oro
+    //TODO: Sell Price - Oro
   }
+
+  //Then you export it or roast it
 
   struct CupProfile{
     string frangance;
