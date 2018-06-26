@@ -1,0 +1,912 @@
+{
+  "contractName": "Coffee",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a72305820068d2c8e7f88cb077a5039d8819c5d3f3d898f322ec92a7961f312067b1ab50d0029",
+  "deployedBytecode": "0x6080604052600080fd00a165627a7a72305820068d2c8e7f88cb077a5039d8819c5d3f3d898f322ec92a7961f312067b1ab50d0029",
+  "sourceMap": "26:886:3:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:886:3;;;;;;;",
+  "deployedSourceMap": "26:886:3:-;;;;;",
+  "source": "pragma solidity ^0.4.23;\n\ncontract Coffee{\n\n    struct CoffeeBatch{\n        uint256 id;\n        uint256 altitude;\n        string variety;\n        bytes32 averageCupping; \n        bool isSold;\n        Action[] actions;\n        // @dev Additional information about the Coffee Batch, generally as a JSON object\n        string additionalInformation;\n    }\n\n    struct Action{\n        //@dev address of the individual or the organization who realizes the action.\n        address processor;\n        //@dev description of the action.\n        bytes32 typeOfAction; \n        string additionalInformation;\n        // @dev Instant of time when the Action is done.\n        uint timestamp;\n    }\n\n    mapping(uint256 => CoffeeBatch) coffeeBatches;\n    address[] membersIds;\n\n    //add coffee batch\n\n    //Add Action\n    //Update Action\n    //Finish Process\n    //Get Coffee Process \n    //Get Origin\n    //Get Tasters\n    \n\n} ",
+  "sourcePath": "/Users/crisgarner/Projects/affogato/contracts/Coffee.sol",
+  "ast": {
+    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/Coffee.sol",
+    "exportedSymbols": {
+      "Coffee": [
+        71
+      ]
+    },
+    "id": 72,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 38,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:3"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 71,
+        "linearizedBaseContracts": [
+          71
+        ],
+        "name": "Coffee",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Coffee.CoffeeBatch",
+            "id": 54,
+            "members": [
+              {
+                "constant": false,
+                "id": 40,
+                "name": "id",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "76:10:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 39,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "76:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 42,
+                "name": "altitude",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "96:16:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 41,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "96:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 44,
+                "name": "variety",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "122:14:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 43,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "122:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 46,
+                "name": "averageCupping",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "146:22:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 45,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "146:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 48,
+                "name": "isSold",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "179:11:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 47,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "179:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 51,
+                "name": "actions",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "200:16:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_Action_$63_storage_$dyn_storage_ptr",
+                  "typeString": "struct Coffee.Action[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "contractScope": null,
+                    "id": 49,
+                    "name": "Action",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 63,
+                    "src": "200:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Action_$63_storage_ptr",
+                      "typeString": "struct Coffee.Action"
+                    }
+                  },
+                  "id": 50,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "200:8:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_Action_$63_storage_$dyn_storage_ptr",
+                    "typeString": "struct Coffee.Action[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 53,
+                "name": "additionalInformation",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "316:28:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 52,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "316:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "CoffeeBatch",
+            "nodeType": "StructDefinition",
+            "scope": 71,
+            "src": "48:303:3",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Coffee.Action",
+            "id": 63,
+            "members": [
+              {
+                "constant": false,
+                "id": 56,
+                "name": "processor",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "466:17:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 55,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "466:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 58,
+                "name": "typeOfAction",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "535:20:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 57,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "535:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 60,
+                "name": "additionalInformation",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "566:28:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 59,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "566:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 62,
+                "name": "timestamp",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "661:14:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 61,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "661:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Action",
+            "nodeType": "StructDefinition",
+            "scope": 71,
+            "src": "357:325:3",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 67,
+            "name": "coffeeBatches",
+            "nodeType": "VariableDeclaration",
+            "scope": 71,
+            "src": "688:45:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_CoffeeBatch_$54_storage_$",
+              "typeString": "mapping(uint256 => struct Coffee.CoffeeBatch)"
+            },
+            "typeName": {
+              "id": 66,
+              "keyType": {
+                "id": 64,
+                "name": "uint256",
+                "nodeType": "ElementaryTypeName",
+                "src": "696:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "688:31:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_CoffeeBatch_$54_storage_$",
+                "typeString": "mapping(uint256 => struct Coffee.CoffeeBatch)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 65,
+                "name": "CoffeeBatch",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 54,
+                "src": "707:11:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_CoffeeBatch_$54_storage_ptr",
+                  "typeString": "struct Coffee.CoffeeBatch"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 70,
+            "name": "membersIds",
+            "nodeType": "VariableDeclaration",
+            "scope": 71,
+            "src": "739:20:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 68,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "739:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 69,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "739:9:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 72,
+        "src": "26:886:3"
+      }
+    ],
+    "src": "0:913:3"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/Coffee.sol",
+    "exportedSymbols": {
+      "Coffee": [
+        71
+      ]
+    },
+    "id": 72,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 38,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:3"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 71,
+        "linearizedBaseContracts": [
+          71
+        ],
+        "name": "Coffee",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Coffee.CoffeeBatch",
+            "id": 54,
+            "members": [
+              {
+                "constant": false,
+                "id": 40,
+                "name": "id",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "76:10:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 39,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "76:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 42,
+                "name": "altitude",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "96:16:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 41,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "96:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 44,
+                "name": "variety",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "122:14:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 43,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "122:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 46,
+                "name": "averageCupping",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "146:22:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 45,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "146:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 48,
+                "name": "isSold",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "179:11:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 47,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "179:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 51,
+                "name": "actions",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "200:16:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_Action_$63_storage_$dyn_storage_ptr",
+                  "typeString": "struct Coffee.Action[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "contractScope": null,
+                    "id": 49,
+                    "name": "Action",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 63,
+                    "src": "200:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Action_$63_storage_ptr",
+                      "typeString": "struct Coffee.Action"
+                    }
+                  },
+                  "id": 50,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "200:8:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_Action_$63_storage_$dyn_storage_ptr",
+                    "typeString": "struct Coffee.Action[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 53,
+                "name": "additionalInformation",
+                "nodeType": "VariableDeclaration",
+                "scope": 54,
+                "src": "316:28:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 52,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "316:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "CoffeeBatch",
+            "nodeType": "StructDefinition",
+            "scope": 71,
+            "src": "48:303:3",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Coffee.Action",
+            "id": 63,
+            "members": [
+              {
+                "constant": false,
+                "id": 56,
+                "name": "processor",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "466:17:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 55,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "466:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 58,
+                "name": "typeOfAction",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "535:20:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 57,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "535:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 60,
+                "name": "additionalInformation",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "566:28:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 59,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "566:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 62,
+                "name": "timestamp",
+                "nodeType": "VariableDeclaration",
+                "scope": 63,
+                "src": "661:14:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 61,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "661:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Action",
+            "nodeType": "StructDefinition",
+            "scope": 71,
+            "src": "357:325:3",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 67,
+            "name": "coffeeBatches",
+            "nodeType": "VariableDeclaration",
+            "scope": 71,
+            "src": "688:45:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_CoffeeBatch_$54_storage_$",
+              "typeString": "mapping(uint256 => struct Coffee.CoffeeBatch)"
+            },
+            "typeName": {
+              "id": 66,
+              "keyType": {
+                "id": 64,
+                "name": "uint256",
+                "nodeType": "ElementaryTypeName",
+                "src": "696:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "688:31:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_CoffeeBatch_$54_storage_$",
+                "typeString": "mapping(uint256 => struct Coffee.CoffeeBatch)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 65,
+                "name": "CoffeeBatch",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 54,
+                "src": "707:11:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_CoffeeBatch_$54_storage_ptr",
+                  "typeString": "struct Coffee.CoffeeBatch"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 70,
+            "name": "membersIds",
+            "nodeType": "VariableDeclaration",
+            "scope": 71,
+            "src": "739:20:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 68,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "739:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 69,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "739:9:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 72,
+        "src": "26:886:3"
+      }
+    ],
+    "src": "0:913:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {
+    "1529959097651": {
+      "events": {},
+      "links": {},
+      "address": "0x4a3059255cb5ea259481023b9695b0a86584d06a",
+      "transactionHash": "0x05196def31dcb0f3effcc9c3977e225b4c601445af629c3527312eb139898a26"
+    }
+  },
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-06-26T01:47:13.738Z"
+}
