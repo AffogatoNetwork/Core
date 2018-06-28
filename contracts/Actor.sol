@@ -24,12 +24,12 @@ contract Actor is AffogatoNetwork {
         
     }
 
+    mapping(address => Processor) public addressToProcessor;
+    address[] public processorIds;
+
     function getCount() public view returns(uint count) {
         return processorIds.length;
     }
-
-    mapping(address => Processor) public addressToProcessor;
-    address[] public processorIds;
 
     function addProcessor(
         address _owner,
