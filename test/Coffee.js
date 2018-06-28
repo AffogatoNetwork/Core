@@ -52,10 +52,26 @@ contract(Coffee,function(accounts){
             assert.equal(action[0], accounts[0], 'address is equal to inserted');
             assert.equal(byteToString(action[1]), "creation", 'type of action is equal to inserted');
             assert.equal(action[2], '{"size":"1","symbol":"QQ}', 'additional information is equal to inserted');
-            assert.equal(action[3], timeNow, 'address is equal to inserted');
+            assert.equal(action[3], timeNow, 'time is equal to inserted');
             return tokenInstance.getCoffeeBatchActions(0);
         }).then(function(actions){
             assert.equal(byteToString(actions[0]), "creation", 'Current only action is creation');
+            timeNow = + new Date();
+            return tokenInstance.addCoffeeBatchAction(0,"depulped",'{"size":"0.5","symbol":"QQ}',timeNow,{from: accounts[0]});
+        }).then(function(receipt){
+			assert.equal(receipt.logs.length, 1, 'triggers one event');
+      		assert.equal(receipt.logs[0].event, 'LogAddCoffeeBatchAction', 'should be the "LogAddCoffeeBatch" event');
+            assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted address id');
+            return tokenInstance.getCoffeeBatchActions(0);
+        }).then(function(actions){
+            assert.equal(byteToString(actions[0]), "creation", 'Action is creation');
+            assert.equal(byteToString(actions[1]), "depulped", 'Action is depulped');
+            return tokenInstance.getCoffeeBatchAction(0,"depulped");
+        }).then(function(action){
+            assert.equal(action[0], accounts[0], 'address is equal to inserted');
+            assert.equal(byteToString(action[1]), "depulped", 'type of action is equal to inserted');
+            assert.equal(action[2], '{"size":"0.5","symbol":"QQ}', 'additional information is equal to inserted');
+            assert.equal(action[3], timeNow, 'time is equal to inserted');
         }); 
     });
 });

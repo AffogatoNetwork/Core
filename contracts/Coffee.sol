@@ -3,6 +3,7 @@ pragma solidity ^0.4.23;
 contract Coffee{
 
     event LogAddCoffeeBatch(uint256 indexed _id);
+    event LogAddCoffeeBatchAction(uint256 indexed _id);
     //TODO: cambiar actions a un mapping 
     struct CoffeeBatch{
         uint256 id;
@@ -32,6 +33,23 @@ contract Coffee{
         return coffeeBatches.length;
     }
 
+    function getCoffeeBatchActions(uint _coffeeBatchIndex) public view returns(bytes32[]){
+        CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchIndex];
+        return coffeeBatch.actionIds;
+    }
+
+    function getCoffeeBatchAction(uint _coffeeBatchIndex, bytes32 _typeOfaction) 
+    public view returns (address,bytes32,string,uint){
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeBatchIndex];
+        Action memory action = coffeeBatch.actions[_typeOfaction];
+        return (
+            action.processor,
+            action.typeOfAction,
+            action.additionalInformation,
+            action.timestamp
+        );
+    }
+
     function addCoffeeBatch(uint16 _altitude, bytes32 _variety, string _additionalInformation, uint _timestamp) public {
         Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
         //Fixes memory error that doesn't allow to create memory objects in structs
@@ -50,28 +68,14 @@ contract Coffee{
         emit LogAddCoffeeBatch(coffeeBatch.id);        
     }
 
-    function getCoffeeBatchActions(uint _coffeeBatchIndex) public view returns(bytes32[]){
-        CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchIndex];
-        return coffeeBatch.actionIds;
+    function addCoffeeBatchAction(uint _coffeeBatchId, bytes32 _typeOfAction,string _additionalInformation,uint _timestamp) public {
+        Action memory action = Action(msg.sender,_typeOfAction,_additionalInformation, _timestamp); 
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeBatchId];
+        coffeeBatch.actions[_typeOfAction] = action;
+        coffeeBatch.actionIds.push(_typeOfAction);
+        emit LogAddCoffeeBatchAction(coffeeBatch.id);   
     }
-
-    function getCoffeeBatchAction(uint _coffeeBatchIndex, bytes32 _typeOfaction) 
-    public view returns (address,bytes32,string,uint){
-        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeBatchIndex];
-        Action memory action = coffeeBatch.actions[_typeOfaction];
-        return (
-            action.processor,
-            action.typeOfAction,
-            action.additionalInformation,
-            action.timestamp
-        );
-    }
-
-
-
-    //add coffee batch
-
-    //Add Action
+    //TODO
     //Update Action
     //Update Actor 
     //Finish Process
