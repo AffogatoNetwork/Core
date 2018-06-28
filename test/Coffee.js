@@ -41,14 +41,21 @@ contract(Coffee,function(accounts){
             assert.equal(byteToString(coffeeBatch[2]), "Catuai Rojo", 'variety is equal to inserted');
             //Web3 Doesn't support array of structs so they skip it
             assert.equal(coffeeBatch[5], '{"size":"1","symbol":"QQ}');
-            return tokenInstance.getCoffeeBatchAction(0,0);
+        });
+    });
+
+    it('It handles Coffee Batch Actions',function(){
+        return Coffee.deployed().then(function(instance){
+            tokenInstance = instance;
+            return tokenInstance.getCoffeeBatchAction(0,"creation");
         }).then(function(action){
             assert.equal(action[0], accounts[0], 'address is equal to inserted');
             assert.equal(byteToString(action[1]), "creation", 'type of action is equal to inserted');
             assert.equal(action[2], '{"size":"1","symbol":"QQ}', 'additional information is equal to inserted');
             assert.equal(action[3], timeNow, 'address is equal to inserted');
-        });
-
-        //TODO Test change of actor
+            return tokenInstance.getCoffeeBatchActions(0);
+        }).then(function(actions){
+            assert.equal(byteToString(actions[0]), "creation", 'Current only action is creation');
+        }); 
     });
 });

@@ -3,14 +3,15 @@ pragma solidity ^0.4.23;
 contract Coffee{
 
     event LogAddCoffeeBatch(uint256 indexed _id);
-
+    //TODO: cambiar actions a un mapping 
     struct CoffeeBatch{
         uint256 id;
         uint16 altitude;
         bytes32 variety;
         bytes32 averageCupping; 
         bool isSold;
-        Action[] actions;
+        mapping(bytes32 => Action) actions;
+        bytes32[] actionIds;
         string additionalInformation;
     }
 
@@ -42,16 +43,22 @@ contract Coffee{
         coffeeBatch.variety = _variety;
         coffeeBatch.averageCupping = "";
         coffeeBatch.isSold = false;
-        coffeeBatch.actions.push(action);
+        coffeeBatch.actions["creation"] = action;
+        coffeeBatch.actionIds.push("creation");
         coffeeBatch.additionalInformation = _additionalInformation;
         //logs insert
         emit LogAddCoffeeBatch(coffeeBatch.id);        
     }
 
-    function getCoffeeBatchAction(uint _coffeeBatchIndex, uint _actionIndex) 
-    public view returns (address,bytes32,string,uint){
+    function getCoffeeBatchActions(uint _coffeeBatchIndex) public view returns(bytes32[]){
         CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchIndex];
-        Action memory action = coffeeBatch.actions[_actionIndex];
+        return coffeeBatch.actionIds;
+    }
+
+    function getCoffeeBatchAction(uint _coffeeBatchIndex, bytes32 _typeOfaction) 
+    public view returns (address,bytes32,string,uint){
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeBatchIndex];
+        Action memory action = coffeeBatch.actions[_typeOfaction];
         return (
             action.processor,
             action.typeOfAction,
@@ -59,6 +66,8 @@ contract Coffee{
             action.timestamp
         );
     }
+
+
 
     //add coffee batch
 
