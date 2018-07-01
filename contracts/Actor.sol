@@ -20,7 +20,7 @@ contract Actor is AffogatoNetwork {
         // @dev Latitude x10^10 where the Action is done.
         int lat;   
         // @dev Additional information about the Processor, generally as a JSON object
-        string additionalInformation; //story, owner, village, municipality;
+        string additionalInformation; //story, owner, village, municipality, experience
         
     }
 

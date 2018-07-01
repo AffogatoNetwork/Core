@@ -5,7 +5,7 @@ contract(Coffee,function(accounts){
     var timeNow;
     
     function byteToString(a){
-       return trimNull(web3.toAscii(a));
+       return trimNull(web3.toUtf8(a));
     }
 
     function trimNull(a) {
@@ -74,4 +74,36 @@ contract(Coffee,function(accounts){
             assert.equal(action[3], timeNow, 'time is equal to inserted');
         }); 
     });
+
+    it('It handles Coffee Batch Tasting',function(){
+        return Coffee.deployed().then(function(instance){
+            tokenInstance = instance;
+            timeNow = + new Date();
+            return tokenInstance.addCoffeeBatchTasting(0,'Floral Dulce','Naranja','Cítrica suave','Cremoso','Floral y entonante','90.0','{"notes":"Bebida agradable al paladar"}',timeNow,{from:accounts[1]});
+        }).then(function(receipt){
+			assert.equal(receipt.logs.length, 1, 'triggers one event');
+      		assert.equal(receipt.logs[0].event, 'LogAddCoffeeBatchTasting', 'should be the "LogAddCoffeeBatchTasting" event');
+            assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted address id');
+            return tokenInstance.getCoffeeBatchTasters(0);
+        }).then(function(tasters){
+            assert.equal(tasters[0], accounts[1],'taster needs to be the same');
+            return tokenInstance.getCoffeeBatchCupProfile(0,tasters[0]);
+        }).then(function(cupProfile){
+            assert.equal(byteToString(cupProfile[0]),'Floral Dulce','aroma is equal to inserted');
+            assert.equal(byteToString(cupProfile[1]),'Naranja','flavor is equal to inserted');
+            assert.equal(byteToString(cupProfile[2]),'Cítrica suave','acidity is equal to inserted');
+            assert.equal(byteToString(cupProfile[3]),'Cremoso','body is equal to inserted');
+            assert.equal(byteToString(cupProfile[4]),'Floral y entonante','after taste is equal to inserted');
+            assert.equal(cupProfile[5],'90.0','cupping note is equal to inserted');
+            assert.equal(cupProfile[6],'{"notes":"Bebida agradable al paladar"}','additional Data is equal to inserted');
+            assert.equal(cupProfile[7], timeNow, 'time is equal to inserted');
+            timeNow = + new Date();
+            return tokenInstance.addCoffeeBatchTasting(0,'Floral Dulce','Naranja y mandarina','Cítrica suave','Cremoso','Floral y persistente','92.0','{"notes":"Muy buena"}',timeNow,{from:accounts[2]});
+        }).then(function(receipt){
+            return tokenInstance.getTastersCount(0);
+        }).then(function(count){
+            assert.equal(count,2, 'Tasters size increase');
+        }); 
+    });
+
 });
