@@ -1,4 +1,4 @@
-var AffogatoNetwork = artifacts.require("./AffogatoNetwork.sol");
+/*var AffogatoNetwork = artifacts.require("./AffogatoNetwork.sol");
 
 contract(AffogatoNetwork,function(accounts){
 	var tokenInstance;
@@ -10,7 +10,7 @@ contract(AffogatoNetwork,function(accounts){
 		}).then(function(count){
 			assert.equal(count,0,"Count is initialized with 0");
 		});
-	});*/
+	});
 
 	it('Inserts and returns a Producer',function(){
 		return AffogatoNetwork.deployed().then(function(instance){
@@ -322,4 +322,4 @@ contract(AffogatoNetwork,function(accounts){
       		assert.equal(receipt.logs[0].args._grainSize, "12", 'logs the grainSize complete');
 		});
 	});
-});
+});*/

@@ -1,5 +1,7 @@
-var AffogatoNetwork = artifacts.require("./AffogatoNetwork.sol");
+var Actor = artifacts.require("./Actor.sol");
+var Coffee = artifacts.require("./Coffee.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(AffogatoNetwork);
+  deployer.deploy(Actor);
+  deployer.deploy(Coffee);
 };
