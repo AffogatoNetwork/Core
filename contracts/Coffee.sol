@@ -18,7 +18,7 @@ contract Coffee{
         address[] tasters;
         string additionalInformation;
     }
-
+    
     struct Action{
         //@dev address of the individual or the organization who realizes the action.
         address processor;
@@ -156,4 +156,5 @@ contract Coffee{
     //Handle same action
     //Update Action
     //Finish Process
+    
 } 

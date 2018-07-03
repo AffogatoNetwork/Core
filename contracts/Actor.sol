@@ -20,8 +20,7 @@ contract Actor is AffogatoNetwork {
         // @dev Latitude x10^10 where the Action is done.
         int lat;   
         // @dev Additional information about the Processor, generally as a JSON object
-        string additionalInformation; //story, owner, village, municipality, experience
-        
+        string additionalInformation; //story, owner, village, municipality, experience    
     }
 
     mapping(address => Processor) public addressToProcessor;
@@ -46,7 +45,7 @@ contract Actor is AffogatoNetwork {
         processorIds.push(_owner);
         emit LogAddProcessor(processorIds.length - 1);
     }
-
+    // Logear updates para que siempre se mantengan los datos (puede ser viendo bloques pasados)
     function updateProcessor(
         address _owner,
         bytes32 _name, 
