@@ -5,6 +5,7 @@ contract Coffee{
     event LogAddCoffeeBatch(uint256 indexed _id);
     event LogAddCoffeeBatchAction(uint256 indexed _id);
     event LogAddCoffeeBatchTasting(uint256 indexed _id);
+    event LogAddCoffeeBatchCertficate(uint256 indexed _id);
      
     struct CoffeeBatch{
         uint256 id;
@@ -16,7 +17,9 @@ contract Coffee{
         bytes32[] actionIds;
         mapping(address => CupProfile) cupProfiles;
         address[] tasters;
+        Certificate[] certificates;
         string additionalInformation;
+        
     }
     
     struct Action{
@@ -40,6 +43,14 @@ contract Coffee{
         uint timestamp;
     }
 
+    struct Certificate{
+        address certifier;
+        bytes32 typeOfCertificate; 
+        string additionalInformation;
+        // @dev Instant of time when the Action is done.
+        uint timestamp;
+    }
+
     CoffeeBatch[] public coffeeBatches;
    // mapping(uint256 => CoffeeBatch) coffeeBatches;
    // uint256[] coffeeBatchIds;
@@ -48,8 +59,12 @@ contract Coffee{
         return coffeeBatches.length;
     }
 
-    function getTastersCount(uint _id) public view returns(uint count) {
+    function getCoffeeBatchTastersCount(uint _id) public view returns(uint count) {
         return coffeeBatches[_id].tasters.length;
+    }
+
+    function getCoffeeBatchCertificatesCount(uint _id) public view returns(uint count) {
+        return coffeeBatches[_id].certificates.length;
     }
 
     function getCoffeeBatchActions(uint _coffeeBatchIndex) public view returns(bytes32[]){
@@ -72,6 +87,23 @@ contract Coffee{
     function getCoffeeBatchTasters(uint _coffeeBatchIndex) public view returns(address[]){
         CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchIndex];
         return coffeeBatch.tasters;
+    }
+
+    function getCoffeeBatchCertificate(uint _coffeeBatchIndex, uint _certificateId) 
+    public view returns(
+        address,
+        bytes32,
+        string,
+        uint
+    ){
+        CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchIndex];
+        Certificate memory certificate = coffeeBatch.certificates[_certificateId];
+        return(
+            certificate.certifier,
+            certificate.typeOfCertificate,
+            certificate.additionalInformation,
+            certificate.timestamp
+        );
     }
 
     function getCoffeeBatchCupProfile(uint _coffeeBatchIndex, address _taster) public view returns(
@@ -151,6 +183,19 @@ contract Coffee{
         coffeeBatch.tasters.push(msg.sender); 
         emit LogAddCoffeeBatchTasting(coffeeBatch.id); 
     }
+
+    function addCoffeeBatchCertificate(
+        uint _coffeeBatchId,
+        bytes32 _typeOfCertificate,
+        string _additionalInformation,
+        uint _timestamp
+    ) public {
+        Certificate memory certificate = Certificate(msg.sender, _typeOfCertificate, _additionalInformation, _timestamp);
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeBatchId];
+        coffeeBatch.certificates.push(certificate);
+        emit LogAddCoffeeBatchCertficate(coffeeBatch.id); 
+    }
+
 
     //TODO
     //Handle same action

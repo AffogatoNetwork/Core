@@ -44,7 +44,7 @@ contract(Coffee,function(accounts){
         });
     });
 
-    it('It handles Coffee Batch Actions',function(){
+    it('Handles Coffee Batch Actions',function(){
         return Coffee.deployed().then(function(instance){
             tokenInstance = instance;
             return tokenInstance.getCoffeeBatchAction(0,"creation");
@@ -75,7 +75,7 @@ contract(Coffee,function(accounts){
         }); 
     });
 
-    it('It handles Coffee Batch Tasting',function(){
+    it('Handles Coffee Batch Tasting',function(){
         return Coffee.deployed().then(function(instance){
             tokenInstance = instance;
             timeNow = + new Date();
@@ -100,10 +100,30 @@ contract(Coffee,function(accounts){
             timeNow = + new Date();
             return tokenInstance.addCoffeeBatchTasting(0,'Floral Dulce','Naranja y mandarina','Cítrica suave','Cremoso','Floral y persistente','92.0','{"notes":"Muy buena"}',timeNow,{from:accounts[2]});
         }).then(function(receipt){
-            return tokenInstance.getTastersCount(0);
+            return tokenInstance.getCoffeeBatchTastersCount(0);
         }).then(function(count){
             assert.equal(count,2, 'Tasters size increase');
         }); 
     });
 
+    it('Handles Coffee Batch Certificates', function(){
+        return Coffee.deployed().then(function(instance){
+            tokenInstance = instance;
+            timeNow = + new Date();
+            return tokenInstance.addCoffeeBatchCertificate(0,'Denominación de origen Marcala','{"notes":"Paso todas las pruebas de catación, análisis de suelo."}',timeNow,{from:accounts[1]});
+        }).then(function(receipt){
+            assert.equal(receipt.logs.length, 1, 'triggers one event');
+      		assert.equal(receipt.logs[0].event, 'LogAddCoffeeBatchCertficate', 'should be the "LogAddCoffeeBatchCertficate" event');
+            assert.equal(receipt.logs[0].args._id.toNumber(), 0, 'logs the inserted address id');
+            return tokenInstance.getCoffeeBatchCertificatesCount(0);
+        }).then(function(count){
+            assert.equal(count,1,'certificates number equal to 1');
+            return tokenInstance.getCoffeeBatchCertificate(0,0);
+        }).then(function(certificate){
+            assert.equal(certificate[0],accounts[1],'address is equal to inserted');
+            assert.equal(byteToString(certificate[1]), "Denominación de origen Marcala", 'type of certificate is equal to inserted');
+            assert.equal(certificate[2], '{"notes":"Paso todas las pruebas de catación, análisis de suelo."}', 'additional information is equal to inserted');
+            assert.equal(certificate[3], timeNow, 'time is equal to inserted');
+        });
+    });
 });
