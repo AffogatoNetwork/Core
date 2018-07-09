@@ -9,3 +9,6 @@ script:
 - sleep 5
 - truffle migrate 
 - truffle test
+
+notifications:
+  slack: affogatonetwork:WKER9ofwwM1n1TsMJHL9QXnm
