@@ -1,6 +1,8 @@
 # Affogato Network
 Affogato Network Smart Contract for building a Coffee Economy on Ethereum
 
+[![Build Status](https://travis-ci.com/crisgarner/affogato.svg?token=iyjjdAsC583CYX8hJTmX&branch=master)](https://travis-ci.com/crisgarner/affogato)
+
 ## Getting Started
 
 Clone the project on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
