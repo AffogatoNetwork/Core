@@ -30,6 +30,28 @@ contract Actor is AffogatoNetwork {
         return processorIds.length;
     }
 
+    function isAccountOwner() public view returns(
+        bytes32 _name, 
+        bytes32 _typeOfProcessor, 
+        bytes32 _department, 
+        bytes32 _country, 
+        int _lon, 
+        int _lat, 
+        string _additionalInformation
+    ){
+        require(addressToProcessor[msg.sender].processorAddress != 0);
+        Processor memory processor = addressToProcessor[msg.sender];
+        return (
+            processor.name,
+            processor.typeOfProcessor,
+            processor.department,
+            processor.country,
+            processor.lon,
+            processor.lat,
+            processor.additionalInformation
+        );
+    }
+
     function addProcessor(
         address _owner,
         bytes32 _name, 

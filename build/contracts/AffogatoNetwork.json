@@ -1,24 +1,24 @@
 {
   "contractName": "AffogatoNetwork",
   "abi": [],
-  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058202427c42e61ee30c14c3630f71dcf0e00ea68a239bf903665395bdccf0df2e4a10029",
-  "deployedBytecode": "0x6080604052600080fd00a165627a7a723058202427c42e61ee30c14c3630f71dcf0e00ea68a239bf903665395bdccf0df2e4a10029",
-  "sourceMap": "55:12464:2:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;55:12464:2;;;;;;;",
-  "deployedSourceMap": "55:12464:2:-;;;;;",
-  "source": "pragma solidity ^0.4.23;\nimport \"./CupProfiling.sol\";\n\ncontract AffogatoNetwork{\n/*\n  //Producers are the owner of the farms\n  struct Producer{\n    uint256 id;\n    address owner;\n    string producerName;\n    string history;\n    uint256[] farms; //IDs of ownerd farms\n  }\n  //Processors are actors who do process for farmers with no resources\n  struct Processor{\n    uint256 id;\n    address owner;\n    string name;\n    string typeOfProcessor; //Beneficio, Cooperativa, Finca\n    string village;\n    string municipality;\n    string department;\n    string country;\n  }\n\n  //Farm where coffee batches are produced\n  struct Farm{\n    uint256 id;\n    uint256 producerId;\n    string farmName;\n    string village;\n    string municipality;\n    string department;\n    string country;\n    uint256[] coffeeBatches; //IDs of Coffee Batches\n  }\n\n  //Start of Coffee Process\n  //The size of the batch gets reduced in each step\n  //First you cut the cherry in the farm\n  struct Cut{\n    uint256 finalBatchSize; \n    bool isProcessComplete;\n    //TODO: Sell price - Cereza\n  }\n\n  //Then you depulp it\n  struct Depulped{\n    uint256 processorId;\n    uint256 finalBatchSize;\n    bool isProcessedByFarm; \n    bool isProcessComplete;\n    address owner;\n  }\n\n  //Then you Ferment it\n  struct Fermented{\n    uint256 processorId;\n    uint256 finalBatchSize;\n    bool isProcessedByFarm;\n    string typeOfFermented;\n    bool isProcessComplete;\n    address owner;\n  }\n\n  //Then you wash it\n  struct Washed{\n    uint256 processorId;\n    uint256 finalBatchSize;\n    bool isProcessedByFarm;\n    bool isProcessComplete;\n    address owner;\n    //Sell Price - Humedo\n  }\n\n  //Then you dry it\n  struct Drying{\n    uint256 processorId;\n    uint256 finalBatchSize;\n    bool isProcessedByFarm;\n    string typeOfDrying;\n    bool isProcessComplete;\n    address owner;\n    //TODO: Sell Price - Pergamino Seco\n  }\n\n  //Then you trite it\n  struct Trite{\n    uint256 processorId;\n    uint256 finalBatchSize;\n    bool isProcessedByFarm;\n    bool isProcessComplete;\n    address owner;\n    //TODO: Sell Price - Oro\n  }\n\n  //Then you export it or roast it\n\n  // End of Coffee Process\n\n  struct CoffeeBatch {\n    uint256 id;\n    uint256 farmId;\n    uint256 altitude;\n    string process;\n    string variety;\n    Cut cut;\n    Depulped depulped;\n    Fermented fermented;\n    Washed washed;\n    Drying drying;\n    Trite trite;\n    CupProfile cupProfile;\n  }\n\n  Producer[] public producers;\n  Farm[] public farms;\n  Processor[] public processors;\n  CoffeeBatch[] public coffeeBatches;\n \n\n  //Event Definition\n  event AddProducer(uint256 indexed _id);\n  event AddFarm(uint256 indexed _id);\n  event AddCoffeeBatch(uint256 indexed _id);\n  event AddProcessor(uint256 indexed _id);\n  event UpdateCoffeeBatchCut(uint256 indexed _batchId);\n  event UpdateCoffeeBatchDepulped(uint256 indexed _batchId);\n  event UpdateCoffeeBatchFermented(uint256 indexed _batchId);\n  event UpdateCoffeeBatchWashed(uint256 indexed _batchId);\n  event UpdateCoffeeBatchDrying(uint256 indexed _batchId);\n  event UpdateCoffeeBatchTrite(uint256 indexed _batchId);\n  event UpdateCupProfile(uint256 indexed _batchId);\n\n  //Constructor, initialices the values\n  constructor() public{\n    admin = msg.sender;\n  }\n\n  //Inserts Producer and emits AddProducer event\n  function addProducer(string _producerName, string _history) public {\n    require(!isEmpty(_producerName) && !isEmpty(_history));\n    uint currentId = producers.length;\n    Producer memory producer = Producer(currentId,msg.sender, _producerName,_history, new uint[](0)); \n    producers.push(producer);  \n    emit AddProducer(currentId);\n  }\n\n  //Inserts Farm and emits AddFarm event\n  function addProcessor(\n    string _name,\n    string _typeOfProcessor,\n    string _village,\n    string _municipality,\n    string _department,\n    string _country\n  ) public {\n    require(!isEmpty(_typeOfProcessor) && !isEmpty(_name) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_department) && !isEmpty(_country));\n    uint currentId = processors.length;\n    Processor memory processor = Processor(currentId, msg.sender, _name, _typeOfProcessor, _village, _municipality, _department, _country); \n    processors.push(processor);  \n    emit AddProcessor(currentId);\n  }\n\n  //Inserts Batch of coffee, updates farm batches and emits AddCoffeeBatch event\n  function addCoffeeBatch(\n    uint256 _farmId,\n    uint256 _altitude,\n    string _process,\n    string _variety\n  ) public {\n\n    require(farms.length >= _farmId);\n    require(!isEmpty(_process) && !isEmpty(_variety));\n\n    uint currentId = coffeeBatches.length;\n    \n    //initialices empty structs\n    Cut memory cut = Cut(0,false);\n    Depulped memory depulped = Depulped(0,0,false,false,0x0);\n    Fermented memory fermented = Fermented(0,0,false,\"\",false,0x0);\n    Washed memory washed = Washed(0,0,false,false,0x0);\n    Drying memory drying = Drying(0,0,false,\"\",false,0x0);\n    Trite memory trite = Trite(0,0,false,false,0x0);\n    CupProfile memory cupProfile = CupProfile(\"\",\"\",\"\",\"\",\"\", new string[](0),\"\",\"\", new address[](0));\n    CoffeeBatch memory coffeeBatch = CoffeeBatch(currentId, _farmId, _altitude, _process, _variety, cut, depulped, fermented, washed, drying,trite,cupProfile);\n    coffeeBatches.push(coffeeBatch);\n    farms[_farmId].coffeeBatches.push(currentId);\n    emit AddCoffeeBatch(currentId);\n  }\n\n  function getCoffeeBatchInfo(uint _index) public constant \n  returns(uint256,uint256,uint256,string,string) {\n    CoffeeBatch memory coffeeBatch = coffeeBatches[_index];\n    return(coffeeBatch.id,\n      coffeeBatch.farmId, \n      coffeeBatch.altitude, \n      coffeeBatch.process, \n      coffeeBatch.variety\n    );\n  }\n\n  function getCoffeeBatchCut(uint _index) public constant \n  returns(uint256,bool) {\n    Cut memory cut = coffeeBatches[_index].cut;\n    return(cut.finalBatchSize, \n        cut.isProcessComplete\n    );\n  }\n\n  function updateCoffeeBatchCut(uint _index, uint256 _finalBatchSize, bool _isProcessComplete) public { \n    require(coffeeBatches.length >= _index);\n\n    Cut storage cut = coffeeBatches[_index].cut;\n    cut.finalBatchSize = _finalBatchSize;\n    cut.isProcessComplete = _isProcessComplete;\n    emit UpdateCoffeeBatchCut(_index);\n  }\n\n  function getCoffeeBatchDepulped(uint _index) public constant \n  returns(uint256,uint256,bool,bool) {\n    Depulped memory depulped = coffeeBatches[_index].depulped;\n    return( depulped.processorId, \n              depulped.finalBatchSize, \n              depulped.isProcessedByFarm, \n              depulped.isProcessComplete\n    );\n  }\n\n  function updateCoffeeBatchDepulped(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete) public { \n    require(coffeeBatches.length >= _index);\n    require(processors.length >= _processorId);\n\n    Depulped storage depulped = coffeeBatches[_index].depulped;\n    depulped.processorId = _processorId;\n    depulped.finalBatchSize = _finalBatchSize;\n    depulped.isProcessedByFarm = _isProcessedByFarm;\n    depulped.isProcessComplete = _isProcessComplete;\n\n    emit UpdateCoffeeBatchDepulped(_index);\n  }\n\n  function getCoffeeBatchFermented(uint _index) public constant \n  returns(uint256,uint256,bool,string,bool) {\n    Fermented memory fermented = coffeeBatches[_index].fermented;\n    return( fermented.processorId, \n              fermented.finalBatchSize, \n              fermented.isProcessedByFarm, \n              fermented.typeOfFermented,\n              fermented.isProcessComplete\n    );\n  }\n\n  function updateCoffeeBatchFermented(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, string _typeOfFermented, bool _isProcessComplete) public { \n    require(coffeeBatches.length >= _index);\n    require(processors.length >= _processorId);\n\n    Fermented storage fermented = coffeeBatches[_index].fermented;\n    fermented.processorId = _processorId;\n    fermented.finalBatchSize = _finalBatchSize;\n    fermented.isProcessedByFarm = _isProcessedByFarm;\n    fermented.typeOfFermented = _typeOfFermented;\n    fermented.isProcessComplete = _isProcessComplete;\n\n    emit UpdateCoffeeBatchFermented(_index);\n  }\n\n  function getCoffeeBatchWashed(uint _index) public constant \n  returns(uint256,uint256,bool,bool) {\n    Washed memory washed = coffeeBatches[_index].washed;\n    return( washed.processorId, \n              washed.finalBatchSize, \n              washed.isProcessedByFarm, \n              washed.isProcessComplete\n    );\n  }\n\n  function updateCoffeeBatchWashed(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete) public { \n    require(coffeeBatches.length >= _index);\n    require(processors.length >= _processorId);\n\n    Washed storage washed = coffeeBatches[_index].washed;\n    washed.processorId = _processorId;\n    washed.finalBatchSize = _finalBatchSize;\n    washed.isProcessedByFarm = _isProcessedByFarm;\n    washed.isProcessComplete = _isProcessComplete;\n\n    emit UpdateCoffeeBatchWashed(_index);\n  }\n\n  function getCoffeeBatchDrying(uint _index) public constant \n  returns(uint256,uint256,bool,string,bool) {\n    Drying memory drying = coffeeBatches[_index].drying;\n    return( drying.processorId, \n              drying.finalBatchSize, \n              drying.isProcessedByFarm, \n              drying.typeOfDrying,\n              drying.isProcessComplete\n    );\n  }\n\n  function updateCoffeeBatchDrying(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, string _typeOfDrying, bool _isProcessComplete) public { \n    require(coffeeBatches.length >= _index);\n    require(processors.length >= _processorId);\n\n    Drying storage drying = coffeeBatches[_index].drying;\n    drying.processorId = _processorId;\n    drying.finalBatchSize = _finalBatchSize;\n    drying.typeOfDrying = _typeOfDrying;\n    drying.isProcessedByFarm = _isProcessedByFarm;\n    drying.isProcessComplete = _isProcessComplete;\n\n    emit UpdateCoffeeBatchDrying(_index);\n  }\n\n  function getCoffeeBatchTrite(uint _index) public constant \n  returns(uint256,uint256,bool,bool) {\n    Trite memory trite = coffeeBatches[_index].trite;\n    return( trite.processorId, \n              trite.finalBatchSize, \n              trite.isProcessedByFarm, \n              trite.isProcessComplete\n    );\n  }\n\n  function updateCoffeeBatchTrite(uint _index, uint _processorId, uint256 _finalBatchSize, bool _isProcessedByFarm, bool _isProcessComplete) public { \n    require(coffeeBatches.length >= _index);\n    require(processors.length >= _processorId);\n\n    Trite storage trite = coffeeBatches[_index].trite;\n    trite.processorId = _processorId;\n    trite.finalBatchSize = _finalBatchSize;\n    trite.isProcessedByFarm = _isProcessedByFarm;\n    trite.isProcessComplete = _isProcessComplete;\n\n    emit UpdateCoffeeBatchTrite(_index);\n  }\n\n \n\n  function updateCupProfile(\n    uint _index,\n    string _frangance, \n    string _flavor, \n    string _acidity, \n    string _body, \n    string _defects, \n    string _grainSize\n  ) public { \n    require(coffeeBatches.length >= _index);\n\n    CupProfile storage cupProfile = coffeeBatches[_index].cupProfile;\n    cupProfile.frangance = _frangance;\n    cupProfile.flavor = _flavor;\n    cupProfile.acidity = _acidity;\n    cupProfile.body = _body;\n    cupProfile.defects = _defects;\n    cupProfile.grainSize = _grainSize;\n\n    emit UpdateCupProfile(_index);\n  }\n\n  //Inserts Farm and emits AddFarm event\n  function addFarm(\n    uint _producerId,\n    string _farmName,\n    string _village,\n    string _municipality,\n    string _department,\n    string _country\n  ) public {\n    require(producers.length >= _producerId);\n    require(!isEmpty(_farmName) && !isEmpty(_village) && !isEmpty(_municipality) && !isEmpty(_country));\n\n    uint currentId = farms.length;\n    Farm memory farm = Farm(currentId, _producerId, _farmName, _village, _municipality, _department, _country, new uint[](0)); \n    farms.push(farm);  \n    producers[_producerId].farms.push(currentId);\n\n    emit AddFarm(currentId);\n  }\n\n  //Gets Producer Farms \n  function getProducerFarms(uint256 _index) public view returns (uint256[]) {\n    return producers[_index].farms;\n  }\n\n  //Gets farm batches\n  function getFarmBatches(uint256 _index) public view returns (uint256[]) {\n    return farms[_index].coffeeBatches;\n  }\n\n\n  function isEmpty(string _empty) internal pure returns (bool){\n    bytes memory tempEmptyString = bytes(_empty); // Uses memory\n    if (tempEmptyString.length == 0) {\n      return true;\n    } else {\n      return false;\n    }\n  }\n  */\n}",
-  "sourcePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetworkold.sol",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058208644d8c27d5d40ed9ac135ade806fd8455347e67dc6ff30b26eaec95c32e914e0029",
+  "deployedBytecode": "0x6080604052600080fd00a165627a7a723058208644d8c27d5d40ed9ac135ade806fd8455347e67dc6ff30b26eaec95c32e914e0029",
+  "sourceMap": "26:334:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:334:1;;;;;;;",
+  "deployedSourceMap": "26:334:1:-;;;;;",
+  "source": "pragma solidity ^0.4.23;\n\ncontract AffogatoNetwork{\n    //Sell Coffee Batch\n    // Util Function\n    function isEmpty(string _empty) internal pure returns (bool){\n        bytes memory tempEmptyString = bytes(_empty); // Uses memory\n        if (tempEmptyString.length == 0) {\n            return true;\n        } else {\n            return false;\n        }\n    }\n}",
+  "sourcePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetwork.sol",
   "ast": {
-    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetworkold.sol",
+    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetwork.sol",
     "exportedSymbols": {
       "AffogatoNetwork": [
-        186
+        258
       ]
     },
-    "id": 187,
+    "id": 259,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 184,
+        "id": 232,
         "literals": [
           "solidity",
           "^",
@@ -26,18 +26,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:2"
-      },
-      {
-        "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/CupProfiling.sol",
-        "file": "./CupProfiling.sol",
-        "id": 185,
-        "nodeType": "ImportDirective",
-        "scope": 187,
-        "sourceUnit": 228,
-        "src": "25:28:2",
-        "symbolAliases": [],
-        "unitAlias": ""
+        "src": "0:24:1"
       },
       {
         "baseContracts": [],
@@ -45,31 +34,341 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 186,
+        "id": 258,
         "linearizedBaseContracts": [
-          186
+          258
         ],
         "name": "AffogatoNetwork",
         "nodeType": "ContractDefinition",
-        "nodes": [],
-        "scope": 187,
-        "src": "55:12464:2"
+        "nodes": [
+          {
+            "body": {
+              "id": 256,
+              "nodeType": "Block",
+              "src": "161:197:1",
+              "statements": [
+                {
+                  "assignments": [
+                    240
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 240,
+                      "name": "tempEmptyString",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 257,
+                      "src": "171:28:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes_memory_ptr",
+                        "typeString": "bytes"
+                      },
+                      "typeName": {
+                        "id": 239,
+                        "name": "bytes",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "171:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_storage_ptr",
+                          "typeString": "bytes"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 244,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 242,
+                        "name": "_empty",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 234,
+                        "src": "208:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      ],
+                      "id": 241,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "nodeType": "ElementaryTypeNameExpression",
+                      "src": "202:5:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_bytes_storage_ptr_$",
+                        "typeString": "type(bytes storage pointer)"
+                      },
+                      "typeName": "bytes"
+                    },
+                    "id": 243,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "typeConversion",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "202:13:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_memory",
+                      "typeString": "bytes memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "171:44:1"
+                },
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 248,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 245,
+                        "name": "tempEmptyString",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 240,
+                        "src": "244:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_memory_ptr",
+                          "typeString": "bytes memory"
+                        }
+                      },
+                      "id": 246,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "244:22:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "30",
+                      "id": 247,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "270:1:1",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "src": "244:27:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": {
+                    "id": 254,
+                    "nodeType": "Block",
+                    "src": "315:37:1",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "hexValue": "66616c7365",
+                          "id": 252,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "bool",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "336:5:1",
+                          "subdenomination": null,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "value": "false"
+                        },
+                        "functionReturnParameters": 238,
+                        "id": 253,
+                        "nodeType": "Return",
+                        "src": "329:12:1"
+                      }
+                    ]
+                  },
+                  "id": 255,
+                  "nodeType": "IfStatement",
+                  "src": "240:112:1",
+                  "trueBody": {
+                    "id": 251,
+                    "nodeType": "Block",
+                    "src": "273:36:1",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "hexValue": "74727565",
+                          "id": 249,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "bool",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "294:4:1",
+                          "subdenomination": null,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "value": "true"
+                        },
+                        "functionReturnParameters": 238,
+                        "id": 250,
+                        "nodeType": "Return",
+                        "src": "287:11:1"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 257,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "isEmpty",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 235,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 234,
+                  "name": "_empty",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 257,
+                  "src": "118:13:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 233,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "118:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "117:15:1"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 238,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 237,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 257,
+                  "src": "156:4:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 236,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "156:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "155:6:1"
+            },
+            "scope": 258,
+            "src": "101:257:1",
+            "stateMutability": "pure",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 259,
+        "src": "26:334:1"
       }
     ],
-    "src": "0:12519:2"
+    "src": "0:360:1"
   },
   "legacyAST": {
-    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetworkold.sol",
+    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetwork.sol",
     "exportedSymbols": {
       "AffogatoNetwork": [
-        186
+        258
       ]
     },
-    "id": 187,
+    "id": 259,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 184,
+        "id": 232,
         "literals": [
           "solidity",
           "^",
@@ -77,18 +376,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:2"
-      },
-      {
-        "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/CupProfiling.sol",
-        "file": "./CupProfiling.sol",
-        "id": 185,
-        "nodeType": "ImportDirective",
-        "scope": 187,
-        "sourceUnit": 228,
-        "src": "25:28:2",
-        "symbolAliases": [],
-        "unitAlias": ""
+        "src": "0:24:1"
       },
       {
         "baseContracts": [],
@@ -96,18 +384,328 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 186,
+        "id": 258,
         "linearizedBaseContracts": [
-          186
+          258
         ],
         "name": "AffogatoNetwork",
         "nodeType": "ContractDefinition",
-        "nodes": [],
-        "scope": 187,
-        "src": "55:12464:2"
+        "nodes": [
+          {
+            "body": {
+              "id": 256,
+              "nodeType": "Block",
+              "src": "161:197:1",
+              "statements": [
+                {
+                  "assignments": [
+                    240
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 240,
+                      "name": "tempEmptyString",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 257,
+                      "src": "171:28:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes_memory_ptr",
+                        "typeString": "bytes"
+                      },
+                      "typeName": {
+                        "id": 239,
+                        "name": "bytes",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "171:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_storage_ptr",
+                          "typeString": "bytes"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 244,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 242,
+                        "name": "_empty",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 234,
+                        "src": "208:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      ],
+                      "id": 241,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "nodeType": "ElementaryTypeNameExpression",
+                      "src": "202:5:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_bytes_storage_ptr_$",
+                        "typeString": "type(bytes storage pointer)"
+                      },
+                      "typeName": "bytes"
+                    },
+                    "id": 243,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "typeConversion",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "202:13:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_memory",
+                      "typeString": "bytes memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "171:44:1"
+                },
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 248,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 245,
+                        "name": "tempEmptyString",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 240,
+                        "src": "244:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_memory_ptr",
+                          "typeString": "bytes memory"
+                        }
+                      },
+                      "id": 246,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "244:22:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "30",
+                      "id": 247,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "270:1:1",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "src": "244:27:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": {
+                    "id": 254,
+                    "nodeType": "Block",
+                    "src": "315:37:1",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "hexValue": "66616c7365",
+                          "id": 252,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "bool",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "336:5:1",
+                          "subdenomination": null,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "value": "false"
+                        },
+                        "functionReturnParameters": 238,
+                        "id": 253,
+                        "nodeType": "Return",
+                        "src": "329:12:1"
+                      }
+                    ]
+                  },
+                  "id": 255,
+                  "nodeType": "IfStatement",
+                  "src": "240:112:1",
+                  "trueBody": {
+                    "id": 251,
+                    "nodeType": "Block",
+                    "src": "273:36:1",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "hexValue": "74727565",
+                          "id": 249,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "bool",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "294:4:1",
+                          "subdenomination": null,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "value": "true"
+                        },
+                        "functionReturnParameters": 238,
+                        "id": 250,
+                        "nodeType": "Return",
+                        "src": "287:11:1"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 257,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "isEmpty",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 235,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 234,
+                  "name": "_empty",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 257,
+                  "src": "118:13:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 233,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "118:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "117:15:1"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 238,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 237,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 257,
+                  "src": "156:4:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 236,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "156:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "155:6:1"
+            },
+            "scope": 258,
+            "src": "101:257:1",
+            "stateMutability": "pure",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 259,
+        "src": "26:334:1"
       }
     ],
-    "src": "0:12519:2"
+    "src": "0:360:1"
   },
   "compiler": {
     "name": "solc",
@@ -133,6 +731,6 @@
       "transactionHash": "0x81819f96ccff5f19a52efb078600b4f60e57f66c80cad4ff20aee352da8dd05a"
     }
   },
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2018-06-26T01:47:13.197Z"
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-07-28T00:40:08.344Z"
 }
