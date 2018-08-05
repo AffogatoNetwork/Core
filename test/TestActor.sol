@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
-import "truffle/Assert.sol";
-import "truffle/DeployedAddresses.sol";
+/* solium-disable-next-line */
+import "truffle/Assert.sol";   // solium-disable-line 
+import "truffle/DeployedAddresses.sol"; 
 import "../contracts/Actor.sol";
 
 contract TestActor {

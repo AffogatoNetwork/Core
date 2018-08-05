@@ -84,7 +84,7 @@ contract(Actor, function(accounts) {
     return Actor.deployed()
       .then(function(instance) {
         tokenInstance = instance;
-        return tokenInstance.isAccountOwner({ from: accounts[1] });
+        return tokenInstance.isAccountOwner.call({ from: accounts[1] });
       })
       .then(function(processor) {
         assert.equal(
@@ -178,5 +178,66 @@ contract(Actor, function(accounts) {
           '{"story":"Tostaduría de Café Especial, donde se sirve el mejor café de la ciudad.","experience":"Specialty Coffee Association of America Certificate","website":"https://www.facebook.com/cafetanohn/"}'
         );
       });
+  });
+
+  it("Adds a farm ", function() {
+    return Actor.deployed().then(function(instance) {
+      tokenInstance = instance;
+      return tokenInstance
+        .addFarm(
+          "Los Encinos",
+          "Honduras",
+          "Francisco Morazan",
+          "Santa Lucia",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "{}"
+        )
+        .then(function(receipt) {
+          assert.equal(receipt.logs.length, 1, "triggers one event");
+          assert.equal(
+            receipt.logs[0].event,
+            "LogAddFarm",
+            'should be the "LogAddFarm" event'
+          );
+          assert.equal(
+            receipt.logs[0].args._id.toNumber(),
+            0,
+            "logs the inserted farm id"
+          );
+          return tokenInstance.getFarm.call(accounts[0], 0);
+        })
+        .then(function(farm) {
+          assert.equal(
+            byteToString(farm[0]),
+            "Los Encinos",
+            "name equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[1]),
+            "Honduras",
+            "country equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[2]),
+            "Francisco Morazan",
+            "department equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[3]),
+            "Santa Lucia",
+            "village equal to inserted"
+          );
+          assert.equal(
+            farm[4],
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "story equal to inserted"
+          );
+          assert.equal(
+            farm[5],
+            "{}",
+            "Additional Information equal to inserted"
+          );
+        });
+    });
   });
 });

@@ -6,6 +6,7 @@ contract Actor is AffogatoNetwork {
 
     event LogAddProcessor(uint256 indexed _id);
     event LogUpdateProcessor(uint256 indexed _id);
+    event LogAddFarm(uint256 indexed _id);
 
     struct Processor {
         address processorAddress;
@@ -23,12 +24,25 @@ contract Actor is AffogatoNetwork {
         string additionalInformation; //story, owner, village, municipality, experience    
     }
 
+    struct Farm{
+        bytes32 name;
+        bytes32 country;
+        bytes32 department;
+        bytes32 village; 
+        string story;
+        string additionalInformation; //lat, lon
+    }
+
     mapping(address => Processor) public addressToProcessor;
     address[] public processorIds;
+
+    mapping(address => Farm[]) public addressToFarms;
+    address[] public processorsWithFarm;
 
     function getCount() public view returns(uint count) {
         return processorIds.length;
     }
+    
 
     function isAccountOwner() public view returns(
         bytes32 _name, 
@@ -49,6 +63,26 @@ contract Actor is AffogatoNetwork {
             processor.lon,
             processor.lat,
             processor.additionalInformation
+        );
+    }
+
+//TODO: Require isn't greater than count
+    function getFarm(address _owner, uint _index) public view returns(
+        bytes32, 
+        bytes32, 
+        bytes32, 
+        bytes32, 
+        string,
+        string
+        ){
+        Farm memory farm = addressToFarms[_owner][_index];
+        return(
+            farm.name,
+            farm.country,
+            farm.department,
+            farm.village,
+            farm.story,
+            farm.additionalInformation
         );
     }
 
@@ -89,4 +123,20 @@ contract Actor is AffogatoNetwork {
         addressToProcessor[_owner] = processor;
         emit LogUpdateProcessor(processorIds.length - 1);
     }
+
+    function addFarm(
+        bytes32 _name, 
+        bytes32 _country, 
+        bytes32 _department, 
+        bytes32 _village, 
+        string _story,
+        string _additionalInformation
+    ) public {
+        Farm memory farm = Farm(_name,_country,_department,_village,_story,_additionalInformation);
+        addressToFarms[msg.sender].push(farm);
+        processorsWithFarm.push(msg.sender);
+        emit LogAddFarm(addressToFarms[msg.sender].length - 1);
+    }
+
+    
 }

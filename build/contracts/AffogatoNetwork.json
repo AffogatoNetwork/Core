@@ -11,14 +11,14 @@
     "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetwork.sol",
     "exportedSymbols": {
       "AffogatoNetwork": [
-        258
+        377
       ]
     },
-    "id": 259,
+    "id": 378,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 232,
+        "id": 351,
         "literals": [
           "solidity",
           "^",
@@ -34,30 +34,30 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 258,
+        "id": 377,
         "linearizedBaseContracts": [
-          258
+          377
         ],
         "name": "AffogatoNetwork",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 256,
+              "id": 375,
               "nodeType": "Block",
               "src": "161:197:1",
               "statements": [
                 {
                   "assignments": [
-                    240
+                    359
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 240,
+                      "id": 359,
                       "name": "tempEmptyString",
                       "nodeType": "VariableDeclaration",
-                      "scope": 257,
+                      "scope": 376,
                       "src": "171:28:1",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -66,7 +66,7 @@
                         "typeString": "bytes"
                       },
                       "typeName": {
-                        "id": 239,
+                        "id": 358,
                         "name": "bytes",
                         "nodeType": "ElementaryTypeName",
                         "src": "171:5:1",
@@ -79,17 +79,17 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 244,
+                  "id": 363,
                   "initialValue": {
                     "argumentTypes": null,
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 242,
+                        "id": 361,
                         "name": "_empty",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 234,
+                        "referencedDeclaration": 353,
                         "src": "208:6:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -104,7 +104,7 @@
                           "typeString": "string memory"
                         }
                       ],
-                      "id": 241,
+                      "id": 360,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -117,7 +117,7 @@
                       },
                       "typeName": "bytes"
                     },
-                    "id": 243,
+                    "id": 362,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -141,7 +141,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 248,
+                    "id": 367,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -150,18 +150,18 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 245,
+                        "id": 364,
                         "name": "tempEmptyString",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 240,
+                        "referencedDeclaration": 359,
                         "src": "244:15:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes_memory_ptr",
                           "typeString": "bytes memory"
                         }
                       },
-                      "id": 246,
+                      "id": 365,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -180,7 +180,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 247,
+                      "id": 366,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -202,7 +202,7 @@
                     }
                   },
                   "falseBody": {
-                    "id": 254,
+                    "id": 373,
                     "nodeType": "Block",
                     "src": "315:37:1",
                     "statements": [
@@ -210,7 +210,7 @@
                         "expression": {
                           "argumentTypes": null,
                           "hexValue": "66616c7365",
-                          "id": 252,
+                          "id": 371,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -225,18 +225,18 @@
                           },
                           "value": "false"
                         },
-                        "functionReturnParameters": 238,
-                        "id": 253,
+                        "functionReturnParameters": 357,
+                        "id": 372,
                         "nodeType": "Return",
                         "src": "329:12:1"
                       }
                     ]
                   },
-                  "id": 255,
+                  "id": 374,
                   "nodeType": "IfStatement",
                   "src": "240:112:1",
                   "trueBody": {
-                    "id": 251,
+                    "id": 370,
                     "nodeType": "Block",
                     "src": "273:36:1",
                     "statements": [
@@ -244,7 +244,7 @@
                         "expression": {
                           "argumentTypes": null,
                           "hexValue": "74727565",
-                          "id": 249,
+                          "id": 368,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -259,8 +259,8 @@
                           },
                           "value": "true"
                         },
-                        "functionReturnParameters": 238,
-                        "id": 250,
+                        "functionReturnParameters": 357,
+                        "id": 369,
                         "nodeType": "Return",
                         "src": "287:11:1"
                       }
@@ -270,7 +270,7 @@
               ]
             },
             "documentation": null,
-            "id": 257,
+            "id": 376,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -278,15 +278,15 @@
             "name": "isEmpty",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 235,
+              "id": 354,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 234,
+                  "id": 353,
                   "name": "_empty",
                   "nodeType": "VariableDeclaration",
-                  "scope": 257,
+                  "scope": 376,
                   "src": "118:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -295,7 +295,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 233,
+                    "id": 352,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "118:6:1",
@@ -312,15 +312,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 238,
+              "id": 357,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 237,
+                  "id": 356,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 257,
+                  "scope": 376,
                   "src": "156:4:1",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -329,7 +329,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 236,
+                    "id": 355,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "156:4:1",
@@ -344,14 +344,14 @@
               ],
               "src": "155:6:1"
             },
-            "scope": 258,
+            "scope": 377,
             "src": "101:257:1",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
-        "scope": 259,
+        "scope": 378,
         "src": "26:334:1"
       }
     ],
@@ -361,14 +361,14 @@
     "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/AffogatoNetwork.sol",
     "exportedSymbols": {
       "AffogatoNetwork": [
-        258
+        377
       ]
     },
-    "id": 259,
+    "id": 378,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 232,
+        "id": 351,
         "literals": [
           "solidity",
           "^",
@@ -384,30 +384,30 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 258,
+        "id": 377,
         "linearizedBaseContracts": [
-          258
+          377
         ],
         "name": "AffogatoNetwork",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 256,
+              "id": 375,
               "nodeType": "Block",
               "src": "161:197:1",
               "statements": [
                 {
                   "assignments": [
-                    240
+                    359
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 240,
+                      "id": 359,
                       "name": "tempEmptyString",
                       "nodeType": "VariableDeclaration",
-                      "scope": 257,
+                      "scope": 376,
                       "src": "171:28:1",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -416,7 +416,7 @@
                         "typeString": "bytes"
                       },
                       "typeName": {
-                        "id": 239,
+                        "id": 358,
                         "name": "bytes",
                         "nodeType": "ElementaryTypeName",
                         "src": "171:5:1",
@@ -429,17 +429,17 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 244,
+                  "id": 363,
                   "initialValue": {
                     "argumentTypes": null,
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 242,
+                        "id": 361,
                         "name": "_empty",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 234,
+                        "referencedDeclaration": 353,
                         "src": "208:6:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -454,7 +454,7 @@
                           "typeString": "string memory"
                         }
                       ],
-                      "id": 241,
+                      "id": 360,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -467,7 +467,7 @@
                       },
                       "typeName": "bytes"
                     },
-                    "id": 243,
+                    "id": 362,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -491,7 +491,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 248,
+                    "id": 367,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -500,18 +500,18 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 245,
+                        "id": 364,
                         "name": "tempEmptyString",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 240,
+                        "referencedDeclaration": 359,
                         "src": "244:15:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes_memory_ptr",
                           "typeString": "bytes memory"
                         }
                       },
-                      "id": 246,
+                      "id": 365,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -530,7 +530,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 247,
+                      "id": 366,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -552,7 +552,7 @@
                     }
                   },
                   "falseBody": {
-                    "id": 254,
+                    "id": 373,
                     "nodeType": "Block",
                     "src": "315:37:1",
                     "statements": [
@@ -560,7 +560,7 @@
                         "expression": {
                           "argumentTypes": null,
                           "hexValue": "66616c7365",
-                          "id": 252,
+                          "id": 371,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -575,18 +575,18 @@
                           },
                           "value": "false"
                         },
-                        "functionReturnParameters": 238,
-                        "id": 253,
+                        "functionReturnParameters": 357,
+                        "id": 372,
                         "nodeType": "Return",
                         "src": "329:12:1"
                       }
                     ]
                   },
-                  "id": 255,
+                  "id": 374,
                   "nodeType": "IfStatement",
                   "src": "240:112:1",
                   "trueBody": {
-                    "id": 251,
+                    "id": 370,
                     "nodeType": "Block",
                     "src": "273:36:1",
                     "statements": [
@@ -594,7 +594,7 @@
                         "expression": {
                           "argumentTypes": null,
                           "hexValue": "74727565",
-                          "id": 249,
+                          "id": 368,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -609,8 +609,8 @@
                           },
                           "value": "true"
                         },
-                        "functionReturnParameters": 238,
-                        "id": 250,
+                        "functionReturnParameters": 357,
+                        "id": 369,
                         "nodeType": "Return",
                         "src": "287:11:1"
                       }
@@ -620,7 +620,7 @@
               ]
             },
             "documentation": null,
-            "id": 257,
+            "id": 376,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -628,15 +628,15 @@
             "name": "isEmpty",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 235,
+              "id": 354,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 234,
+                  "id": 353,
                   "name": "_empty",
                   "nodeType": "VariableDeclaration",
-                  "scope": 257,
+                  "scope": 376,
                   "src": "118:13:1",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -645,7 +645,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 233,
+                    "id": 352,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "118:6:1",
@@ -662,15 +662,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 238,
+              "id": 357,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 237,
+                  "id": 356,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 257,
+                  "scope": 376,
                   "src": "156:4:1",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -679,7 +679,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 236,
+                    "id": 355,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "156:4:1",
@@ -694,14 +694,14 @@
               ],
               "src": "155:6:1"
             },
-            "scope": 258,
+            "scope": 377,
             "src": "101:257:1",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
-        "scope": 259,
+        "scope": 378,
         "src": "26:334:1"
       }
     ],
@@ -732,5 +732,5 @@
     }
   },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-28T00:40:08.344Z"
+  "updatedAt": "2018-08-05T04:02:47.557Z"
 }
