@@ -240,4 +240,63 @@ contract(Actor, function(accounts) {
         });
     });
   });
+
+  it("Updates farm ", function() {
+    return Actor.deployed()
+      .then(function(instance) {
+        tokenInstance = instance;
+        return tokenInstance.updateFarm(
+          accounts[0],
+          0,
+          "Los Encinos 2",
+          "Honduras 2",
+          "Francisco Morazan 2",
+          "Santa Lucia 2",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+          "{}"
+        );
+      })
+      .then(function(receipt) {
+        assert.equal(receipt.logs.length, 1, "triggers one event");
+        assert.equal(
+          receipt.logs[0].event,
+          "LogUpdateFarm",
+          'should be the "LogUpdateFarm" event'
+        );
+        assert.equal(
+          receipt.logs[0].args._id.toNumber(),
+          0,
+          "logs the updated farm id"
+        );
+        return tokenInstance.getFarm.call(accounts[0], 0);
+      })
+      .then(function(farm) {
+        assert.equal(
+          byteToString(farm[0]),
+          "Los Encinos 2",
+          "name equal to inserted"
+        );
+        assert.equal(
+          byteToString(farm[1]),
+          "Honduras 2",
+          "country equal to inserted"
+        );
+        assert.equal(
+          byteToString(farm[2]),
+          "Francisco Morazan 2",
+          "department equal to inserted"
+        );
+        assert.equal(
+          byteToString(farm[3]),
+          "Santa Lucia 2",
+          "village equal to inserted"
+        );
+        assert.equal(
+          farm[4],
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+          "story equal to inserted"
+        );
+        assert.equal(farm[5], "{}", "Additional Information equal to inserted");
+      });
+  });
 });

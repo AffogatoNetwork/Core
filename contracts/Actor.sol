@@ -7,6 +7,7 @@ contract Actor is AffogatoNetwork {
     event LogAddProcessor(uint256 indexed _id);
     event LogUpdateProcessor(uint256 indexed _id);
     event LogAddFarm(uint256 indexed _id);
+    event LogUpdateFarm(uint256 indexed _id);
 
     struct Processor {
         address processorAddress;
@@ -101,7 +102,8 @@ contract Actor is AffogatoNetwork {
         processorIds.push(_owner);
         emit LogAddProcessor(processorIds.length - 1);
     }
-    // Logear updates para que siempre se mantengan los datos (puede ser viendo bloques pasados)
+    // Loguear updates para que siempre se mantengan los datos (puede ser viendo bloques pasados)
+    //TODO: refactor para hacerlo en menos lineas
     function updateProcessor(
         address _owner,
         bytes32 _name, 
@@ -136,6 +138,21 @@ contract Actor is AffogatoNetwork {
         addressToFarms[msg.sender].push(farm);
         processorsWithFarm.push(msg.sender);
         emit LogAddFarm(addressToFarms[msg.sender].length - 1);
+    }
+
+    function updateFarm(
+        address _owner,
+        uint _index,
+        bytes32 _name, 
+        bytes32 _country, 
+        bytes32 _department, 
+        bytes32 _village, 
+        string _story,
+        string _additionalInformation
+    ) public {
+        Farm memory farm = Farm(_name,_country,_department,_village,_story,_additionalInformation);
+        addressToFarms[_owner][_index] = farm;
+        emit LogUpdateFarm(_index);
     }
 
     
