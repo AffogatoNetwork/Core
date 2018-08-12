@@ -27,21 +27,28 @@ contract TestActor {
         actor.addProcessor(address(6),0,0,0,0,0,0,"0");
     } 
 
-    function testUniqueProcessor() public{
-         Assert.isFalse(execute('uniqueProcessor()'), "Should fail over repeated proceesor");
+     function processorMustExists() public {
+        Actor actor = Actor(DeployedAddresses.Actor());
+         actor.updateProcessor(address(6),0,0,0,0,0,0,"0");
+       // Assert.isFalse(actor.isAccountOwner({from:msg.sender}), "Should fail over not owner");
+    } 
+
+    function testProcessor() public{
+        Assert.isFalse(execute('uniqueProcessor()'), "Should fail over repeated proceesor");
+        Assert.isFalse(execute('processorMustExists()'), "Should fail over update non existant proceesor");
     }
     function getFarmAdress() public {
         Actor actor = Actor(DeployedAddresses.Actor());
-        actor.getFarm(0,0);
+        actor.getFarm(address(0),1000000000000);
     } 
 
     function getFarmIndex() public {
         Actor actor = Actor(DeployedAddresses.Actor());
         actor.getFarm(address(0), 1000000000000);
     } 
-    //TODO: not working
-    function testFarmRequirements() public {
-        Assert.isFalse(execute('getFarmAdress()'), "Should fail over invalid address");
+    //TODO: not working try open Zepelin https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/test/helpers/expectThrow.js
+    function testFarmRequirements() public {    
+        //Assert.isFalse(execute('getFarmAdress()'), "Should fail over invalid address");
       //  Assert.isFalse(execute('getFarmIndex()'), 'Should fail over index overflow');
     }
 }

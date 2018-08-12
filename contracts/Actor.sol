@@ -117,6 +117,7 @@ contract Actor is AffogatoNetwork {
         int _lat, 
         string _additionalInformation
     ) public {
+        require(addressToProcessor[_owner].name != 0);
         Processor memory processor = addressToProcessor[_owner];
         processor.name = _name;
         processor.typeOfProcessor = _typeOfProcessor;
