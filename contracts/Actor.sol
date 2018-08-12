@@ -76,6 +76,8 @@ contract Actor is AffogatoNetwork {
         string,
         string
         ){
+       // require(addressToFarms[_owner][_index].name != 0);
+
         Farm memory farm = addressToFarms[_owner][_index];
         return(
             farm.name,
@@ -97,6 +99,7 @@ contract Actor is AffogatoNetwork {
         int _lat, 
         string _additionalInformation
     ) public {
+        require(addressToProcessor[_owner].processorAddress != _owner);
         Processor memory processor = Processor(_owner,_name,_typeOfProcessor,_department,_country,_lon,_lat,_additionalInformation);
         addressToProcessor[_owner] = processor;
         processorIds.push(_owner);
