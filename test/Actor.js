@@ -204,6 +204,14 @@ contract(Actor, function(accounts) {
             0,
             "logs the inserted farm id"
           );
+          return tokenInstance.getProcessorFarmsCount.call(accounts[0]);
+        })
+        .then(function(count) {
+          assert.equal(
+            count.toNumber(),
+            1,
+            "Number of farms for processor must be equal to added"
+          );
           return tokenInstance.getFarm.call(accounts[0], 0);
         })
         .then(function(farm) {

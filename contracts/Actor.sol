@@ -43,6 +43,10 @@ contract Actor is AffogatoNetwork {
     function getCount() public view returns(uint count) {
         return processorIds.length;
     }
+
+    function getProcessorFarmsCount(address _owner) public view returns(uint count) {
+        return addressToFarms[_owner].length;
+    }
     
 
     function isAccountOwner() public view returns(
