@@ -18,8 +18,7 @@ contract Coffee{
         mapping(address => CupProfile) cupProfiles;
         address[] tasters;
         Certificate[] certificates;
-        string additionalInformation;
-        
+        string additionalInformation;   
     }
     
     struct Action{
