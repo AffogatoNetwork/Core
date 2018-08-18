@@ -1,4 +1,4 @@
-var Actor = artifacts.require("./Actor.sol");
+/*var Actor = artifacts.require("./Actor.sol");
 
 contract(Actor, function(accounts) {
   var tokenInstance;
@@ -308,3 +308,4 @@ contract(Actor, function(accounts) {
       });
   });
 });
+*/
