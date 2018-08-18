@@ -87,6 +87,21 @@ contract(Farmer, function(accounts) {
       });
   });
 
+  it("Sets the account type to Farmer", function() {
+    return Farmer.deployed()
+      .then(function(instance) {
+        tokenInstance = instance;
+        return tokenInstance.getAccountType(accounts[1]);
+      })
+      .then(function(accountType) {
+        assert.equal(
+          byteToString(accountType),
+          "farmer",
+          "Account type should be farmer"
+        );
+      });
+  });
+
   it("Updates a farmer", function() {
     return Farmer.deployed()
       .then(function(instance) {

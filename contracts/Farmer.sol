@@ -79,6 +79,7 @@ contract Farmer is Actor {
         FarmerActor memory farmer = FarmerActor(_name,_country,_region,_email);
         addressToFarmer[msg.sender] = farmer;
         farmersIds.push(msg.sender);
+        super.setAccountType(msg.sender,"farmer");
         emit LogAddActor(msg.sender);
     }
 
