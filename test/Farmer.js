@@ -1,6 +1,6 @@
-/*var Actor = artifacts.require("./Actor.sol");
+var Farmer = artifacts.require("./Farmer.sol");
 
-contract(Actor, function(accounts) {
+contract(Farmer, function(accounts) {
   var tokenInstance;
 
   function byteToString(a) {
@@ -14,107 +14,150 @@ contract(Actor, function(accounts) {
     return a;
   }
 
-  it("Adds a Processor", function() {
-    return Actor.deployed()
+  it("Adds a Farmer", function() {
+    return Farmer.deployed()
       .then(function(instance) {
         tokenInstance = instance;
-        return tokenInstance.addProcessor(
-          accounts[1],
-          "Cafetano",
-          "Taster",
-          "Francisco Morazan",
+        return tokenInstance.addFarmer(
+          "Cristian Espinoza",
           "Honduras",
-          141058776000,
-          -871768649000,
-          '{"story":"Tostaduría de Café Especial, donde se sirve el mejor café de la ciudad.","experience":"Specialty Coffee Association of America Certificate","website":"https://www.facebook.com/cafetanohn/"}'
+          "Francisco Morazan",
+          "ceegarner@gmail.com",
+          {
+            from: accounts[1]
+          }
         );
       })
       .then(function(receipt) {
         assert.equal(receipt.logs.length, 1, "triggers one event");
         assert.equal(
           receipt.logs[0].event,
-          "LogAddProcessor",
-          'should be the "LogAddProcessor" event'
+          "LogAddActor",
+          'should be the "LogAddActor" event'
         );
         assert.equal(
           receipt.logs[0].args._id.toNumber(),
           0,
-          "logs the inserted address id"
+          "logs the inserted id"
         );
-        return tokenInstance.getCount();
+        return tokenInstance.getActorCount();
       })
       .then(function(count) {
-        assert.equal(1, count, "processorsIds should had incremented");
-        return tokenInstance.addressToProcessor(accounts[1], {
+        assert.equal(1, count, "actors should had incremented");
+        return tokenInstance.getFarmer(accounts[1], {
           from: accounts[0]
         });
       })
-      .then(function(processor) {
-        assert.equal(processor[0], accounts[1], "account is equal to inserted");
+      .then(function(farmer) {
         assert.equal(
-          byteToString(processor[1]),
-          "Cafetano",
+          byteToString(farmer[0]),
+          "Cristian Espinoza",
           "name is equal to inserted"
         );
         assert.equal(
-          byteToString(processor[2]),
-          "Taster",
-          "type is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[3]),
-          "Francisco Morazan",
-          "department is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[4]),
+          byteToString(farmer[1]),
           "Honduras",
-          "country is equal to inserted"
+          "Country is equal to inserted"
         );
-        assert.equal(processor[5], 141058776000, "lat is equal to inserted");
-        assert.equal(processor[6], -871768649000, "lon is equal to inserted");
         assert.equal(
-          processor[7],
-          '{"story":"Tostaduría de Café Especial, donde se sirve el mejor café de la ciudad.","experience":"Specialty Coffee Association of America Certificate","website":"https://www.facebook.com/cafetanohn/"}'
+          byteToString(farmer[2]),
+          "Francisco Morazan",
+          "Region is equal to inserted"
+        );
+        assert.equal(
+          byteToString(farmer[3]),
+          "ceegarner@gmail.com",
+          "Email is equal to inserted"
         );
       });
   });
 
   it("Validates account ownership", function() {
-    return Actor.deployed()
+    return Farmer.deployed()
       .then(function(instance) {
         tokenInstance = instance;
-        return tokenInstance.isAccountOwner.call({ from: accounts[1] });
+        return tokenInstance.returnOwner.call({ from: accounts[1] });
       })
-      .then(function(processor) {
+      .then(function(farmer) {
         assert.equal(
-          byteToString(processor[0]),
-          "Cafetano",
+          byteToString(farmer[0]),
+          "Cristian Espinoza",
           "name is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[1]),
-          "Taster",
-          "type is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[2]),
-          "Francisco Morazan",
-          "department is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[3]),
-          "Honduras",
-          "country is equal to inserted"
-        );
-        assert.equal(processor[4], 141058776000, "lat is equal to inserted");
-        assert.equal(processor[5], -871768649000, "lon is equal to inserted");
-        assert.equal(
-          processor[6],
-          '{"story":"Tostaduría de Café Especial, donde se sirve el mejor café de la ciudad.","experience":"Specialty Coffee Association of America Certificate","website":"https://www.facebook.com/cafetanohn/"}'
         );
       });
   });
+
+  it("Adds a farm ", function() {
+    return Farmer.deployed().then(function(instance) {
+      tokenInstance = instance;
+      return tokenInstance
+        .addFarm(
+          "Los Encinos",
+          "Honduras",
+          "Francisco Morazan",
+          "Santa Lucia",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        )
+        .then(function(receipt) {
+          assert.equal(receipt.logs.length, 1, "triggers one event");
+          assert.equal(
+            receipt.logs[0].event,
+            "LogAddFarm",
+            'should be the "LogAddFarm" event'
+          );
+          assert.equal(
+            receipt.logs[0].args._id,
+            "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+            "logs the inserted farm id"
+          );
+          return tokenInstance.getFarmersFarmsCount(accounts[0]);
+        })
+        .then(function(count) {
+          assert.equal(
+            count.toNumber(),
+            1,
+            "Number of farms a farmer has must be equal to added"
+          );
+          return tokenInstance.getFarmById(
+            "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+          );
+        })
+        .then(function(farm) {
+          assert.equal(
+            farm[0],
+            "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+            "Uid equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[1]),
+            "Los Encinos",
+            "name equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[2]),
+            "Honduras",
+            "country equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[3]),
+            "Francisco Morazan",
+            "department equal to inserted"
+          );
+          assert.equal(
+            byteToString(farm[4]),
+            "Santa Lucia",
+            "village equal to inserted"
+          );
+          assert.equal(
+            farm[5],
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "story equal to inserted"
+          );
+        });
+    });
+  });
+
+  /*
 
   it("Updates a Processor", function() {
     return Actor.deployed()
@@ -180,74 +223,7 @@ contract(Actor, function(accounts) {
       });
   });
 
-  it("Adds a farm ", function() {
-    return Actor.deployed().then(function(instance) {
-      tokenInstance = instance;
-      return tokenInstance
-        .addFarm(
-          "Los Encinos",
-          "Honduras",
-          "Francisco Morazan",
-          "Santa Lucia",
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          "{}"
-        )
-        .then(function(receipt) {
-          assert.equal(receipt.logs.length, 1, "triggers one event");
-          assert.equal(
-            receipt.logs[0].event,
-            "LogAddFarm",
-            'should be the "LogAddFarm" event'
-          );
-          assert.equal(
-            receipt.logs[0].args._id.toNumber(),
-            0,
-            "logs the inserted farm id"
-          );
-          return tokenInstance.getProcessorFarmsCount.call(accounts[0]);
-        })
-        .then(function(count) {
-          assert.equal(
-            count.toNumber(),
-            1,
-            "Number of farms for processor must be equal to added"
-          );
-          return tokenInstance.getFarm.call(accounts[0], 0);
-        })
-        .then(function(farm) {
-          assert.equal(
-            byteToString(farm[0]),
-            "Los Encinos",
-            "name equal to inserted"
-          );
-          assert.equal(
-            byteToString(farm[1]),
-            "Honduras",
-            "country equal to inserted"
-          );
-          assert.equal(
-            byteToString(farm[2]),
-            "Francisco Morazan",
-            "department equal to inserted"
-          );
-          assert.equal(
-            byteToString(farm[3]),
-            "Santa Lucia",
-            "village equal to inserted"
-          );
-          assert.equal(
-            farm[4],
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "story equal to inserted"
-          );
-          assert.equal(
-            farm[5],
-            "{}",
-            "Additional Information equal to inserted"
-          );
-        });
-    });
-  });
+  
 
   it("Updates farm ", function() {
     return Actor.deployed()
@@ -306,6 +282,5 @@ contract(Actor, function(accounts) {
         );
         assert.equal(farm[5], "{}", "Additional Information equal to inserted");
       });
-  });
+  });*/
 });
-*/
