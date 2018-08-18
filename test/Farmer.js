@@ -36,14 +36,14 @@ contract(Farmer, function(accounts) {
           'should be the "LogAddActor" event'
         );
         assert.equal(
-          receipt.logs[0].args._id.toNumber(),
-          0,
-          "logs the inserted id"
+          receipt.logs[0].args._id,
+          accounts[1],
+          "logs the inserted farmer address"
         );
         return tokenInstance.getActorCount();
       })
       .then(function(count) {
-        assert.equal(1, count, "actors should had incremented");
+        assert.equal(count.toNumber(), 1, "farmers should had incremented");
         return tokenInstance.getFarmer(accounts[1], {
           from: accounts[0]
         });
@@ -67,6 +67,77 @@ contract(Farmer, function(accounts) {
         assert.equal(
           byteToString(farmer[3]),
           "ceegarner@gmail.com",
+          "Email is equal to inserted"
+        );
+        return tokenInstance.addFarmer(
+          "Eduardo Garner",
+          "Honduras",
+          "Francisco Morazan",
+          "ceegarner@yahoo.com",
+          {
+            from: accounts[1]
+          }
+        );
+      })
+      .catch(function(receipt) {
+        return tokenInstance.getActorCount();
+      })
+      .then(function(count) {
+        assert(count.toNumber(), 1, "count should still be 1");
+      });
+  });
+
+  it("Updates a farmer", function() {
+    return Farmer.deployed()
+      .then(function(instance) {
+        tokenInstance = instance;
+        return tokenInstance.updateFarmer(
+          "Cristian Espinoza",
+          "Honduras",
+          "Francisco Morazan",
+          "ceegarner@hotmail.com",
+          {
+            from: accounts[1]
+          }
+        );
+      })
+      .then(function(receipt) {
+        assert.equal(receipt.logs.length, 1, "triggers one event");
+        assert.equal(
+          receipt.logs[0].event,
+          "LogUpdateActor",
+          'should be the "LogUpdateActor" event'
+        );
+        assert.equal(
+          receipt.logs[0].args._id,
+          accounts[1],
+          "logs the updated farmer address"
+        );
+        return tokenInstance.getActorCount();
+      })
+      .then(function(count) {
+        assert.equal(count.toNumber(), 1, "farmers should still be the same");
+        return tokenInstance.getFarmer(accounts[1]);
+      })
+      .then(function(farmer) {
+        assert.equal(
+          byteToString(farmer[0]),
+          "Cristian Espinoza",
+          "name is equal to inserted"
+        );
+        assert.equal(
+          byteToString(farmer[1]),
+          "Honduras",
+          "Country is equal to inserted"
+        );
+        assert.equal(
+          byteToString(farmer[2]),
+          "Francisco Morazan",
+          "Region is equal to inserted"
+        );
+        assert.equal(
+          byteToString(farmer[3]),
+          "ceegarner@hotmail.com",
           "Email is equal to inserted"
         );
       });
@@ -157,87 +228,17 @@ contract(Farmer, function(accounts) {
     });
   });
 
-  /*
-
-  it("Updates a Processor", function() {
-    return Actor.deployed()
-      .then(function(instance) {
-        tokenInstance = instance;
-        return tokenInstance.updateProcessor(
-          accounts[1],
-          "Cafetano",
-          "Coffee Shop",
-          "Francisco Morazan",
-          "Honduras",
-          141058776000,
-          -871768649000,
-          '{"story":"Tostaduría de Café Especial, donde se sirve el mejor café de la ciudad.","experience":"Specialty Coffee Association of America Certificate","website":"https://www.facebook.com/cafetanohn/"}'
-        );
-      })
-      .then(function(receipt) {
-        assert.equal(receipt.logs.length, 1, "triggers one event");
-        assert.equal(
-          receipt.logs[0].event,
-          "LogUpdateProcessor",
-          'should be the "LogUpdateProcessor" event'
-        );
-        assert.equal(
-          receipt.logs[0].args._id.toNumber(),
-          0,
-          "logs the inserted address id"
-        );
-        return tokenInstance.getCount();
-      })
-      .then(function(count) {
-        assert.equal(1, count, "processorsIds should still be the same");
-        return tokenInstance.addressToProcessor(accounts[1]);
-      })
-      .then(function(processor) {
-        assert.equal(processor[0], accounts[1], "account is equal to inserted");
-        assert.equal(
-          byteToString(processor[1]),
-          "Cafetano",
-          "name is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[2]),
-          "Coffee Shop",
-          "type is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[3]),
-          "Francisco Morazan",
-          "department is equal to inserted"
-        );
-        assert.equal(
-          byteToString(processor[4]),
-          "Honduras",
-          "country is equal to inserted"
-        );
-        assert.equal(processor[5], 141058776000, "lat is equal to inserted");
-        assert.equal(processor[6], -871768649000, "lon is equal to inserted");
-        assert.equal(
-          processor[7],
-          '{"story":"Tostaduría de Café Especial, donde se sirve el mejor café de la ciudad.","experience":"Specialty Coffee Association of America Certificate","website":"https://www.facebook.com/cafetanohn/"}'
-        );
-      });
-  });
-
-  
-
   it("Updates farm ", function() {
-    return Actor.deployed()
+    return Farmer.deployed()
       .then(function(instance) {
         tokenInstance = instance;
         return tokenInstance.updateFarm(
-          accounts[0],
-          0,
+          "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
           "Los Encinos 2",
           "Honduras 2",
           "Francisco Morazan 2",
           "Santa Lucia 2",
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
-          "{}"
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2"
         );
       })
       .then(function(receipt) {
@@ -248,39 +249,44 @@ contract(Farmer, function(accounts) {
           'should be the "LogUpdateFarm" event'
         );
         assert.equal(
-          receipt.logs[0].args._id.toNumber(),
-          0,
+          receipt.logs[0].args._id,
+          "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
           "logs the updated farm id"
         );
-        return tokenInstance.getFarm.call(accounts[0], 0);
+        return tokenInstance.getFarmById.call(
+          "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+        );
       })
       .then(function(farm) {
         assert.equal(
-          byteToString(farm[0]),
+          byteToString(farm[1]),
           "Los Encinos 2",
           "name equal to inserted"
         );
         assert.equal(
-          byteToString(farm[1]),
+          byteToString(farm[2]),
           "Honduras 2",
           "country equal to inserted"
         );
         assert.equal(
-          byteToString(farm[2]),
+          byteToString(farm[3]),
           "Francisco Morazan 2",
           "department equal to inserted"
         );
         assert.equal(
-          byteToString(farm[3]),
+          byteToString(farm[4]),
           "Santa Lucia 2",
           "village equal to inserted"
         );
         assert.equal(
-          farm[4],
+          farm[5],
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
           "story equal to inserted"
         );
-        assert.equal(farm[5], "{}", "Additional Information equal to inserted");
+        return tokenInstance.getFarmersFarmsCount(accounts[0]);
+      })
+      .then(function(count) {
+        assert.equal(count, 1, "farm numbers should be still 1");
       });
-  });*/
+  });
 });

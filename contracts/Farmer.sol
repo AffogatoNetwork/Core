@@ -2,9 +2,11 @@ pragma solidity ^0.4.23;
 
 import "./Actor.sol";
 
+//TODO: Validate that values aren't empty
 contract Farmer is Actor {
 
     event LogAddFarm(bytes32 indexed _id);
+    event LogUpdateFarm(bytes32 indexed _id);
     
     //Farmer
     struct FarmerActor {
@@ -43,7 +45,6 @@ contract Farmer is Actor {
         bytes32, 
         bytes32
     ){
-        require(!isEmptyBytes(addressToFarmer[msg.sender].name));
         FarmerActor memory farmer = addressToFarmer[msg.sender];
         return(
             farmer.name,
@@ -59,7 +60,6 @@ contract Farmer is Actor {
         bytes32, 
         bytes32
     ) {
-        require(!isEmptyBytes(addressToFarmer[_farmer].name));
         FarmerActor memory farmer = addressToFarmer[_farmer];
         return(
             farmer.name,
@@ -75,17 +75,33 @@ contract Farmer is Actor {
         bytes32 _region, 
         bytes32 _email
     ) public {
-        require(!isEmptyBytes(addressToFarmer[msg.sender].name));
+        require(addressToFarmer[msg.sender].name == 0);
         FarmerActor memory farmer = FarmerActor(_name,_country,_region,_email);
         addressToFarmer[msg.sender] = farmer;
         farmersIds.push(msg.sender);
-        emit LogAddActor(farmersIds.length - 1);
+        emit LogAddActor(msg.sender);
+    }
+
+     function updateFarmer(
+        bytes32 _name, 
+        bytes32 _country, 
+        bytes32 _region,
+        bytes32 _email 
+    ) public {
+        require(!(addressToFarmer[msg.sender].name == 0));
+        FarmerActor memory farmer = addressToFarmer[msg.sender];
+        farmer.name = _name;
+        farmer.country = _country;
+        farmer.region = _region;
+        farmer.email = _email;
+        addressToFarmer[msg.sender] = farmer;
+        emit LogUpdateActor(msg.sender);
     }
 
     //Farm Functions
 
     function getFarmersFarmsCount(address _farmer)public view returns (uint){
-        return farmerToFarms[msg.sender].length;
+        return farmerToFarms[_farmer].length;
     }
 
     function getFarmById(bytes32 uid) public view returns(
@@ -120,5 +136,23 @@ contract Farmer is Actor {
         farms[uid] = farm;
         farmsCount++;
         emit LogAddFarm(uid);
+    }
+
+    function updateFarm(
+        bytes32 _uid,
+        bytes32 _name, 
+        bytes32 _country, 
+        bytes32 _region, 
+        bytes32 _village, 
+        string _story
+    ) public {
+        require(farms[_uid].name != 0);
+        Farm storage farm = farms[_uid];
+        farm.name = _name;
+        farm.country = _country;
+        farm.region = _region;
+        farm.village = _village;
+        farm.story = _story;
+        emit LogUpdateFarm(_uid);
     }
 }
