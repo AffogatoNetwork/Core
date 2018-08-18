@@ -5,17 +5,17 @@ contract Actor {
     mapping(address => bytes32) public addressToType;
 
     function getActorCount() public view returns(uint count);
+    
     event LogAddActor(address indexed _id);
     event LogUpdateActor(address indexed _id);
 
-    function getAccountType(address _owner) public view returns (bytes32) {
+    function getAccountType(address _owner) public view returns(bytes32) {
         return addressToType[_owner];
     }
 
     function setAccountType(address _owner, bytes32 _accountType) internal {
          addressToType[_owner] = _accountType;
     }
-
 
     //Utils
     function isEmptyString(string _empty) internal pure returns (bool){

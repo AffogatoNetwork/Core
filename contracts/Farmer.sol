@@ -39,6 +39,10 @@ contract Farmer is Actor {
         return farmersIds.length;
     }
 
+    function getAccountType(address _owner) public view returns (bytes32) {
+        return super.getAccountType(_owner);
+    }
+
     function returnOwner() public view returns(
         bytes32, 
         bytes32, 
