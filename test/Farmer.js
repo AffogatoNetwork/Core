@@ -1,3 +1,6 @@
+require("chai").should();
+require("chai").expect;
+
 var Farmer = artifacts.require("./Farmer.sol");
 
 contract(Farmer, function(accounts) {
@@ -14,34 +17,38 @@ contract(Farmer, function(accounts) {
     return a;
   }
 
-  it("Adds a Farmer", function() {
-    return Farmer.deployed()
-      .then(function(instance) {
-        tokenInstance = instance;
-        return tokenInstance.addFarmer(
-          "Cristian Espinoza",
-          "Honduras",
-          "Francisco Morazan",
-          "ceegarner@gmail.com",
-          {
-            from: accounts[1]
-          }
-        );
-      })
-      .then(function(receipt) {
-        assert.equal(receipt.logs.length, 1, "triggers one event");
-        assert.equal(
-          receipt.logs[0].event,
-          "LogAddActor",
-          'should be the "LogAddActor" event'
-        );
-        assert.equal(
-          receipt.logs[0].args._id,
-          accounts[1],
-          "logs the inserted farmer address"
-        );
-        return tokenInstance.getActorCount();
-      })
+  beforeEach(async () => {
+    this.tokenInstance = await Farmer.deployed();
+  });
+
+  describe("Farmer Validations", () => {
+    it("Adds a Farmer", async () => {
+      const receipt = await this.tokenInstance.addFarmer(
+        "Cristian Espinoza",
+        "Honduras",
+        "Francisco Morazan",
+        "ceegarner@gmail.com",
+        {
+          from: accounts[1]
+        }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogAddActor",
+        "should be the LogAddActor event"
+      );
+      receipt.logs[0].args._id.should.be.equal(
+        accounts[1],
+        "logs the inserted farmer address"
+      );
+      const actorCount = await this.tokenInstance.getActorCount();
+      expect(actorCount.toNumber()).to.be.equal(
+        1,
+        "farmers should had incremented"
+      );
+    });
+  });
+  /*
       .then(function(count) {
         assert.equal(count.toNumber(), 1, "farmers should had incremented");
         return tokenInstance.getFarmer(accounts[1], {
@@ -303,5 +310,5 @@ contract(Farmer, function(accounts) {
       .then(function(count) {
         assert.equal(count, 1, "farm numbers should be still 1");
       });
-  });
+  });*/
 });
