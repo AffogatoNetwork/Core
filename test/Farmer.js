@@ -4,8 +4,6 @@ require("chai").expect;
 var Farmer = artifacts.require("./Farmer.sol");
 
 contract(Farmer, function(accounts) {
-  var tokenInstance;
-
   function byteToString(a) {
     return trimNull(web3.toAscii(a));
   }

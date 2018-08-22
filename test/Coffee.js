@@ -4,9 +4,6 @@ require("chai").expect;
 var Coffee = artifacts.require("./Coffee.sol");
 
 contract(Coffee, accounts => {
-  var tokenInstance;
-  var timeNow;
-
   function byteToString(a) {
     return trimNull(web3.toUtf8(a));
   }
