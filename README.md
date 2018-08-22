@@ -9,11 +9,12 @@ Clone the project on your local machine for development and testing purposes. Se
 
 ### Prerequisites
 
-You need truffle and ganache in order to run the project
+You need truffle, ganache, HD wallet, dotenv and chain in order to run the project
 
 ```
 npm install truffle-hdwallet-provider-privkey
 npm install dotenv
+npm install chai
 npm install -g truffle
 npm install -g ganache-cli
 ```
@@ -32,7 +33,7 @@ Compile the project
 truffle compile 
 ```
 
-End with running the tests 
+End with running the tests. Affogato uses Chai as an assertion library 
 
 ```
 truffle test 
