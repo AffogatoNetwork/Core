@@ -77,6 +77,54 @@ contract(Coffee, accounts => {
         "size is equal to inserted"
       );
     });
+
+    it("Updates a Coffee Batch", async () => {
+      const receipt = await this.tokenInstance.updateCoffeeBatch(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        1000,
+        "Catuai Amarillo",
+        "Honey",
+        12000,
+        { from: accounts[0] }
+      );
+      receipt.logs.length.should.be.equal(1, "triggers one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogUpdateCoffeeBatch",
+        "should be the LogUpdateCoffeeBatch event"
+      );
+      receipt.logs[0].args._id.should.be.equal(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "Logs the updated uid"
+      );
+      const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+      );
+      coffeeBatch[0].should.be.equal(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "batch id is equal to original"
+      );
+      coffeeBatch[1].should.be.equal(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "farm uid is equal to updated"
+      );
+      expect(coffeeBatch[2].toNumber()).to.be.equal(
+        1000,
+        "altitude is equal to updated"
+      );
+      expect(byteToString(coffeeBatch[3])).to.be.equal(
+        "Catuai Amarillo",
+        "variety is equal to updated"
+      );
+      expect(byteToString(coffeeBatch[4])).to.be.equal(
+        "Honey",
+        "process is equal to updated"
+      );
+      expect(coffeeBatch[5].toNumber()).to.be.equal(
+        12000,
+        "size is equal to inserted"
+      );
+    });
   });
 
   /*

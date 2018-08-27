@@ -3,6 +3,7 @@ pragma solidity ^0.4.23;
 contract Coffee{
 
     event LogAddCoffeeBatch(bytes32 indexed _id);
+    event LogUpdateCoffeeBatch(bytes32 indexed _id);
      
     struct CoffeeBatch{
         bytes32 uid;
@@ -55,6 +56,18 @@ contract Coffee{
         coffeeBatches[uid] = coffeeBatch;
         farmToBatches[_farmUid].push(uid);
         emit LogAddCoffeeBatch(uid);        
+    }
+
+    function updateCoffeeBatch(bytes32 _coffeeUid, bytes32 _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
+     //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
+        //Fixes memory error that doesn't allow to create memory objects in structs
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
+        coffeeBatch.farmUid = _farmUid;
+        coffeeBatch.altitude = _altitude;
+        coffeeBatch.variety = _variety;
+        coffeeBatch.process = _process;
+        coffeeBatch.size = _size;
+        emit LogUpdateCoffeeBatch(_coffeeUid);        
     }
 
     //TODO: pass to a util function
