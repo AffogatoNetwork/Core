@@ -80,6 +80,7 @@ contract Farmer is Actor {
         bytes32 _email
     ) public {
         require(addressToFarmer[msg.sender].name == 0);
+        require(super.getAccountType(msg.sender) == 0);
         FarmerActor memory farmer = FarmerActor(_name,_country,_region,_email);
         addressToFarmer[msg.sender] = farmer;
         farmersIds.push(msg.sender);

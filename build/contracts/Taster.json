@@ -1,0 +1,524 @@
+{
+  "contractName": "Taster",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getActorCount",
+      "outputs": [
+        {
+          "name": "count",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "addressToType",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "getAccountType",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_id",
+          "type": "address"
+        }
+      ],
+      "name": "LogAddActor",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_id",
+          "type": "address"
+        }
+      ],
+      "name": "LogUpdateActor",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.23;\n\nimport \"./Actor.sol\";\n\ncontract Taster is Actor{\n     //Farmer\n    struct TasterActor {\n        bytes32 name;\n        bytes32 country; \n        bytes32 region;\n        bytes32 email;\n        string experience;\n    }\n\n}",
+  "sourcePath": "/Users/crisgarner/Projects/affogato/contracts/Taster.sol",
+  "ast": {
+    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/Taster.sol",
+    "exportedSymbols": {
+      "Taster": [
+        585
+      ]
+    },
+    "id": 586,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 570,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:2"
+      },
+      {
+        "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/Actor.sol",
+        "file": "./Actor.sol",
+        "id": 571,
+        "nodeType": "ImportDirective",
+        "scope": 586,
+        "sourceUnit": 138,
+        "src": "26:21:2",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 572,
+              "name": "Actor",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 137,
+              "src": "68:5:2",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Actor_$137",
+                "typeString": "contract Actor"
+              }
+            },
+            "id": 573,
+            "nodeType": "InheritanceSpecifier",
+            "src": "68:5:2"
+          }
+        ],
+        "contractDependencies": [
+          137
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 585,
+        "linearizedBaseContracts": [
+          585,
+          137
+        ],
+        "name": "Taster",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Taster.TasterActor",
+            "id": 584,
+            "members": [
+              {
+                "constant": false,
+                "id": 575,
+                "name": "name",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "122:12:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 574,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "122:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 577,
+                "name": "country",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "144:15:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 576,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "144:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 579,
+                "name": "region",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "170:14:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 578,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "170:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 581,
+                "name": "email",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "194:13:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 580,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "194:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 583,
+                "name": "experience",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "217:17:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 582,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "217:6:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "TasterActor",
+            "nodeType": "StructDefinition",
+            "scope": 585,
+            "src": "93:148:2",
+            "visibility": "public"
+          }
+        ],
+        "scope": 586,
+        "src": "49:195:2"
+      }
+    ],
+    "src": "0:244:2"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/Taster.sol",
+    "exportedSymbols": {
+      "Taster": [
+        585
+      ]
+    },
+    "id": 586,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 570,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:2"
+      },
+      {
+        "absolutePath": "/Users/crisgarner/Projects/affogato/contracts/Actor.sol",
+        "file": "./Actor.sol",
+        "id": 571,
+        "nodeType": "ImportDirective",
+        "scope": 586,
+        "sourceUnit": 138,
+        "src": "26:21:2",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 572,
+              "name": "Actor",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 137,
+              "src": "68:5:2",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Actor_$137",
+                "typeString": "contract Actor"
+              }
+            },
+            "id": 573,
+            "nodeType": "InheritanceSpecifier",
+            "src": "68:5:2"
+          }
+        ],
+        "contractDependencies": [
+          137
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 585,
+        "linearizedBaseContracts": [
+          585,
+          137
+        ],
+        "name": "Taster",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Taster.TasterActor",
+            "id": 584,
+            "members": [
+              {
+                "constant": false,
+                "id": 575,
+                "name": "name",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "122:12:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 574,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "122:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 577,
+                "name": "country",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "144:15:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 576,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "144:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 579,
+                "name": "region",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "170:14:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 578,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "170:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 581,
+                "name": "email",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "194:13:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 580,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "194:7:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 583,
+                "name": "experience",
+                "nodeType": "VariableDeclaration",
+                "scope": 584,
+                "src": "217:17:2",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 582,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "217:6:2",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "TasterActor",
+            "nodeType": "StructDefinition",
+            "scope": 585,
+            "src": "93:148:2",
+            "visibility": "public"
+          }
+        ],
+        "scope": 586,
+        "src": "49:195:2"
+      }
+    ],
+    "src": "0:244:2"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-08-30T18:41:24.254Z"
+}

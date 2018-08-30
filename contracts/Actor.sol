@@ -13,6 +13,14 @@ contract Actor {
         return addressToType[_owner];
     }
 
+     function accountExists(address _owner) public view returns(bool) {
+        if(addressToType[_owner] != 0x0000000000000000000000000000000000000000000000000000000000000000){
+            return true; 
+        }else{
+            return false;
+        }
+    }
+
     function setAccountType(address _owner, bytes32 _accountType) internal {
          addressToType[_owner] = _accountType;
     }
