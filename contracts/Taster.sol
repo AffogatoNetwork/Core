@@ -1,8 +1,6 @@
-pragma solidity ^0.4.23;
+/*pragma solidity ^0.4.23;
 
-import "./Actor.sol";
-
-contract Taster is Actor{
+contract Taster{
      //Tasters
     struct TasterActor {
         bytes32 name;
@@ -34,4 +32,4 @@ contract Taster is Actor{
     }
 
 
-}
+}*/

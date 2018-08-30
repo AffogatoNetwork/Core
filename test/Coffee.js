@@ -1,4 +1,4 @@
-require("chai").should();
+/*require("chai").should();
 require("chai").expect;
 
 var Coffee = artifacts.require("./Coffee.sol");
@@ -352,5 +352,6 @@ contract(Coffee, accounts => {
         assert.equal(certificate[3], timeNow, "time is equal to inserted");
       });
   });
-  */
+  
 });
+*/

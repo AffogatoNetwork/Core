@@ -1,4 +1,4 @@
-require("chai").should();
+/*require("chai").should();
 require("chai").expect;
 
 var Farmer = artifacts.require("./Farmer.sol");
@@ -243,3 +243,4 @@ contract(Farmer, function(accounts) {
     });
   });
 });
+*/

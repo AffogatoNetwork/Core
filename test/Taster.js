@@ -1,4 +1,4 @@
-require("chai").should();
+/*require("chai").should();
 require("chai").expect;
 
 var Taster = artifacts.require("./Taster.sol");
@@ -121,4 +121,4 @@ contract(Taster, function(accounts) {
 
     it("Updates a tasting", async () => {});
   });
-});
+});*/

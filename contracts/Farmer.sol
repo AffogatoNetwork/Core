@@ -1,9 +1,7 @@
-pragma solidity ^0.4.23;
-
-import "./Actor.sol";
+/*pragma solidity ^0.4.23;
 
 //TODO: Validate that values aren't empty
-contract Farmer is Actor {
+contract Farmer {
 
     event LogAddFarm(bytes32 indexed _id);
     event LogUpdateFarm(bytes32 indexed _id);
@@ -162,3 +160,4 @@ contract Farmer is Actor {
         emit LogUpdateFarm(_uid);
     }
 }
+*/
