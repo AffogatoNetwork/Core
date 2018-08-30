@@ -1,9 +1,9 @@
 require("chai").should();
 require("chai").expect;
 
-var Farmer = artifacts.require("./Farmer.sol");
+var FarmFactory = artifacts.require("./FarmFactory.sol");
 
-contract(Farmer, function(accounts) {
+contract(FarmFactory, function(accounts) {
   function byteToString(a) {
     return trimNull(web3.toAscii(a));
   }
@@ -16,131 +16,7 @@ contract(Farmer, function(accounts) {
   }
 
   beforeEach(async () => {
-    this.tokenInstance = await Farmer.deployed();
-  });
-
-  describe("Farmer Validations", () => {
-    it("Adds a Farmer", async () => {
-      const receipt = await this.tokenInstance.addFarmer(
-        "Cristian Espinoza",
-        "Honduras",
-        "Francisco Morazan",
-        "ceegarner@gmail.com",
-        {
-          from: accounts[1]
-        }
-      );
-      receipt.logs.length.should.be.equal(1, "trigger one event");
-      receipt.logs[0].event.should.be.equal(
-        "LogAddActor",
-        "should be the LogAddActor event"
-      );
-      receipt.logs[0].args._id.should.be.equal(
-        accounts[1],
-        "logs the inserted farmer address"
-      );
-      const actorCount = await this.tokenInstance.getActorCount();
-      expect(actorCount.toNumber()).to.be.equal(
-        1,
-        "farmers should had incremented"
-      );
-      var revert = true;
-      try {
-        const receiptFail = await this.tokenInstance.addFarmer(
-          "Eduardo Garner",
-          "Honduras",
-          "Choluteca",
-          "ceegarner@hotmail.com",
-          {
-            from: accounts[1]
-          }
-        );
-      } catch (error) {
-        expect(error).to.exist;
-        revert = false;
-      }
-
-      if (revert) {
-        assert.equal(revert, false, "should revert on adding same address");
-      }
-    });
-
-    it("Gets a Farmer", async () => {
-      const farmer = await this.tokenInstance.getFarmer(accounts[1], {
-        from: accounts[0]
-      });
-      expect(byteToString(farmer[0])).to.be.equal(
-        "Cristian Espinoza",
-        "Name same as inserted"
-      );
-      expect(byteToString(farmer[1])).to.be.equal(
-        "Honduras",
-        "Country same as inserted"
-      );
-      expect(byteToString(farmer[2])).to.be.equal(
-        "Francisco Morazan",
-        "Region same as inserted"
-      );
-      expect(byteToString(farmer[3])).to.be.equal(
-        "ceegarner@gmail.com",
-        "Email same as inserted"
-      );
-    });
-
-    it("Updates a farmer", async () => {
-      const receipt = await this.tokenInstance.updateFarmer(
-        "Eduardo Garner",
-        "Honduras",
-        "Choluteca",
-        "ceegarner@hotmail.com",
-        {
-          from: accounts[1]
-        }
-      );
-      receipt.logs.length.should.be.equal(1, "trigger one event");
-      receipt.logs[0].event.should.be.equal(
-        "LogUpdateActor",
-        "should be the LogUpdateActor event"
-      );
-      receipt.logs[0].args._id.should.be.equal(
-        accounts[1],
-        "logs the updated farmer address"
-      );
-      const farmer = await this.tokenInstance.getFarmer(accounts[1], {
-        from: accounts[0]
-      });
-      expect(byteToString(farmer[0])).to.be.equal(
-        "Eduardo Garner",
-        "Name equal to updated"
-      );
-      expect(byteToString(farmer[1])).to.be.equal(
-        "Honduras",
-        "Country same as updated"
-      );
-      expect(byteToString(farmer[2])).to.be.equal(
-        "Choluteca",
-        "Region same as updated"
-      );
-      expect(byteToString(farmer[3])).to.be.equal(
-        "ceegarner@hotmail.com",
-        "Email same as updated"
-      );
-    });
-
-    it("Validates account ownership", async () => {
-      const farmer = await this.tokenInstance.returnOwner({
-        from: accounts[1]
-      });
-      expect(byteToString(farmer[0])).to.be.equal(
-        "Eduardo Garner",
-        "It should return the user"
-      );
-      const farmerFail = await this.tokenInstance.returnOwner({
-        from: accounts[2]
-      });
-      expect(byteToString(farmerFail[0]), "It shouldn't exist any user").to.be
-        .empty;
-    });
+    this.tokenInstance = await FarmFactory.deployed();
   });
 
   describe("Farm Validations", () => {

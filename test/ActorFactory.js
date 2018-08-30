@@ -1,3 +1,162 @@
+require("chai").should();
+require("chai").expect;
+
+var ActorFactory = artifacts.require("./ActorFactory.sol");
+
+contract(ActorFactory, function(accounts) {
+  function byteToString(a) {
+    return trimNull(web3.toUtf8(a));
+  }
+
+  function trimNull(a) {
+    var c = a.indexOf("\0");
+    if (c > -1) {
+      return a.substr(0, c);
+    }
+    return a;
+  }
+
+  beforeEach(async () => {
+    this.tokenInstance = await ActorFactory.deployed();
+  });
+
+  describe("Actor Validations", () => {
+    it("Adds an Actor", async () => {
+      const receipt = await this.tokenInstance.addActor(
+        "Toño Stark",
+        "farmer",
+        "Honduras",
+        "Francisco Morazan",
+        "tony@stark.com",
+        { from: accounts[1] }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogAddActor",
+        "should be the LogAddActor event"
+      );
+      receipt.logs[0].args._id.should.be.equal(
+        accounts[1],
+        "logs the inserted taster address"
+      );
+      const actorCount = await this.tokenInstance.getActorCount();
+      expect(actorCount.toNumber()).to.be.equal(
+        1,
+        "actors should had incremented"
+      );
+      var revert = true;
+      try {
+        const receiptFail = await this.tokenInstance.addActor(
+          "Eduardo Garner",
+          "farmer",
+          "Honduras",
+          "Choluteca",
+          "ceegarner@hotmail.com",
+          {
+            from: accounts[1]
+          }
+        );
+      } catch (error) {
+        expect(error).to.exist;
+        revert = false;
+      }
+      if (revert) {
+        assert.equal(
+          revert,
+          false,
+          "should revert on adding same actor address"
+        );
+      }
+    });
+
+    it("Gets an Actor", async () => {
+      const actor = await this.tokenInstance.getActor(accounts[1], {
+        from: accounts[0]
+      });
+      expect(byteToString(actor[0])).to.be.equal(
+        "Toño Stark",
+        "Name same as inserted"
+      );
+      expect(byteToString(actor[1])).to.be.equal(
+        "farmer",
+        "Type of Account same as inserted"
+      );
+      expect(byteToString(actor[2])).to.be.equal(
+        "Honduras",
+        "Country same as inserted"
+      );
+      expect(byteToString(actor[3])).to.be.equal(
+        "Francisco Morazan",
+        "Region same as inserted"
+      );
+      expect(byteToString(actor[4])).to.be.equal(
+        "tony@stark.com",
+        "Email same as inserted"
+      );
+    });
+
+    it("Updates an Actor", async () => {
+      const receipt = await this.tokenInstance.updateActor(
+        "Eduardo Garner",
+        "taster",
+        "Honduras",
+        "Choluteca",
+        "ceegarner@hotmail.com",
+        {
+          from: accounts[1]
+        }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogUpdateActor",
+        "should be the LogUpdateActor event"
+      );
+      receipt.logs[0].args._id.should.be.equal(
+        accounts[1],
+        "logs the updated actor address"
+      );
+      const actor = await this.tokenInstance.getActor(accounts[1], {
+        from: accounts[0]
+      });
+      expect(byteToString(actor[0])).to.be.equal(
+        "Eduardo Garner",
+        "Name equal to updated"
+      );
+      expect(byteToString(actor[1])).to.be.equal(
+        "taster",
+        "ActorType equal to updated"
+      );
+      expect(byteToString(actor[2])).to.be.equal(
+        "Honduras",
+        "Country same as updated"
+      );
+      expect(byteToString(actor[3])).to.be.equal(
+        "Choluteca",
+        "Region same as updated"
+      );
+      expect(byteToString(actor[4])).to.be.equal(
+        "ceegarner@hotmail.com",
+        "Email same as updated"
+      );
+    });
+
+    it("Validates account ownership", async () => {
+      const actor = await this.tokenInstance.returnOwner({
+        from: accounts[1]
+      });
+      expect(byteToString(actor[0])).to.be.equal(
+        "Eduardo Garner",
+        "It should return the user"
+      );
+      const actorFail = await this.tokenInstance.returnOwner({
+        from: accounts[2]
+      });
+      expect(byteToString(actorFail[0]), "It shouldn't exist any user").to.be
+        .empty;
+    });
+  });
+});
+
 /*var Actor = artifacts.require("./Actor.sol");
 
 contract(Actor, function(accounts) {
