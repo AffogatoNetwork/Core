@@ -6,6 +6,11 @@ contract TastingFactory is Utils{
 
    event LogAddCupProfile(bytes32 indexed _id);
    event LogUpdateCupProfile(bytes32 indexed _id);
+   event LogApproval(
+    address indexed _owner,
+    address indexed _taster,
+    bool _value
+   );
 
    struct CupProfile{
         bytes32 uid;
@@ -22,6 +27,8 @@ contract TastingFactory is Utils{
     mapping(bytes32 => bytes32[]) public coffeeBatchToCupProfiles;
     mapping(bytes32 => CupProfile) public cupProfiles;
     uint tastingCount = 0;
+
+    mapping (address => mapping (address => bool)) private allowed_;
 
     function getTasterCupProfileCount(address _taster)public view returns (uint){
         return tasterToCupProfiles[_taster].length;
@@ -53,6 +60,7 @@ contract TastingFactory is Utils{
     }
 
     function addCupProfile(
+        address _owner,
         bytes32 _coffeeBatchId,
         bytes32 _aroma,
         bytes32 _flavor,
@@ -61,6 +69,7 @@ contract TastingFactory is Utils{
         bytes32 _aftertaste,
         uint16 _cuppingNote
     ) public {
+        require(allowed_[_owner][msg.sender]);
         bytes32 uid = keccak256(toBytes(tastingCount));
         CupProfile memory cupProfile = CupProfile(uid,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
         tasterToCupProfiles[msg.sender].push(uid);
@@ -88,5 +97,11 @@ contract TastingFactory is Utils{
         cupProfile.aftertaste = _aftertaste;
         cupProfile.cuppingNote = _cuppingNote;
         emit LogUpdateCupProfile(_uid);
+    }
+
+    function approve(address _spender, bool _value) public returns (bool) {
+        allowed_[msg.sender][_spender] = _value;
+        emit LogApproval(msg.sender, _spender, _value);
+        return true;
     }
 }

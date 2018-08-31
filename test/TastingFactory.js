@@ -21,15 +21,39 @@ contract(TastingFactory, function(accounts) {
   });
 
   describe("Tasting Validations", () => {
+    it("Allows farmers to approve tastings", async () => {
+      const receipt = await this.tokenInstance.approve(accounts[3], true, {
+        from: accounts[1]
+      });
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogApproval",
+        "should be the LogApproval event"
+      );
+      receipt.logs[0].args._owner.should.be.equal(
+        accounts[1],
+        "logs the owner address"
+      );
+      receipt.logs[0].args._taster.should.be.equal(
+        accounts[3],
+        "logs the taster address"
+      );
+      receipt.logs[0].args._value.should.be.true;
+    });
+
     it("Adds a cup profile", async () => {
       const receipt = await this.tokenInstance.addCupProfile(
+        accounts[1],
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
         "Caramelo",
         "Citrico",
         "balanceada",
         "balanceado",
         "seco",
-        8000
+        8000,
+        {
+          from: accounts[3]
+        }
       );
 
       receipt.logs.length.should.be.equal(1, "trigger one event");
@@ -43,7 +67,7 @@ contract(TastingFactory, function(accounts) {
       );
 
       const countTaster = await this.tokenInstance.getTasterCupProfileCount(
-        accounts[0]
+        accounts[3]
       );
       expect(countTaster.toNumber()).to.be.equal(
         1,
@@ -56,6 +80,29 @@ contract(TastingFactory, function(accounts) {
         1,
         "Coffee Batches Cup Profiles counter should increase"
       );
+
+      try {
+        var result = true;
+        const receiptFail = await this.tokenInstance.addCupProfile(
+          accounts[1],
+          "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+          "Caramelo",
+          "Citrico",
+          "balanceada",
+          "balanceado",
+          "seco",
+          8000,
+          { from: accounts[4] }
+        );
+      } catch (error) {
+        result = false;
+      }
+      if (result) {
+        expect(result).to.be.equal(
+          false,
+          "it should revert on not allowed account"
+        );
+      }
     });
 
     it("Gets a cup profile", async () => {
