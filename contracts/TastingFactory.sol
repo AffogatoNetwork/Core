@@ -1,35 +1,51 @@
-/*pragma solidity ^0.4.23;
+pragma solidity ^0.4.23;
 
-contract Taster{
-     //Tasters
-    struct TasterActor {
-        bytes32 name;
-        bytes32 country; 
-        bytes32 region;
-        bytes32 email;
-        string experience;
+import "./Utils.sol";
+
+contract TastingFactory is Utils{
+
+   event LogAddCupProfile(bytes32 indexed _id);
+
+   struct CupProfile{
+        bytes32 uid;
+        bytes32 aroma;
+        bytes32 flavor;
+        bytes32 acidity;
+        bytes32 body;
+        bytes32 aftertaste;
+        //Precision two decimals 100.00
+        uint16 cuppingNote;
     }
 
-    mapping(address => TasterActor) public addressToTaster;
-    address[] public tasterIds;
+    mapping(address => bytes32[]) public tasterToCupProfiles;
+    mapping(bytes32 => bytes32[]) public coffeeBatchToCupProfiles;
+    mapping(bytes32 => CupProfile) public cupProfiles;
+    uint tastingCount = 0;
 
-    function getActorCount() public view returns(uint count){
-        return tasterIds.length;
+    function getTasterCupProfileCount(address _taster)public view returns (uint){
+        return tasterToCupProfiles[_taster].length;
     }
 
-    function getAccountType(address _owner) public view returns (bytes32) {
-        return super.getAccountType(_owner);
-    }
-
-    function addTaster(bytes32 _name, bytes32 _country, bytes32 _region, bytes32 _email, string _experience) public{
-        require(addressToTaster[msg.sender].name == 0);
-        require(!(super.accountExists(msg.sender)));
-        TasterActor memory taster = TasterActor(_name,_country,_region,_email,_experience);
-        addressToTaster[msg.sender] = taster;
-        tasterIds.push(msg.sender);
-        super.setAccountType(msg.sender,"taster");
-        emit LogAddActor(msg.sender);
+    function getCoffeeCupProfileCount(bytes32 _coffeeBatch)public view returns (uint){
+        return coffeeBatchToCupProfiles[_coffeeBatch].length;
     }
 
 
-}*/
+    function addCupProfile(
+        bytes32 _coffeeBatchId,
+        bytes32 _aroma,
+        bytes32 _flavor,
+        bytes32 _acidity,
+        bytes32 _body,
+        bytes32 _aftertaste,
+        uint16 _cuppingNote
+    ) public {
+        bytes32 uid = keccak256(toBytes(tastingCount));
+        CupProfile memory cupProfile = CupProfile(uid,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
+        tasterToCupProfiles[msg.sender].push(uid);
+        coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
+        cupProfiles[uid] = cupProfile;
+        tastingCount++;
+        emit LogAddCupProfile(uid);
+    }
+}

@@ -1,10 +1,9 @@
-/*require("chai").should();
+require("chai").should();
 require("chai").expect;
 
-var Taster = artifacts.require("./Taster.sol");
-var Farmer = artifacts.require("./Farmer.sol");
+var TastingFactory = artifacts.require("./TastingFactory.sol");
 
-contract(Taster, function(accounts) {
+contract(TastingFactory, function(accounts) {
   function byteToString(a) {
     return trimNull(web3.toAscii(a));
   }
@@ -18,107 +17,49 @@ contract(Taster, function(accounts) {
   }
 
   beforeEach(async () => {
-    this.tokenInstance = await Taster.deployed();
-  });
-
-  describe("Taster Validations", () => {
-    it("Adds a Taster", async () => {
-      const receipt = await this.tokenInstance.addTaster(
-        "Toño Stark",
-        "Honduras",
-        "Francisco Morazan",
-        "tony@stark.com",
-        "Percolator french press sweet in caffeine kopi-luwak single origin. Cinnamon ristretto mocha instant grounds est, affogato extra flavour medium half and half. Doppio con panna aged, kopi-luwak foam, aroma arabica coffee café au lait seasonal to go crema.",
-        { from: accounts[3] }
-      );
-      receipt.logs.length.should.be.equal(1, "trigger one event");
-      receipt.logs[0].event.should.be.equal(
-        "LogAddActor",
-        "should be the LogAddActor event"
-      );
-      receipt.logs[0].args._id.should.be.equal(
-        accounts[3],
-        "logs the inserted taster address"
-      );
-      const actorCount = await this.tokenInstance.getActorCount();
-      expect(actorCount.toNumber()).to.be.equal(
-        1,
-        "tasters should had incremented"
-      );
-      var revert = true;
-      try {
-        const receiptFail = await this.tokenInstance.addTaster(
-          "Eduardo Garner",
-          "Honduras",
-          "Choluteca",
-          "ceegarner@hotmail.com",
-          "Percolator french press sweet in caffeine kopi-luwak single origin. Cinnamon ristretto mocha instant grounds est, affogato extra flavour medium half and half. Doppio con panna aged, kopi-luwak foam, aroma arabica coffee café au lait seasonal to go crema.",
-          {
-            from: accounts[3]
-          }
-        );
-      } catch (error) {
-        expect(error).to.exist;
-        revert = false;
-      }
-      if (revert) {
-        assert.equal(
-          revert,
-          false,
-          "should revert on adding same taster address"
-        );
-      }
-    });
-
-    it("Validates unique address for actor", async () => {
-      this.tokenInstance = await Farmer.deployed();
-      const receipt = await this.tokenInstance.addFarmer(
-        "Cristian Espinoza",
-        "Honduras",
-        "Francisco Morazan",
-        "ceegarner@gmail.com",
-        {
-          from: accounts[1]
-        }
-      );
-      revert = true;
-      try {
-        const receiptFail = await this.tokenInstance.addTaster(
-          "Eduardo Garner",
-          "Honduras",
-          "Choluteca",
-          "ceegarner@hotmail.com",
-          "Percolator french press sweet in caffeine kopi-luwak single origin. Cinnamon ristretto mocha instant grounds est, affogato extra flavour medium half and half. Doppio con panna aged, kopi-luwak foam, aroma arabica coffee café au lait seasonal to go crema.",
-          {
-            from: accounts[1]
-          }
-        );
-      } catch (error) {
-        expect(error).to.exist;
-        revert = false;
-      }
-
-      if (revert) {
-        assert.equal(
-          revert,
-          false,
-          "should revert on adding existing actor address"
-        );
-      }
-    });
-
-    it("Gets a Taster", async () => {});
-
-    it("Updates a Taster", async () => {});
-
-    it("Validates account ownership", async () => {});
+    this.tokenInstance = await TastingFactory.deployed();
   });
 
   describe("Tasting Validations", () => {
-    it("Adds a tasting", async () => {});
+    it("Adds a cupProfile", async () => {
+      const receipt = await this.tokenInstance.addCupProfile(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "Caramelo",
+        "Citrico",
+        "balanceada",
+        "balanceado",
+        "seco",
+        8000
+      );
 
-    it("Gets a tasting", async () => {});
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogAddCupProfile",
+        "should be the LogAddCupProfile event"
+      );
+      receipt.logs[0].args._id.should.be.equal(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "logs the added cup profile id"
+      );
 
-    it("Updates a tasting", async () => {});
+      const countTaster = await this.tokenInstance.getTasterCupProfileCount(
+        accounts[0]
+      );
+      expect(countTaster.toNumber()).to.be.equal(
+        1,
+        "Taster Profiles counter should increase"
+      );
+      const countCoffeeBatch = await this.tokenInstance.getCoffeeCupProfileCount(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+      );
+      expect(countCoffeeBatch.toNumber()).to.be.equal(
+        1,
+        "Coffee Batches Cup Profiles counter should increase"
+      );
+    });
+
+    //   it("Gets a tasting", async () => {});
+
+    //   it("Updates a tasting", async () => {});
   });
-});*/
+});
