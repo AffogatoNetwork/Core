@@ -39,24 +39,24 @@ contract(ActorFactory, function(accounts) {
         accounts[1],
         "logs the inserted actor address"
       );
-      receipt.logs[0].args._name.should.be.equal(
+      byteToString(receipt.logs[0].args._name).should.be.equal(
         "Toño Stark",
         "logs the inserted name"
       );
-      receipt.logs[0].args._typeOfActor.should.be.equal(
+      byteToString(receipt.logs[0].args._typeOfActor).should.be.equal(
         "farmer",
         "logs the inserted type of account"
       );
-      receipt.logs[0].args._country.should.be.equal(
+      byteToString(receipt.logs[0].args._country).should.be.equal(
         "Honduras",
         "logs the inserted actor country"
       );
 
-      receipt.logs[0].args._region.should.be.equal(
+      byteToString(receipt.logs[0].args._region).should.be.equal(
         "Francisco Morazan",
         "logs the inserted actor region"
       );
-      receipt.logs[0].args._email.should.be.equal(
+      byteToString(receipt.logs[0].args._email).should.be.equal(
         "tony@stark.com",
         "logs the inserted actor email"
       );
@@ -135,6 +135,26 @@ contract(ActorFactory, function(accounts) {
       receipt.logs[0].args._id.should.be.equal(
         accounts[1],
         "logs the updated actor address"
+      );
+      byteToString(receipt.logs[0].args._name).should.be.equal(
+        "Eduardo Garner",
+        "logs the updated name"
+      );
+      byteToString(receipt.logs[0].args._typeOfActor).should.be.equal(
+        "taster",
+        "logs the updated type of account"
+      );
+      byteToString(receipt.logs[0].args._country).should.be.equal(
+        "Honduras",
+        "logs the updated actor country"
+      );
+      byteToString(receipt.logs[0].args._region).should.be.equal(
+        "Choluteca",
+        "logs the updated actor region"
+      );
+      byteToString(receipt.logs[0].args._email).should.be.equal(
+        "ceegarner@hotmail.com",
+        "logs the updated actor email"
       );
       const actor = await this.tokenInstance.getActor(accounts[1], {
         from: accounts[0]

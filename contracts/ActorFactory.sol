@@ -4,8 +4,23 @@ import "./Utils.sol";
 
 contract ActorFactory is Utils {
 
-    event LogAddActor(address indexed _id);
-    event LogUpdateActor(address indexed _id);
+    event LogAddActor(
+        address indexed _id,
+        bytes32 _name,
+        bytes32 _typeOfActor, 
+        bytes32 _country, 
+        bytes32 _region,
+        bytes32 _email
+    );
+
+    event LogUpdateActor(
+        address indexed _id,
+        bytes32 _name,
+        bytes32 _typeOfActor, 
+        bytes32 _country, 
+        bytes32 _region,
+        bytes32 _email
+    );
 
      //Farmer
     struct Actor {
@@ -72,7 +87,7 @@ contract ActorFactory is Utils {
         Actor memory actor = Actor(_name,_typeOfActor,_country,_region,_email);
         addressToActor[msg.sender] = actor;
         actorsIds.push(msg.sender);
-        emit LogAddActor(msg.sender);
+        emit LogAddActor(msg.sender,_name,_typeOfActor,_country,_region,_email);
     }
 
     function updateActor(
@@ -90,6 +105,6 @@ contract ActorFactory is Utils {
         actor.region = _region;
         actor.email = _email;
         addressToActor[msg.sender] = actor;
-        emit LogUpdateActor(msg.sender);
+        emit LogUpdateActor(msg.sender,_name,_typeOfActor,_country,_region,_email);
     }        
 }
