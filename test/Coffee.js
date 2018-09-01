@@ -39,6 +39,27 @@ contract(Coffee, accounts => {
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
         "Logs the inserted uid"
       );
+      receipt.logs[0].args._farmUid.should.be.equal(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "Logs the inserted Farm uid"
+      );
+      expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
+        1200,
+        "Logs the inserted altitude"
+      );
+      byteToString(receipt.logs[0].args._variety).should.be.equal(
+        "Catuai Rojo",
+        "Logs the inserted variety"
+      );
+      byteToString(receipt.logs[0].args._process).should.be.equal(
+        "Washed",
+        "Logs the inserted process"
+      );
+      expect(receipt.logs[0].args._size.toNumber()).to.be.equal(
+        10000,
+        "Logs the inserted size"
+      );
+      receipt.logs[0].args._isSold.should.be.false;
       const count = await this.tokenInstance.getFarmCoffeeBatchCount(
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
       );
@@ -97,6 +118,27 @@ contract(Coffee, accounts => {
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
         "Logs the updated uid"
       );
+      receipt.logs[0].args._farmUid.should.be.equal(
+        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        "Logs the inserted Farm uid"
+      );
+      expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
+        1000,
+        "Logs the inserted altitude"
+      );
+      byteToString(receipt.logs[0].args._variety).should.be.equal(
+        "Catuai Amarillo",
+        "Logs the inserted variety"
+      );
+      byteToString(receipt.logs[0].args._process).should.be.equal(
+        "Honey",
+        "Logs the inserted process"
+      );
+      expect(receipt.logs[0].args._size.toNumber()).to.be.equal(
+        12000,
+        "Logs the inserted size"
+      );
+      receipt.logs[0].args._isSold.should.be.false;
       const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
       );

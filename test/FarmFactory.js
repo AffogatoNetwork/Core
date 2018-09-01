@@ -5,7 +5,7 @@ var FarmFactory = artifacts.require("./FarmFactory.sol");
 
 contract(FarmFactory, function(accounts) {
   function byteToString(a) {
-    return trimNull(web3.toAscii(a));
+    return trimNull(web3.toUtf8(a));
   }
   function trimNull(a) {
     var c = a.indexOf("\0");

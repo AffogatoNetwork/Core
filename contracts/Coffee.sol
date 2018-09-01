@@ -2,8 +2,24 @@ pragma solidity ^0.4.23;
 
 contract Coffee{
 
-    event LogAddCoffeeBatch(bytes32 indexed _id);
-    event LogUpdateCoffeeBatch(bytes32 indexed _id);
+    event LogAddCoffeeBatch(
+        bytes32 indexed _id,
+        bytes32 _farmUid,
+        uint16 _altitude,
+        bytes32 _variety,
+        bytes32 _process,
+        uint32 _size,
+        bool _isSold
+    );
+    event LogUpdateCoffeeBatch(
+        bytes32 indexed _id,
+        bytes32 _farmUid,
+        uint16 _altitude,
+        bytes32 _variety,
+        bytes32 _process,
+        uint32 _size,
+        bool _isSold
+    );
      
     struct CoffeeBatch{
         bytes32 uid;
@@ -55,7 +71,7 @@ contract Coffee{
         coffeeBatchCount++;
         coffeeBatches[uid] = coffeeBatch;
         farmToBatches[_farmUid].push(uid);
-        emit LogAddCoffeeBatch(uid);        
+        emit LogAddCoffeeBatch(uid, _farmUid, _altitude, _variety, _process, _size, false);        
     }
 
     function updateCoffeeBatch(bytes32 _coffeeUid, bytes32 _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
@@ -67,7 +83,7 @@ contract Coffee{
         coffeeBatch.variety = _variety;
         coffeeBatch.process = _process;
         coffeeBatch.size = _size;
-        emit LogUpdateCoffeeBatch(_coffeeUid);        
+        emit LogUpdateCoffeeBatch(_coffeeUid, _farmUid, _altitude, _variety, _process, _size, coffeeBatch.isSold);        
     }
 
     //TODO: pass to a util function
