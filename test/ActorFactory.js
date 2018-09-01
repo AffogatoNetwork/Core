@@ -37,7 +37,28 @@ contract(ActorFactory, function(accounts) {
       );
       receipt.logs[0].args._id.should.be.equal(
         accounts[1],
-        "logs the inserted taster address"
+        "logs the inserted actor address"
+      );
+      receipt.logs[0].args._name.should.be.equal(
+        "Toño Stark",
+        "logs the inserted name"
+      );
+      receipt.logs[0].args._typeOfActor.should.be.equal(
+        "farmer",
+        "logs the inserted type of account"
+      );
+      receipt.logs[0].args._country.should.be.equal(
+        "Honduras",
+        "logs the inserted actor country"
+      );
+
+      receipt.logs[0].args._region.should.be.equal(
+        "Francisco Morazan",
+        "logs the inserted actor region"
+      );
+      receipt.logs[0].args._email.should.be.equal(
+        "tony@stark.com",
+        "logs the inserted actor email"
       );
       const actorCount = await this.tokenInstance.getActorCount();
       expect(actorCount.toNumber()).to.be.equal(
