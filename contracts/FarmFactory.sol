@@ -5,8 +5,23 @@ import "./Utils.sol";
 //TODO: Validate that values aren't empty
 contract FarmFactory is Utils{
 
-    event LogAddFarm(bytes32 indexed _id);
-    event LogUpdateFarm(bytes32 indexed _id);
+    event LogAddFarm(
+        bytes32 indexed _id,
+        bytes32 _name,
+        bytes32 _country,
+        bytes32 _region,
+        bytes32 _village, 
+        string _story
+    );
+
+    event LogUpdateFarm(
+        bytes32 indexed _id,
+        bytes32 _name,
+        bytes32 _country,
+        bytes32 _region,
+        bytes32 _village, 
+        string _story
+    );
     
     //Farms
     struct Farm{
@@ -48,16 +63,16 @@ contract FarmFactory is Utils{
     function addFarm(
         bytes32 _name, 
         bytes32 _country, 
-        bytes32 _department, 
+        bytes32 _region, 
         bytes32 _village, 
         string _story
     ) public {
         bytes32 uid = keccak256(toBytes(farmsCount));
-        Farm memory farm = Farm(uid,_name,_country,_department,_village,_story);
+        Farm memory farm = Farm(uid,_name,_country,_region,_village,_story);
         farmerToFarms[msg.sender].push(uid);
         farms[uid] = farm;
         farmsCount++;
-        emit LogAddFarm(uid);
+        emit LogAddFarm(uid,_name,_country,_region,_village,_story);
     }
 
     function updateFarm(
@@ -75,6 +90,6 @@ contract FarmFactory is Utils{
         farm.region = _region;
         farm.village = _village;
         farm.story = _story;
-        emit LogUpdateFarm(_uid);
+        emit LogUpdateFarm(_uid,_name,_country,_region,_village,_story);
     }
 }

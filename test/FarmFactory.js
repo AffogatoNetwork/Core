@@ -37,6 +37,27 @@ contract(FarmFactory, function(accounts) {
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
         "logs the added farm id"
       );
+      byteToString(receipt.logs[0].args._name).should.be.equal(
+        "Los Encinos",
+        "logs the added farm name"
+      );
+      byteToString(receipt.logs[0].args._country).should.be.equal(
+        "Honduras",
+        "logs the added farm country"
+      );
+      byteToString(receipt.logs[0].args._region).should.be.equal(
+        "Francisco Morazan",
+        "logs the added farm region"
+      );
+      byteToString(receipt.logs[0].args._village).should.be.equal(
+        "Santa Lucia",
+        "logs the added farm village"
+      );
+      receipt.logs[0].args._story.should.be.equal(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "logs the added farm story"
+      );
+
       const count = await this.tokenInstance.getFarmersFarmsCount(accounts[0]);
       count.toNumber().should.be.equal(1, "Farms counter should increase");
     });
@@ -88,6 +109,26 @@ contract(FarmFactory, function(accounts) {
       receipt.logs[0].args._id.should.be.equal(
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
         "logs the updated farm id"
+      );
+      byteToString(receipt.logs[0].args._name).should.be.equal(
+        "Los Encinos 2",
+        "logs the added farm name"
+      );
+      byteToString(receipt.logs[0].args._country).should.be.equal(
+        "Honduras 2",
+        "logs the added farm country"
+      );
+      byteToString(receipt.logs[0].args._region).should.be.equal(
+        "Francisco Morazan 2",
+        "logs the added farm region"
+      );
+      byteToString(receipt.logs[0].args._village).should.be.equal(
+        "Santa Lucia 2",
+        "logs the added farm village"
+      );
+      receipt.logs[0].args._story.should.be.equal(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+        "logs the added farm story"
       );
       const farm = await this.tokenInstance.getFarmById.call(
         "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
