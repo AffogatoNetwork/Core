@@ -3,10 +3,12 @@ pragma solidity ^0.4.23;
 import "./Utils.sol";
 
 //TODO: Validate that values aren't empty
+//TODO: return farmer address on add
 contract FarmFactory is Utils{
-
+    
     event LogAddFarm(
         uint indexed _id,
+        address _ownerAddress,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
@@ -72,7 +74,7 @@ contract FarmFactory is Utils{
         farmerToFarms[msg.sender].push(uid);
         farms[uid] = farm;
         farmsCount++;
-        emit LogAddFarm(uid,_name,_country,_region,_village,_story);
+        emit LogAddFarm(uid,msg.sender,_name,_country,_region,_village,_story);
     }
 
     function updateFarm(

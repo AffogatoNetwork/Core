@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./Utils.sol";
 
+//TODO: add more data to events
 contract TastingFactory is Utils{
 
    event LogAddCupProfile(uint indexed _id);
