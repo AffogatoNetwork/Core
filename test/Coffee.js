@@ -23,7 +23,7 @@ contract(Coffee, accounts => {
   describe("Coffee Bacth Validations", () => {
     it("Adds a Coffee Batch", async () => {
       const receipt = await this.tokenInstance.addCoffeeBatch(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        1,
         1200,
         "Catuai Rojo",
         "Washed",
@@ -35,12 +35,12 @@ contract(Coffee, accounts => {
         "LogAddCoffeeBatch",
         "should be the LogAddCoffeeBatch event"
       );
-      receipt.logs[0].args._id.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
         "Logs the inserted uid"
       );
-      receipt.logs[0].args._farmUid.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._farmUid.toNumber()).to.be.equal(
+        1,
         "Logs the inserted Farm uid"
       );
       expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
@@ -60,9 +60,7 @@ contract(Coffee, accounts => {
         "Logs the inserted size"
       );
       receipt.logs[0].args._isSold.should.be.false;
-      const count = await this.tokenInstance.getFarmCoffeeBatchCount(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
-      );
+      const count = await this.tokenInstance.getFarmCoffeeBatchCount(1);
       expect(count.toNumber()).to.be.equal(
         1,
         "Coffee Batches for farm should be 1"
@@ -70,15 +68,13 @@ contract(Coffee, accounts => {
     });
 
     it("Gets a Coffee Batch", async () => {
-      const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
-      );
-      coffeeBatch[0].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(1);
+      expect(coffeeBatch[0].toNumber()).to.be.equal(
+        1,
         "batch id is equal to generated"
       );
-      coffeeBatch[1].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(coffeeBatch[1].toNumber()).to.be.equal(
+        1,
         "farm uid is equal to inserted"
       );
       expect(coffeeBatch[2].toNumber()).to.be.equal(
@@ -101,8 +97,8 @@ contract(Coffee, accounts => {
 
     it("Updates a Coffee Batch", async () => {
       const receipt = await this.tokenInstance.updateCoffeeBatch(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        1,
+        1,
         1000,
         "Catuai Amarillo",
         "Honey",
@@ -114,12 +110,12 @@ contract(Coffee, accounts => {
         "LogUpdateCoffeeBatch",
         "should be the LogUpdateCoffeeBatch event"
       );
-      receipt.logs[0].args._id.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
         "Logs the updated uid"
       );
-      receipt.logs[0].args._farmUid.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._farmUid.toNumber()).to.be.equal(
+        1,
         "Logs the inserted Farm uid"
       );
       expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
@@ -139,15 +135,13 @@ contract(Coffee, accounts => {
         "Logs the inserted size"
       );
       receipt.logs[0].args._isSold.should.be.false;
-      const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
-      );
-      coffeeBatch[0].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(1);
+      expect(coffeeBatch[0].toNumber()).to.be.equal(
+        1,
         "batch id is equal to original"
       );
-      coffeeBatch[1].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(coffeeBatch[1].toNumber()).to.be.equal(
+        1,
         "farm uid is equal to updated"
       );
       expect(coffeeBatch[2].toNumber()).to.be.equal(

@@ -3,8 +3,8 @@ pragma solidity ^0.4.23;
 contract Coffee{
 
     event LogAddCoffeeBatch(
-        bytes32 indexed _id,
-        bytes32 _farmUid,
+        uint indexed _id,
+        uint _farmUid,
         uint16 _altitude,
         bytes32 _variety,
         bytes32 _process,
@@ -12,8 +12,8 @@ contract Coffee{
         bool _isSold
     );
     event LogUpdateCoffeeBatch(
-        bytes32 indexed _id,
-        bytes32 _farmUid,
+        uint indexed _id,
+        uint _farmUid,
         uint16 _altitude,
         bytes32 _variety,
         bytes32 _process,
@@ -22,8 +22,8 @@ contract Coffee{
     );
      
     struct CoffeeBatch{
-        bytes32 uid;
-        bytes32 farmUid;
+        uint uid;
+        uint farmUid;
         uint16 altitude;
         bytes32 variety;
         bytes32 process;
@@ -32,19 +32,19 @@ contract Coffee{
         bool isSold;  
     }
 
-   mapping(bytes32 => CoffeeBatch) public coffeeBatches;
-   mapping(bytes32 => bytes32[]) public farmToBatches;
+   mapping(uint => CoffeeBatch) public coffeeBatches;
+   mapping(uint => uint[]) public farmToBatches;
    // mapping(uint256 => CoffeeBatch) coffeeBatches;
    // uint256[] coffeeBatchIds;
-   uint coffeeBatchCount = 0;
+   uint coffeeBatchCount = 1;
 
-    function getFarmCoffeeBatchCount(bytes32 _farmUid) public view returns(uint count) {
+    function getFarmCoffeeBatchCount(uint _farmUid) public view returns(uint count) {
         return farmToBatches[_farmUid].length;
     }
 
-    function getCoffeeBatchById(bytes32 _uid) public view returns(
-        bytes32,
-        bytes32,
+    function getCoffeeBatchById(uint _uid) public view returns(
+        uint,
+        uint,
         uint16,
         bytes32,
         bytes32,
@@ -63,10 +63,10 @@ contract Coffee{
         ); 
     }
 
-    function addCoffeeBatch(bytes32 _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
+    function addCoffeeBatch(uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
      //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
         //Fixes memory error that doesn't allow to create memory objects in structs
-        bytes32 uid = keccak256(toBytes(coffeeBatchCount));
+        uint uid = coffeeBatchCount;
         CoffeeBatch memory coffeeBatch = CoffeeBatch(uid, _farmUid, _altitude, _variety, _process, _size, false);
         coffeeBatchCount++;
         coffeeBatches[uid] = coffeeBatch;
@@ -74,7 +74,7 @@ contract Coffee{
         emit LogAddCoffeeBatch(uid, _farmUid, _altitude, _variety, _process, _size, false);        
     }
 
-    function updateCoffeeBatch(bytes32 _coffeeUid, bytes32 _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
+    function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
      //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
         //Fixes memory error that doesn't allow to create memory objects in structs
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];

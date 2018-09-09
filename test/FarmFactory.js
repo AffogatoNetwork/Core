@@ -33,8 +33,8 @@ contract(FarmFactory, function(accounts) {
         "LogAddFarm",
         "should be the LogAddFarm event"
       );
-      receipt.logs[0].args._id.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
         "logs the added farm id"
       );
       byteToString(receipt.logs[0].args._name).should.be.equal(
@@ -63,13 +63,8 @@ contract(FarmFactory, function(accounts) {
     });
 
     it("Gets a farm", async () => {
-      const farm = await this.tokenInstance.getFarmById(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
-      );
-      farm[0].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
-        "Uid equal to inserted"
-      );
+      const farm = await this.tokenInstance.getFarmById(1);
+      expect(farm[0].toNumber()).to.be.equal(1, "Uid equal to inserted");
       expect(byteToString(farm[1])).to.be.equal(
         "Los Encinos",
         "name equal to inserted"
@@ -94,7 +89,7 @@ contract(FarmFactory, function(accounts) {
 
     it("Updates a farm", async () => {
       const receipt = await this.tokenInstance.updateFarm(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        1,
         "Los Encinos 2",
         "Honduras 2",
         "Francisco Morazan 2",
@@ -106,8 +101,8 @@ contract(FarmFactory, function(accounts) {
         "LogUpdateFarm",
         "should be the LogUpdateFarm event"
       );
-      receipt.logs[0].args._id.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
         "logs the updated farm id"
       );
       byteToString(receipt.logs[0].args._name).should.be.equal(
@@ -130,13 +125,8 @@ contract(FarmFactory, function(accounts) {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
         "logs the added farm story"
       );
-      const farm = await this.tokenInstance.getFarmById.call(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
-      );
-      farm[0].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
-        "Uid equal to updated"
-      );
+      const farm = await this.tokenInstance.getFarmById.call(1);
+      expect(farm[0].toNumber()).to.be.equal(1, "Uid equal to updated");
       expect(byteToString(farm[1])).to.be.equal(
         "Los Encinos 2",
         "name equal to updated"

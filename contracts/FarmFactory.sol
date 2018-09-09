@@ -6,7 +6,7 @@ import "./Utils.sol";
 contract FarmFactory is Utils{
 
     event LogAddFarm(
-        bytes32 indexed _id,
+        uint indexed _id,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
@@ -15,7 +15,7 @@ contract FarmFactory is Utils{
     );
 
     event LogUpdateFarm(
-        bytes32 indexed _id,
+        uint indexed _id,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
@@ -25,7 +25,7 @@ contract FarmFactory is Utils{
     
     //Farms
     struct Farm{
-        bytes32 uid;
+        uint uid;
         bytes32 name;
         bytes32 country;
         bytes32 region;
@@ -33,16 +33,16 @@ contract FarmFactory is Utils{
         string story;
     }
 
-    mapping(address => bytes32[]) public farmerToFarms;
-    mapping(bytes32 => Farm) public farms;
-    uint farmsCount = 0;
+    mapping(address => uint[]) public farmerToFarms;
+    mapping(uint => Farm) public farms;
+    uint farmsCount = 1;
 
     function getFarmersFarmsCount(address _farmer)public view returns (uint){
         return farmerToFarms[_farmer].length;
     }
 
-    function getFarmById(bytes32 uid) public view returns(
-        bytes32,
+    function getFarmById(uint uid) public view returns(
+        uint,
         bytes32, 
         bytes32, 
         bytes32, 
@@ -67,7 +67,7 @@ contract FarmFactory is Utils{
         bytes32 _village, 
         string _story
     ) public {
-        bytes32 uid = keccak256(toBytes(farmsCount));
+        uint uid = farmsCount;
         Farm memory farm = Farm(uid,_name,_country,_region,_village,_story);
         farmerToFarms[msg.sender].push(uid);
         farms[uid] = farm;
@@ -76,7 +76,7 @@ contract FarmFactory is Utils{
     }
 
     function updateFarm(
-        bytes32 _uid,
+        uint _uid,
         bytes32 _name, 
         bytes32 _country, 
         bytes32 _region, 

@@ -4,8 +4,8 @@ import "./Utils.sol";
 
 contract TastingFactory is Utils{
 
-   event LogAddCupProfile(bytes32 indexed _id);
-   event LogUpdateCupProfile(bytes32 indexed _id);
+   event LogAddCupProfile(uint indexed _id);
+   event LogUpdateCupProfile(uint indexed _id);
    event LogApproval(
     address indexed _owner,
     address indexed _taster,
@@ -13,7 +13,7 @@ contract TastingFactory is Utils{
    );
 
    struct CupProfile{
-        bytes32 uid;
+        uint uid;
         bytes32 aroma;
         bytes32 flavor;
         bytes32 acidity;
@@ -23,10 +23,10 @@ contract TastingFactory is Utils{
         uint16 cuppingNote;
     }
 
-    mapping(address => bytes32[]) public tasterToCupProfiles;
-    mapping(bytes32 => bytes32[]) public coffeeBatchToCupProfiles;
-    mapping(bytes32 => CupProfile) public cupProfiles;
-    uint tastingCount = 0;
+    mapping(address => uint[]) public tasterToCupProfiles;
+    mapping(uint => uint[]) public coffeeBatchToCupProfiles;
+    mapping(uint => CupProfile) public cupProfiles;
+    uint tastingCount = 1;
 
     mapping (address => mapping (address => bool)) private allowed_;
 
@@ -34,12 +34,12 @@ contract TastingFactory is Utils{
         return tasterToCupProfiles[_taster].length;
     }
 
-    function getCoffeeCupProfileCount(bytes32 _coffeeBatch)public view returns (uint){
+    function getCoffeeCupProfileCount(uint _coffeeBatch)public view returns (uint){
         return coffeeBatchToCupProfiles[_coffeeBatch].length;
     }
 
-    function getCupProfileById(bytes32 uid) public view returns(
-        bytes32,
+    function getCupProfileById(uint uid) public view returns(
+        uint,
         bytes32, 
         bytes32, 
         bytes32, 
@@ -61,7 +61,7 @@ contract TastingFactory is Utils{
 
     function addCupProfile(
         address _owner,
-        bytes32 _coffeeBatchId,
+        uint _coffeeBatchId,
         bytes32 _aroma,
         bytes32 _flavor,
         bytes32 _acidity,
@@ -70,7 +70,7 @@ contract TastingFactory is Utils{
         uint16 _cuppingNote
     ) public {
         require(allowed_[_owner][msg.sender]);
-        bytes32 uid = keccak256(toBytes(tastingCount));
+        uint uid = tastingCount;
         CupProfile memory cupProfile = CupProfile(uid,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
         tasterToCupProfiles[msg.sender].push(uid);
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
@@ -80,7 +80,7 @@ contract TastingFactory is Utils{
     }
     //Coffee Batch can't be updated
     function updateCupProfileById(
-        bytes32 _uid,
+        uint _uid,
         bytes32 _aroma,
         bytes32 _flavor,
         bytes32 _acidity,

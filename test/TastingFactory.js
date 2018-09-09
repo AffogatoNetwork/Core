@@ -44,7 +44,7 @@ contract(TastingFactory, function(accounts) {
     it("Adds a cup profile", async () => {
       const receipt = await this.tokenInstance.addCupProfile(
         accounts[1],
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        1,
         "Caramelo",
         "Citrico",
         "balanceada",
@@ -61,8 +61,8 @@ contract(TastingFactory, function(accounts) {
         "LogAddCupProfile",
         "should be the LogAddCupProfile event"
       );
-      receipt.logs[0].args._id.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
         "logs the added cup profile id"
       );
 
@@ -74,7 +74,7 @@ contract(TastingFactory, function(accounts) {
         "Taster Profiles counter should increase"
       );
       const countCoffeeBatch = await this.tokenInstance.getCoffeeCupProfileCount(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+        1
       );
       expect(countCoffeeBatch.toNumber()).to.be.equal(
         1,
@@ -85,7 +85,7 @@ contract(TastingFactory, function(accounts) {
         var result = true;
         const receiptFail = await this.tokenInstance.addCupProfile(
           accounts[1],
-          "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+          1,
           "Caramelo",
           "Citrico",
           "balanceada",
@@ -106,23 +106,37 @@ contract(TastingFactory, function(accounts) {
     });
 
     it("Gets a cup profile", async () => {
-      const cupProfile = await this.tokenInstance.getCupProfileById(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+      const cupProfile = await this.tokenInstance.getCupProfileById(1);
+      expect(cupProfile[0].toNumber()).to.be.equal(1);
+      expect(byteToString(cupProfile[1])).to.be.equal(
+        "Caramelo",
+        "Value is equal to inserted"
       );
-      cupProfile[0].should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
+      expect(byteToString(cupProfile[2])).to.be.equal(
+        "Citrico",
+        "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[1])).to.be.equal("Caramelo");
-      expect(byteToString(cupProfile[2])).to.be.equal("Citrico");
-      expect(byteToString(cupProfile[3])).to.be.equal("balanceada");
-      expect(byteToString(cupProfile[4])).to.be.equal("balanceado");
-      expect(byteToString(cupProfile[5])).to.be.equal("seco");
-      expect(cupProfile[6].toNumber()).to.be.equal(8000);
+      expect(byteToString(cupProfile[3])).to.be.equal(
+        "balanceada",
+        "Value is equal to inserted"
+      );
+      expect(byteToString(cupProfile[4])).to.be.equal(
+        "balanceado",
+        "Value is equal to inserted"
+      );
+      expect(byteToString(cupProfile[5])).to.be.equal(
+        "seco",
+        "Value is equal to inserted"
+      );
+      expect(cupProfile[6].toNumber()).to.be.equal(
+        8000,
+        "Value is equal to inserted"
+      );
     });
 
     it("Updates a cup profile", async () => {
       const receipt = await this.tokenInstance.updateCupProfileById(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
+        1,
         "Rosas",
         "Citrico 2",
         "balanceada 2",
@@ -136,21 +150,37 @@ contract(TastingFactory, function(accounts) {
         "LogUpdateCupProfile",
         "should be the LogUpdateCupProfile event"
       );
-      receipt.logs[0].args._id.should.be.equal(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563",
-        "logs the yodated cup profile id"
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
+        "logs the updated cup profile id"
       );
 
-      const cupProfile = await this.tokenInstance.getCupProfileById(
-        "0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563"
-      );
+      const cupProfile = await this.tokenInstance.getCupProfileById(1);
 
-      expect(byteToString(cupProfile[1])).to.be.equal("Rosas");
-      expect(byteToString(cupProfile[2])).to.be.equal("Citrico 2");
-      expect(byteToString(cupProfile[3])).to.be.equal("balanceada 2");
-      expect(byteToString(cupProfile[4])).to.be.equal("balanceado 2");
-      expect(byteToString(cupProfile[5])).to.be.equal("Prolongado 2");
-      expect(cupProfile[6].toNumber()).to.be.equal(9000);
+      expect(byteToString(cupProfile[1])).to.be.equal(
+        "Rosas",
+        "Value is equal to updated"
+      );
+      expect(byteToString(cupProfile[2])).to.be.equal(
+        "Citrico 2",
+        "Value is equal to updated"
+      );
+      expect(byteToString(cupProfile[3])).to.be.equal(
+        "balanceada 2",
+        "Value is equal to updated"
+      );
+      expect(byteToString(cupProfile[4])).to.be.equal(
+        "balanceado 2",
+        "Value is equal to updated"
+      );
+      expect(byteToString(cupProfile[5])).to.be.equal(
+        "Prolongado 2",
+        "Value is equal to updated"
+      );
+      expect(cupProfile[6].toNumber()).to.be.equal(
+        9000,
+        "Value is equal to updated"
+      );
     });
   });
 });
