@@ -99,7 +99,8 @@ contract(FarmFactory, function(accounts) {
         "Honduras 2",
         "Francisco Morazan 2",
         "Santa Lucia 2",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2"
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+        { from: accounts[0] }
       );
       receipt.logs.length.should.be.equal(1, "trigger one event");
       receipt.logs[0].event.should.be.equal(
@@ -109,6 +110,10 @@ contract(FarmFactory, function(accounts) {
       expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
         1,
         "logs the updated farm id"
+      );
+      receipt.logs[0].args._ownerAddress.should.be.equal(
+        accounts[0],
+        "logs the updated farmer address"
       );
       byteToString(receipt.logs[0].args._name).should.be.equal(
         "Los Encinos 2",

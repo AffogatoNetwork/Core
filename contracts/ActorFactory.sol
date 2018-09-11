@@ -89,7 +89,7 @@ contract ActorFactory is Utils {
         actorsIds.push(msg.sender);
         emit LogAddActor(msg.sender,_name,_typeOfActor,_country,_region,_email);
     }
-
+    //TODO: Only owner should update
     function updateActor(
         bytes32 _name, 
         bytes32 _typeOfActor,

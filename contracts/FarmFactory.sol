@@ -18,6 +18,7 @@ contract FarmFactory is Utils{
 
     event LogUpdateFarm(
         uint indexed _id,
+        address _ownerAddress,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
@@ -76,7 +77,7 @@ contract FarmFactory is Utils{
         farmsCount++;
         emit LogAddFarm(uid,msg.sender,_name,_country,_region,_village,_story);
     }
-
+    //TODO: only owner should update
     function updateFarm(
         uint _uid,
         bytes32 _name, 
@@ -92,6 +93,6 @@ contract FarmFactory is Utils{
         farm.region = _region;
         farm.village = _village;
         farm.story = _story;
-        emit LogUpdateFarm(_uid,_name,_country,_region,_village,_story);
+        emit LogUpdateFarm(_uid, msg.sender, _name, _country, _region, _village, _story);
     }
 }

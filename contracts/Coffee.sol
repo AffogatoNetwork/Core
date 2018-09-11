@@ -73,7 +73,7 @@ contract Coffee{
         farmToBatches[_farmUid].push(uid);
         emit LogAddCoffeeBatch(uid, _farmUid, _altitude, _variety, _process, _size, false);        
     }
-
+    //TODO: Only owner should update
     function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
      //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
         //Fixes memory error that doesn't allow to create memory objects in structs
