@@ -22,6 +22,12 @@ contract ActorFactory is Utils {
         bytes32 _email
     );
 
+    event LogApproval(
+        address indexed _owner,
+        address indexed _taster,
+        bool _value
+    );
+
      //Farmer
     struct Actor {
         bytes32 name;
@@ -32,7 +38,8 @@ contract ActorFactory is Utils {
     }
 
     mapping(address => Actor) public addressToActor;
-    address[] public actorsIds;    
+    address[] public actorsIds;  
+    mapping (address => mapping (address => bool)) private allowed_;  
 
     function getActorCount() public view returns(uint count){
         return actorsIds.length;
@@ -40,6 +47,10 @@ contract ActorFactory is Utils {
 
     function getAccountType(address _owner) public view returns(bytes32) {
         return addressToActor[_owner].typeOfActor;
+    }
+
+    function isAllowed(address _owner, address _target) public view returns(bool){
+        return allowed_[_owner][_target];
     }
 
     function returnOwner() public view returns(
@@ -106,5 +117,11 @@ contract ActorFactory is Utils {
         actor.email = _email;
         addressToActor[msg.sender] = actor;
         emit LogUpdateActor(msg.sender,_name,_typeOfActor,_country,_region,_email);
-    }        
+    }     
+
+    function approve(address _spender, bool _value) public returns (bool) {
+        allowed_[msg.sender][_spender] = _value;
+        emit LogApproval(msg.sender, _spender, _value);
+        return true;
+    }   
 }

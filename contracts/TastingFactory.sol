@@ -1,17 +1,15 @@
 pragma solidity ^0.4.23;
 
 import "./Utils.sol";
+import "./ActorFactory.sol";
 
 //TODO: add more data to events
 contract TastingFactory is Utils{
 
    event LogAddCupProfile(uint indexed _id);
    event LogUpdateCupProfile(uint indexed _id);
-   event LogApproval(
-    address indexed _owner,
-    address indexed _taster,
-    bool _value
-   );
+
+   ActorFactory actor;
 
    struct CupProfile{
         uint uid;
@@ -29,7 +27,9 @@ contract TastingFactory is Utils{
     mapping(uint => CupProfile) public cupProfiles;
     uint tastingCount = 1;
 
-    mapping (address => mapping (address => bool)) private allowed_;
+    constructor(address _actorAddress) public {
+        actor = ActorFactory(_actorAddress);
+    }
 
     function getTasterCupProfileCount(address _taster)public view returns (uint){
         return tasterToCupProfiles[_taster].length;
@@ -70,7 +70,7 @@ contract TastingFactory is Utils{
         bytes32 _aftertaste,
         uint16 _cuppingNote
     ) public {
-        require(allowed_[_owner][msg.sender]);
+        require(actor.isAllowed(_owner,msg.sender));
         uint uid = tastingCount;
         CupProfile memory cupProfile = CupProfile(uid,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
         tasterToCupProfiles[msg.sender].push(uid);
@@ -98,11 +98,5 @@ contract TastingFactory is Utils{
         cupProfile.aftertaste = _aftertaste;
         cupProfile.cuppingNote = _cuppingNote;
         emit LogUpdateCupProfile(_uid);
-    }
-
-    function approve(address _spender, bool _value) public returns (bool) {
-        allowed_[msg.sender][_spender] = _value;
-        emit LogApproval(msg.sender, _spender, _value);
-        return true;
     }
 }

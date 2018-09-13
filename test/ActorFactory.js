@@ -196,6 +196,31 @@ contract(ActorFactory, function(accounts) {
         .empty;
     });
   });
+
+  it("Allows actors to approve actors", async () => {
+    const receipt = await this.tokenInstance.approve(accounts[3], true, {
+      from: accounts[1]
+    });
+    receipt.logs.length.should.be.equal(1, "trigger one event");
+    receipt.logs[0].event.should.be.equal(
+      "LogApproval",
+      "should be the LogApproval event"
+    );
+    receipt.logs[0].args._owner.should.be.equal(
+      accounts[1],
+      "logs the owner address"
+    );
+    receipt.logs[0].args._taster.should.be.equal(
+      accounts[3],
+      "logs the target address"
+    );
+    receipt.logs[0].args._value.should.be.true;
+  });
+
+  it("Gets allowed", async () => {
+    const result = await this.tokenInstance.isAllowed(accounts[1], accounts[3]);
+    result.should.be.true;
+  });
 });
 
 /*var Actor = artifacts.require("./Actor.sol");

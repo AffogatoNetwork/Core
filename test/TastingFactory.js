@@ -2,6 +2,7 @@ require("chai").should();
 require("chai").expect;
 
 var TastingFactory = artifacts.require("./TastingFactory.sol");
+var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(TastingFactory, function(accounts) {
   function byteToString(a) {
@@ -17,29 +18,15 @@ contract(TastingFactory, function(accounts) {
   }
 
   beforeEach(async () => {
+    this.actorTokenInstance = await ActorFactory.deployed();
     this.tokenInstance = await TastingFactory.deployed();
+    const allowed = await this.actorTokenInstance.approve(accounts[3], true, {
+      from: accounts[1]
+    });
   });
 
   describe("Tasting Validations", () => {
-    it("Allows farmers to approve tastings", async () => {
-      const receipt = await this.tokenInstance.approve(accounts[3], true, {
-        from: accounts[1]
-      });
-      receipt.logs.length.should.be.equal(1, "trigger one event");
-      receipt.logs[0].event.should.be.equal(
-        "LogApproval",
-        "should be the LogApproval event"
-      );
-      receipt.logs[0].args._owner.should.be.equal(
-        accounts[1],
-        "logs the owner address"
-      );
-      receipt.logs[0].args._taster.should.be.equal(
-        accounts[3],
-        "logs the taster address"
-      );
-      receipt.logs[0].args._value.should.be.true;
-    });
+    it("Runs the constructor ", async () => {});
 
     it("Adds a cup profile", async () => {
       const receipt = await this.tokenInstance.addCupProfile(
