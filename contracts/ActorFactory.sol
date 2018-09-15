@@ -24,7 +24,7 @@ contract ActorFactory is Utils {
 
     event LogApproval(
         address indexed _owner,
-        address indexed _taster,
+        address indexed _allowed,
         bool _value
     );
 

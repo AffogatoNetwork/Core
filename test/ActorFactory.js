@@ -210,9 +210,9 @@ contract(ActorFactory, function(accounts) {
       accounts[1],
       "logs the owner address"
     );
-    receipt.logs[0].args._taster.should.be.equal(
+    receipt.logs[0].args._allowed.should.be.equal(
       accounts[3],
-      "logs the target address"
+      "logs the allowed address"
     );
     receipt.logs[0].args._value.should.be.true;
   });
