@@ -28,7 +28,6 @@ contract ActorFactory is Utils {
         bool _value
     );
 
-     //Farmer
     struct Actor {
         bytes32 name;
         bytes32 typeOfActor; 
@@ -120,6 +119,8 @@ contract ActorFactory is Utils {
     }     
 
     function approve(address _spender, bool _value) public returns (bool) {
+        //TODO: user must have account
+        //TODO: User shouldn't give permissions to itself
         allowed_[msg.sender][_spender] = _value;
         emit LogApproval(msg.sender, _spender, _value);
         return true;

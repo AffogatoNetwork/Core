@@ -6,7 +6,7 @@ var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(TastingFactory, function(accounts) {
   function byteToString(a) {
-    return trimNull(web3.toAscii(a));
+    return trimNull(web3.toUtf8(a));
   }
 
   function trimNull(a) {
@@ -33,7 +33,7 @@ contract(TastingFactory, function(accounts) {
         accounts[1],
         1,
         "Caramelo",
-        "Citrico",
+        "Cítrico",
         "balanceada",
         "balanceado",
         "seco",
@@ -51,6 +51,34 @@ contract(TastingFactory, function(accounts) {
       expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
         1,
         "logs the added cup profile id"
+      );
+      expect(receipt.logs[0].args._coffeeBatchId.toNumber()).to.be.equal(
+        1,
+        "logs the added profile coffee batch id"
+      );
+      expect(byteToString(receipt.logs[0].args._aroma)).to.be.equal(
+        "Caramelo",
+        "logs the added cup profile aroma"
+      );
+      expect(byteToString(receipt.logs[0].args._flavor)).to.be.equal(
+        "Cítrico",
+        "logs the added cup profile flavor"
+      );
+      expect(byteToString(receipt.logs[0].args._acidity)).to.be.equal(
+        "balanceada",
+        "logs the added cup profile acidity"
+      );
+      expect(byteToString(receipt.logs[0].args._body)).to.be.equal(
+        "balanceado",
+        "logs the added cup profile body"
+      );
+      expect(byteToString(receipt.logs[0].args._aftertaste)).to.be.equal(
+        "seco",
+        "logs the added cup profile aftertaste"
+      );
+      expect(receipt.logs[0].args._cuppingNote.toNumber()).to.be.equal(
+        8000,
+        "logs the added profile coffee cupping note"
       );
 
       const countTaster = await this.tokenInstance.getTasterCupProfileCount(
@@ -74,7 +102,7 @@ contract(TastingFactory, function(accounts) {
           accounts[1],
           1,
           "Caramelo",
-          "Citrico",
+          "Cítrico",
           "balanceada",
           "balanceado",
           "seco",
@@ -100,7 +128,7 @@ contract(TastingFactory, function(accounts) {
         "Value is equal to inserted"
       );
       expect(byteToString(cupProfile[2])).to.be.equal(
-        "Citrico",
+        "Cítrico",
         "Value is equal to inserted"
       );
       expect(byteToString(cupProfile[3])).to.be.equal(

@@ -3,11 +3,27 @@ pragma solidity ^0.4.23;
 import "./Utils.sol";
 import "./ActorFactory.sol";
 
-//TODO: add more data to events
 contract TastingFactory is Utils{
 
-   event LogAddCupProfile(uint indexed _id);
-   event LogUpdateCupProfile(uint indexed _id);
+   event LogAddCupProfile(
+        uint indexed _id,
+        uint _coffeeBatchId,
+        bytes32 _aroma,
+        bytes32 _flavor,
+        bytes32 _acidity,
+        bytes32 _body,
+        bytes32 _aftertaste,
+        uint16 _cuppingNote
+    );
+   event LogUpdateCupProfile(
+        uint indexed _id,
+        bytes32 _aroma,
+        bytes32 _flavor,
+        bytes32 _acidity,
+        bytes32 _body,
+        bytes32 _aftertaste,
+        uint16 _cuppingNote
+    );
 
    ActorFactory actor;
 
@@ -77,7 +93,7 @@ contract TastingFactory is Utils{
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
         cupProfiles[uid] = cupProfile;
         tastingCount++;
-        emit LogAddCupProfile(uid);
+        emit LogAddCupProfile(uid,_coffeeBatchId,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
     }
     //Coffee Batch can't be updated
     function updateCupProfileById(
@@ -97,6 +113,6 @@ contract TastingFactory is Utils{
         cupProfile.body = _body;
         cupProfile.aftertaste = _aftertaste;
         cupProfile.cuppingNote = _cuppingNote;
-        emit LogUpdateCupProfile(_uid);
+        emit LogUpdateCupProfile(_uid,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
     }
 }
