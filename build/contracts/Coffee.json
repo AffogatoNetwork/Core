@@ -7675,6 +7675,12 @@
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
   "networks": {
+    "100": {
+      "events": {},
+      "links": {},
+      "address": "0x5dbe6afd399435f8227659572b76d83dbab4ab53",
+      "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
+    },
     "1535498288062": {
       "events": {},
       "links": {},
@@ -7752,8 +7758,20 @@
       "links": {},
       "address": "0x4ec6d14753f34acfbb3deb88833a6a63cc095d55",
       "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
+    },
+    "1537905829076": {
+      "events": {},
+      "links": {},
+      "address": "0x1e0d99942dad7023573a355c7572831ce16e7eb0",
+      "transactionHash": "0xeb4fa28d144fac62a34914f38e808a16e70efb88f9eb8893d2d0c87742d58d7f"
+    },
+    "1538007482883": {
+      "events": {},
+      "links": {},
+      "address": "0x97c3695184bb96eb8ae02a31730a4897e2719658",
+      "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
     }
   },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-09-23T23:25:50.960Z"
+  "updatedAt": "2018-09-28T15:06:38.909Z"
 }

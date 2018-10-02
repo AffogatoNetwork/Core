@@ -8,6 +8,7 @@ contract TastingFactory is Utils{
    event LogAddCupProfile(
         uint indexed _id,
         uint _coffeeBatchId,
+        address _tasterAddress,
         bytes32 _aroma,
         bytes32 _flavor,
         bytes32 _acidity,
@@ -93,7 +94,7 @@ contract TastingFactory is Utils{
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
         cupProfiles[uid] = cupProfile;
         tastingCount++;
-        emit LogAddCupProfile(uid,_coffeeBatchId,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
+        emit LogAddCupProfile(uid,_coffeeBatchId,msg.sender,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
     }
     //Coffee Batch can't be updated
     function updateCupProfileById(

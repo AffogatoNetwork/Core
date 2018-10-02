@@ -56,6 +56,10 @@ contract(TastingFactory, function(accounts) {
         1,
         "logs the added profile coffee batch id"
       );
+      receipt.logs[0].args._tasterAddress.should.be.equal(
+        accounts[3],
+        "logs the added profile taster address"
+      );
       expect(byteToString(receipt.logs[0].args._aroma)).to.be.equal(
         "Caramelo",
         "logs the added cup profile aroma"
