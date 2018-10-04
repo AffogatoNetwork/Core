@@ -29,9 +29,15 @@ contract(CertificateFactory, function(accounts) {
     it("Runs the constructor ", async () => {});
 
     it("Adds a certificate", async () => {
-      const receipt = await this.tokenInstance.addCertificate(accounts[1], 1, {
-        from: accounts[3]
-      });
+      const receipt = await this.tokenInstance.addCertificate(
+        "DO Marcala",
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Denominación de Origen de Marcala",
+        "",
+        {
+          from: accounts[4]
+        }
+      );
 
       receipt.logs.length.should.be.equal(1, "trigger one event");
       receipt.logs[0].event.should.be.equal(
@@ -42,35 +48,76 @@ contract(CertificateFactory, function(accounts) {
         1,
         "logs the added certificate id"
       );
+
+      receipt.logs[0].args._certifierAddress.should.be.equal(
+        accounts[4],
+        "logs the added certificate certifier address"
+      );
+      expect(byteToString(receipt.logs[0].args._name)).to.be.equal(
+        "DO Marcala",
+        "logs the added certificate name"
+      );
+      expect(receipt.logs[0].args._imageHash).to.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "logs the added certificate image hash"
+      );
+      expect(receipt.logs[0].args._description).to.be.equal(
+        "Denominación de Origen de Marcala",
+        "logs the added certificate Description"
+      );
+      expect(receipt.logs[0].args._additionalInformation).to.be.equal(
+        "",
+        "logs the added certificate Additional information"
+      );
+
+      const countCertificates = await this.tokenInstance.getCertifierCertificateCount(
+        accounts[4]
+      );
+      expect(countCertificates.toNumber()).to.be.equal(
+        1,
+        "Taster Profiles counter should increase"
+      );
+    });
+
+    it("Assigns a certificate", async () => {
+      const receipt = await this.tokenInstance.assignCertificate(
+        accounts[1],
+        1,
+        1,
+        {
+          from: accounts[4]
+        }
+      );
+
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogAssignCertificate",
+        "should be the LogAssignCertificate event"
+      );
+      expect(receipt.logs[0].args._certificateId.toNumber()).to.be.equal(
+        1,
+        "logs the assigned certificate id"
+      );
       expect(receipt.logs[0].args._coffeeBatchId.toNumber()).to.be.equal(
         1,
         "logs the added certificate coffee batch id"
       );
-      receipt.logs[0].args._tasterAddress.should.be.equal(
-        accounts[3],
+      receipt.logs[0].args._ownerAddress.should.be.equal(
+        accounts[1],
+        "logs the added certificate owner address"
+      );
+      receipt.logs[0].args._certifierAddress.should.be.equal(
+        accounts[4],
         "logs the added certificate certifier address"
-      );
-
-      const countCoffeeBatch = await this.tokenInstance.getCoffeeCupProfileCount(
-        1
-      );
-      expect(countCoffeeBatch.toNumber()).to.be.equal(
-        1,
-        "Coffee Batches Cup Profiles counter should increase"
       );
 
       try {
         var result = true;
-        const receiptFail = await this.tokenInstance.addCupProfile(
+        const receiptFail = await this.tokenInstance.assignCertificate(
           accounts[1],
           1,
-          "Caramelo",
-          "Cítrico",
-          "balanceada",
-          "balanceado",
-          "seco",
-          8000,
-          { from: accounts[4] }
+          1,
+          { from: accounts[5] }
         );
       } catch (error) {
         result = false;
@@ -83,6 +130,7 @@ contract(CertificateFactory, function(accounts) {
       }
     });
 
+    /*
     it("Gets a cup profile", async () => {
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
       expect(cupProfile[0].toNumber()).to.be.equal(1);
@@ -159,6 +207,6 @@ contract(CertificateFactory, function(accounts) {
         9000,
         "Value is equal to updated"
       );
-    });
+    });*/
   });
 });
