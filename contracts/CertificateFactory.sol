@@ -28,7 +28,7 @@ contract CertificateFactory is Utils{
         bytes32 name;
         string imageHash;
         string description;
-        string _additionalInformation;
+        string additionalInformation;
    }
 
     mapping(address => uint[]) public actorToCertificates;
@@ -45,9 +45,23 @@ contract CertificateFactory is Utils{
     }
 
    
-   /* function getCertificateById(uint uid) public view returns(){
-        
-    }*/
+    function getCertificateById(uint _certificateId) public view returns(
+        uint,
+        bytes32,
+        string,
+        string,
+        string
+    ){
+        Certificate memory certificate = certificates[_certificateId];
+        return(
+            certificate.uid,
+            certificate.name,
+            certificate.imageHash,
+            certificate.description,
+            certificate.additionalInformation
+        );
+    }
+
     //TODO: Should insert if no actor?
     function addCertificate(bytes32 _name, string _imageHash, string _description, string _additionalInformation
     ) public {

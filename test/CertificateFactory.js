@@ -130,83 +130,26 @@ contract(CertificateFactory, function(accounts) {
       }
     });
 
-    /*
-    it("Gets a cup profile", async () => {
-      const cupProfile = await this.tokenInstance.getCupProfileById(1);
-      expect(cupProfile[0].toNumber()).to.be.equal(1);
-      expect(byteToString(cupProfile[1])).to.be.equal(
-        "Caramelo",
+    it("Gets a certificate", async () => {
+      const certificate = await this.tokenInstance.getCertificateById(1);
+      expect(certificate[0].toNumber()).to.be.equal(1);
+      expect(byteToString(certificate[1])).to.be.equal(
+        "DO Marcala",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[2])).to.be.equal(
-        "Cítrico",
+      expect(certificate[2]).to.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[3])).to.be.equal(
-        "balanceada",
+      expect(certificate[3]).to.be.equal(
+        "Denominación de Origen de Marcala",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[4])).to.be.equal(
-        "balanceado",
-        "Value is equal to inserted"
-      );
-      expect(byteToString(cupProfile[5])).to.be.equal(
-        "seco",
-        "Value is equal to inserted"
-      );
-      expect(cupProfile[6].toNumber()).to.be.equal(
-        8000,
-        "Value is equal to inserted"
-      );
+      expect(certificate[4]).to.be.equal("", "Value is equal to inserted");
     });
 
-    it("Updates a cup profile", async () => {
-      const receipt = await this.tokenInstance.updateCupProfileById(
-        1,
-        "Rosas",
-        "Citrico 2",
-        "balanceada 2",
-        "balanceado 2",
-        "Prolongado 2",
-        9000
-      );
-
-      receipt.logs.length.should.be.equal(1, "trigger one event");
-      receipt.logs[0].event.should.be.equal(
-        "LogUpdateCupProfile",
-        "should be the LogUpdateCupProfile event"
-      );
-      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
-        1,
-        "logs the updated cup profile id"
-      );
-
-      const cupProfile = await this.tokenInstance.getCupProfileById(1);
-
-      expect(byteToString(cupProfile[1])).to.be.equal(
-        "Rosas",
-        "Value is equal to updated"
-      );
-      expect(byteToString(cupProfile[2])).to.be.equal(
-        "Citrico 2",
-        "Value is equal to updated"
-      );
-      expect(byteToString(cupProfile[3])).to.be.equal(
-        "balanceada 2",
-        "Value is equal to updated"
-      );
-      expect(byteToString(cupProfile[4])).to.be.equal(
-        "balanceado 2",
-        "Value is equal to updated"
-      );
-      expect(byteToString(cupProfile[5])).to.be.equal(
-        "Prolongado 2",
-        "Value is equal to updated"
-      );
-      expect(cupProfile[6].toNumber()).to.be.equal(
-        9000,
-        "Value is equal to updated"
-      );
-    });*/
+    it("Gets a coffeeBatch certificate", async () => {
+      //TODO:
+    });
   });
 });
