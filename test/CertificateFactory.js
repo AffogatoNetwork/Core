@@ -147,9 +147,5 @@ contract(CertificateFactory, function(accounts) {
       );
       expect(certificate[4]).to.be.equal("", "Value is equal to inserted");
     });
-
-    it("Gets a coffeeBatch certificate", async () => {
-      //TODO:
-    });
   });
 });
