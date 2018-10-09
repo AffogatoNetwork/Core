@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
 import "./Utils.sol";
-//TODO:use Id instead of address
+//TODO: use Id instead of address
 contract ActorFactory is Utils {
 
     event LogAddActor(
@@ -99,14 +99,14 @@ contract ActorFactory is Utils {
         actorsIds.push(msg.sender);
         emit LogAddActor(msg.sender,_name,_typeOfActor,_country,_region,_email);
     }
-    //TODO: Only owner should update
+
     function updateActor(
         bytes32 _name, 
         bytes32 _typeOfActor,
         bytes32 _country, 
         bytes32 _region,
         bytes32 _email 
-    ) public {
+    ) public {  
         require(!(addressToActor[msg.sender].name == 0));
         Actor memory actor = addressToActor[msg.sender];
         actor.name = _name;

@@ -90,6 +90,7 @@ contract(FarmFactory, function(accounts) {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         "story equal to inserted"
       );
+      farm[6].should.be.equal(accounts[0], "owner equal to inserted");
     });
 
     it("Updates a farm", async () => {
@@ -157,6 +158,25 @@ contract(FarmFactory, function(accounts) {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
         "story equal to updated"
       );
+
+      try {
+        var result = true;
+        const receiptFail = await this.tokenInstance.updateFarm(
+          1,
+          "Los Encinos 2",
+          "Honduras 2",
+          "Francisco Morazan 2",
+          "Santa Lucia 2",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+          { from: accounts[4] }
+        );
+      } catch (error) {
+        result = false;
+      }
+
+      if (result) {
+        expect(result).to.be.equal(false, "it should revert on not owner");
+      }
     });
   });
 });

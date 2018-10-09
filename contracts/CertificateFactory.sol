@@ -43,8 +43,7 @@ contract CertificateFactory is Utils{
     function getCertifierCertificateCount(address _certifier)public view returns (uint){
         return actorToCertificates[_certifier].length;
     }
-
-   
+    
     function getCertificateById(uint _certificateId) public view returns(
         uint,
         bytes32,

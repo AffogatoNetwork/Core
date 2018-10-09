@@ -122,6 +122,7 @@ contract(CertificateFactory, function(accounts) {
       } catch (error) {
         result = false;
       }
+
       if (result) {
         expect(result).to.be.equal(
           false,

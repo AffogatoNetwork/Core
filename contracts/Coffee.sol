@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
 contract Coffee{
-
+    //TODO: should i add ownerAddress
     event LogAddCoffeeBatch(
         uint indexed _id,
         uint _farmUid,
@@ -85,19 +85,4 @@ contract Coffee{
         coffeeBatch.size = _size;
         emit LogUpdateCoffeeBatch(_coffeeUid, _farmUid, _altitude, _variety, _process, _size, coffeeBatch.isSold);        
     }
-
-    //TODO: pass to a util function
-    function toBytes(uint256 x)  internal pure returns (bytes b) {
-        b = new bytes(32);
-        for (uint i = 0; i < 32; i++) {
-            b[i] = byte(uint8(x / (2**(8*(31 - i))))); 
-        }
-    }
-
-
-    //TODO
-    //Handle same action
-    //Update Action
-    //Finish Process
-    
 } 

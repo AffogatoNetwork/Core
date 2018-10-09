@@ -3,6 +3,8 @@ pragma solidity ^0.4.23;
 import "./Utils.sol";
 import "./ActorFactory.sol";
 
+//TODO: Destroy Tasting
+//TODO: Should add ownerAddress
 contract TastingFactory is Utils{
 
    event LogAddCupProfile(
@@ -96,7 +98,7 @@ contract TastingFactory is Utils{
         tastingCount++;
         emit LogAddCupProfile(uid,_coffeeBatchId,msg.sender,_aroma,_flavor,_acidity,_body,_aftertaste,_cuppingNote);
     }
-    //Coffee Batch can't be updated
+    //TODO: Tastings can't be updated
     function updateCupProfileById(
         uint _uid,
         bytes32 _aroma,

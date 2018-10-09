@@ -3,7 +3,7 @@ pragma solidity ^0.4.23;
 import "./Utils.sol";
 
 //TODO: Validate that values aren't empty
-//TODO: return farmer address on add
+//TODO: Shoukd had owner address
 contract FarmFactory is Utils{
     
     event LogAddFarm(
@@ -29,6 +29,7 @@ contract FarmFactory is Utils{
     //Farms
     struct Farm{
         uint uid;
+        address ownerAddress;
         bytes32 name;
         bytes32 country;
         bytes32 region;
@@ -50,7 +51,8 @@ contract FarmFactory is Utils{
         bytes32, 
         bytes32, 
         bytes32, 
-        string
+        string,
+        address
         ){
         Farm memory farm = farms[uid];
         return(
@@ -59,7 +61,8 @@ contract FarmFactory is Utils{
             farm.country,
             farm.region,
             farm.village,
-            farm.story
+            farm.story,
+            farm.ownerAddress
         );
     }
 
@@ -71,13 +74,12 @@ contract FarmFactory is Utils{
         string _story
     ) public {
         uint uid = farmsCount;
-        Farm memory farm = Farm(uid,_name,_country,_region,_village,_story);
+        Farm memory farm = Farm(uid,msg.sender,_name,_country,_region,_village,_story);
         farmerToFarms[msg.sender].push(uid);
         farms[uid] = farm;
         farmsCount++;
         emit LogAddFarm(uid,msg.sender,_name,_country,_region,_village,_story);
     }
-    //TODO: only owner should update
     function updateFarm(
         uint _uid,
         bytes32 _name, 
@@ -87,12 +89,13 @@ contract FarmFactory is Utils{
         string _story
     ) public {
         require(farms[_uid].name != 0);
+        require(farms[_uid].ownerAddress == msg.sender);
         Farm storage farm = farms[_uid];
         farm.name = _name;
         farm.country = _country;
         farm.region = _region;
         farm.village = _village;
         farm.story = _story;
-        emit LogUpdateFarm(_uid, msg.sender, _name, _country, _region, _village, _story);
+        emit LogUpdateFarm(_uid, farm.ownerAddress, _name, _country, _region, _village, _story);
     }
 }
