@@ -39,6 +39,10 @@ contract(Coffee, accounts => {
         1,
         "Logs the inserted uid"
       );
+      expect(receipt.logs[0].args._owner).to.be.equal(
+        accounts[0],
+        "Logs the inserted owner"
+      );
       expect(receipt.logs[0].args._farmUid.toNumber()).to.be.equal(
         1,
         "Logs the inserted Farm uid"
@@ -73,28 +77,40 @@ contract(Coffee, accounts => {
         1,
         "batch id is equal to generated"
       );
-      expect(coffeeBatch[1].toNumber()).to.be.equal(
+      expect(coffeeBatch[1]).to.be.equal(
+        accounts[0],
+        "owner is equal to generated"
+      );
+      expect(coffeeBatch[2].toNumber()).to.be.equal(
         1,
         "farm uid is equal to inserted"
       );
-      expect(coffeeBatch[2].toNumber()).to.be.equal(
+      expect(coffeeBatch[3].toNumber()).to.be.equal(
         1200,
         "altitude is equal to inserted"
       );
-      expect(byteToString(coffeeBatch[3])).to.be.equal(
+      expect(byteToString(coffeeBatch[4])).to.be.equal(
         "Catuai Rojo",
         "variety is equal to inserted"
       );
-      expect(byteToString(coffeeBatch[4])).to.be.equal(
+      expect(byteToString(coffeeBatch[5])).to.be.equal(
         "Washed",
         "process is equal to inserted"
       );
-      expect(coffeeBatch[5].toNumber()).to.be.equal(
+      expect(coffeeBatch[6].toNumber()).to.be.equal(
         10000,
         "size is equal to inserted"
       );
     });
 
+    it("Validates actor is owner ", async () => {
+      const result = await this.tokenInstance.actorIsOwner(accounts[0], 1);
+      result.should.be.true;
+      const resultFail = await this.tokenInstance.actorIsOwner(accounts[1], 1);
+      resultFail.should.be.false;
+    });
+  });
+  /*
     it("Updates a Coffee Batch", async () => {
       const receipt = await this.tokenInstance.updateCoffeeBatch(
         1,
@@ -144,6 +160,10 @@ contract(Coffee, accounts => {
         1,
         "farm uid is equal to updated"
       );
+      expect(coffeeBatch[1].toNumber()).to.be.equal(
+        1,
+        "farm uid is equal to updated"
+      );
       expect(coffeeBatch[2].toNumber()).to.be.equal(
         1000,
         "altitude is equal to updated"
@@ -162,6 +182,7 @@ contract(Coffee, accounts => {
       );
     });
   });
+*/
 
   /*
   it("Handles Coffee Batch Actions", function() {
