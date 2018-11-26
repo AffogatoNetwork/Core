@@ -21,6 +21,15 @@ contract(Marketplace, function(accounts) {
         2551403850,
         { from: accounts[1] }
       );
+      await this.tokenInstance.createBid(
+        "My Coffee Title",
+        "QmZJRzYHrPxQxEwyHpXrDtBta833VDpREDXTq5zK5e3bYx",
+        1000000000000000000,
+        2000000000000000000,
+        1,
+        1480194713,
+        { from: accounts[1] }
+      );
       receipt.logs.length.should.be.equal(1, "trigger one event");
       receipt.logs[0].event.should.be.equal(
         "LogCreateBid",
@@ -85,6 +94,47 @@ contract(Marketplace, function(accounts) {
         "equal to inserted timeLimit"
       );
       bid[7].should.be.equal(true, "equal to inserted status");
+    });
+
+    it("Should not place a Bid if the bid is less than the current bid", async () => {
+      try{
+        await this.tokenInstance.placeBid(accounts[1], 0, {
+          from: accounts[0],
+          value: 15000000000000000
+        });
+        expect(false);
+      }catch(error){
+        expect(true);
+      }
+    });
+    it("Should not place a Bid if the bid is over", async () => {
+      try{
+        await this.tokenInstance.placeBid(accounts[1], 1, {
+          from: accounts[0],
+          value: 15000000000000000000
+        });
+        expect(false);
+      }catch(error){
+        expect(true);
+      }
+    });
+    it("Place a Bid with the buyer price less than buyout price", async () => {
+      await this.tokenInstance.placeBid(accounts[1], 0, {
+        from: accounts[0],
+        value: 1500000000000000000
+      });
+      const bid = await this.tokenInstance.getBid(accounts[1], 0);
+      bid[8].should.be.equal(accounts[0]);
+      bid[7].should.be.equal(true);
+    });
+    it("Place a Bid with the buyer price greater than or equal to buyout price", async () => {
+      await this.tokenInstance.placeBid(accounts[1], 0, {
+        from: accounts[0],
+        value: 2000000000000000000
+      });
+      const bid = await this.tokenInstance.getBid(accounts[1], 0);
+      bid[8].should.be.equal(accounts[0]);
+      bid[7].should.be.equal(false);
     });
   });
 });
