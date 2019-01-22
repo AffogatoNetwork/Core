@@ -11,8 +11,5 @@ module.exports = function(deployer) {
     await deployer.deploy(CertificateFactory, instance.address);
   });
   deployer.deploy(FarmFactory);
-  deployer.deploy(Coffee).then(async instance => {
-    console.log("address loca", instance.address);
-    await deployer.deploy(Marketplace, instance.address);
-  });
+  deployer.deploy(Coffee);
 };

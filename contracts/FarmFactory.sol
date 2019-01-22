@@ -1,18 +1,15 @@
-pragma solidity ^0.4.23;
-
-import "./Utils.sol";
+pragma solidity ^0.5.0;
 
 //TODO: Validate that values aren't empty
 //TODO: Shoukd had owner address
-contract FarmFactory is Utils{
-    
+contract FarmFactory {
     event LogAddFarm(
         uint indexed _id,
         address _ownerAddress,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
-        bytes32 _village, 
+        bytes32 _village,
         string _story
     );
 
@@ -22,18 +19,18 @@ contract FarmFactory is Utils{
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
-        bytes32 _village, 
+        bytes32 _village,
         string _story
     );
-    
+
     //Farms
-    struct Farm{
+    struct Farm {
         uint uid;
         address ownerAddress;
         bytes32 name;
         bytes32 country;
         bytes32 region;
-        bytes32 village; 
+        bytes32 village;
         string story;
     }
 
@@ -41,53 +38,24 @@ contract FarmFactory is Utils{
     mapping(uint => Farm) public farms;
     uint farmsCount = 1;
 
-    function getFarmersFarmsCount(address _farmer)public view returns (uint){
+    function getFarmersFarmsCount(address _farmer) public view returns (uint) {
         return farmerToFarms[_farmer].length;
     }
 
-    function getFarmById(uint uid) public view returns(
-        uint,
-        bytes32, 
-        bytes32, 
-        bytes32, 
-        bytes32, 
-        string,
-        address
-        ){
+    function getFarmById(uint uid) public view returns (uint, bytes32, bytes32, bytes32, bytes32, string memory, address) {
         Farm memory farm = farms[uid];
-        return(
-            farm.uid,
-            farm.name,
-            farm.country,
-            farm.region,
-            farm.village,
-            farm.story,
-            farm.ownerAddress
-        );
+        return (farm.uid, farm.name, farm.country, farm.region, farm.village, farm.story, farm.ownerAddress);
     }
 
-    function addFarm(
-        bytes32 _name, 
-        bytes32 _country, 
-        bytes32 _region, 
-        bytes32 _village, 
-        string _story
-    ) public {
+    function addFarm(bytes32 _name, bytes32 _country, bytes32 _region, bytes32 _village, string memory _story) public {
         uint uid = farmsCount;
-        Farm memory farm = Farm(uid,msg.sender,_name,_country,_region,_village,_story);
+        Farm memory farm = Farm(uid, msg.sender, _name, _country, _region, _village, _story);
         farmerToFarms[msg.sender].push(uid);
         farms[uid] = farm;
         farmsCount++;
-        emit LogAddFarm(uid,msg.sender,_name,_country,_region,_village,_story);
+        emit LogAddFarm(uid, msg.sender, _name, _country, _region, _village, _story);
     }
-    function updateFarm(
-        uint _uid,
-        bytes32 _name, 
-        bytes32 _country, 
-        bytes32 _region, 
-        bytes32 _village, 
-        string _story
-    ) public {
+    function updateFarm(uint _uid, bytes32 _name, bytes32 _country, bytes32 _region, bytes32 _village, string memory _story) public {
         require(farms[_uid].name != 0);
         require(farms[_uid].ownerAddress == msg.sender);
         Farm storage farm = farms[_uid];

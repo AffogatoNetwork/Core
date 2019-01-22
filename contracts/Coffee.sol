@@ -1,6 +1,6 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.0;
 
-contract Coffee{
+contract Coffee {
     //TODO: rename to Factory
     //TODO: add is coffee batch owner
     event LogAddCoffeeBatch(
@@ -22,8 +22,8 @@ contract Coffee{
         uint32 _size,
         bool _isSold
     );
-     
-    struct CoffeeBatch{
+
+    struct CoffeeBatch {
         uint uid;
         address owner;
         uint farmUid;
@@ -32,55 +32,37 @@ contract Coffee{
         bytes32 process;
         //QQ - Precision two decimals 100.00
         uint32 size;
-        bool isSold;  
+        bool isSold;
     }
 
-   mapping(uint => CoffeeBatch) public coffeeBatches;
-   mapping(uint => uint[]) public farmToBatches;
-   // mapping(uint256 => CoffeeBatch) coffeeBatches;
-   // uint256[] coffeeBatchIds;
-   uint coffeeBatchCount = 1;
+    mapping(uint => CoffeeBatch) public coffeeBatches;
+    mapping(uint => uint[]) public farmToBatches;
+    // mapping(uint256 => CoffeeBatch) coffeeBatches;
+    // uint256[] coffeeBatchIds;
+    uint coffeeBatchCount = 1;
 
-    function getFarmCoffeeBatchCount(uint _farmUid) public view returns(uint count) {
+    function getFarmCoffeeBatchCount(uint _farmUid) public view returns (uint count) {
         return farmToBatches[_farmUid].length;
     }
 
-    function getCoffeeBatchById(uint _uid) public view returns(
-        uint,
-        address,
-        uint,
-        uint16,
-        bytes32,
-        bytes32,
-        uint32,
-        bool
-    ){
+    function getCoffeeBatchById(uint _uid) public view returns (uint, address, uint, uint16, bytes32, bytes32, uint32, bool) {
         CoffeeBatch memory coffeeBatch = coffeeBatches[_uid];
-        return(
-            coffeeBatch.uid,
-            coffeeBatch.owner,
-            coffeeBatch.farmUid,
-            coffeeBatch.altitude,
-            coffeeBatch.variety,
-            coffeeBatch.process,
-            coffeeBatch.size,
-            coffeeBatch.isSold
-        ); 
+        return (coffeeBatch.uid, coffeeBatch.owner, coffeeBatch.farmUid, coffeeBatch.altitude, coffeeBatch.variety, coffeeBatch.process, coffeeBatch.size, coffeeBatch.isSold);
     }
 
     function addCoffeeBatch(uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
-     //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
+        //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp);
         //Fixes memory error that doesn't allow to create memory objects in structs
         uint uid = coffeeBatchCount;
         CoffeeBatch memory coffeeBatch = CoffeeBatch(uid, msg.sender, _farmUid, _altitude, _variety, _process, _size, false);
         coffeeBatchCount++;
         coffeeBatches[uid] = coffeeBatch;
         farmToBatches[_farmUid].push(uid);
-        emit LogAddCoffeeBatch(uid, msg.sender, _farmUid, _altitude, _variety, _process, _size, false);        
+        emit LogAddCoffeeBatch(uid, msg.sender, _farmUid, _altitude, _variety, _process, _size, false);
     }
     //TODO: Only owner should update
     function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
-     //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp); 
+        //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp);
         //Fixes memory error that doesn't allow to create memory objects in structs
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
         coffeeBatch.farmUid = _farmUid;
@@ -88,14 +70,14 @@ contract Coffee{
         coffeeBatch.variety = _variety;
         coffeeBatch.process = _process;
         coffeeBatch.size = _size;
-        emit LogUpdateCoffeeBatch(_coffeeUid, _farmUid, _altitude, _variety, _process, _size, coffeeBatch.isSold);        
+        emit LogUpdateCoffeeBatch(_coffeeUid, _farmUid, _altitude, _variety, _process, _size, coffeeBatch.isSold);
     }
 
-    function actorIsOwner(address _owner, uint _coffeeBatchId) public view returns (bool){
+    function actorIsOwner(address _owner, uint _coffeeBatchId) public view returns (bool) {
         CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchId];
-        if(coffeeBatch.owner == _owner){
+        if (coffeeBatch.owner == _owner) {
             return true;
         }
         return false;
     }
-} 
+}

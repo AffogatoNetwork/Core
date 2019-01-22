@@ -1,22 +1,12 @@
 require("chai").should();
 require("chai").expect;
+var BN = web3.utils.BN;
+require("chai").use(require("chai-bignumber")(BN));
 
 var CertificateFactory = artifacts.require("./CertificateFactory.sol");
 var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(CertificateFactory, function(accounts) {
-  function byteToString(a) {
-    return trimNull(web3.toUtf8(a));
-  }
-
-  function trimNull(a) {
-    var c = a.indexOf("\0");
-    if (c > -1) {
-      return a.substr(0, c);
-    }
-    return a;
-  }
-
   beforeEach(async () => {
     this.actorTokenInstance = await ActorFactory.deployed();
     this.tokenInstance = await CertificateFactory.deployed();
@@ -30,7 +20,7 @@ contract(CertificateFactory, function(accounts) {
 
     it("Adds a certificate", async () => {
       const receipt = await this.tokenInstance.addCertificate(
-        "DO Marcala",
+        web3.utils.utf8ToHex("DO Marcala"),
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "Denominación de Origen de Marcala",
         "",
@@ -53,7 +43,7 @@ contract(CertificateFactory, function(accounts) {
         accounts[4],
         "logs the added certificate certifier address"
       );
-      expect(byteToString(receipt.logs[0].args._name)).to.be.equal(
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._name)).to.be.equal(
         "DO Marcala",
         "logs the added certificate name"
       );
@@ -134,7 +124,7 @@ contract(CertificateFactory, function(accounts) {
     it("Gets a certificate", async () => {
       const certificate = await this.tokenInstance.getCertificateById(1);
       expect(certificate[0].toNumber()).to.be.equal(1);
-      expect(byteToString(certificate[1])).to.be.equal(
+      expect(web3.utils.hexToUtf8(certificate[1])).to.be.equal(
         "DO Marcala",
         "Value is equal to inserted"
       );
