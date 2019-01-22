@@ -1,22 +1,12 @@
 require("chai").should();
 require("chai").expect;
+var BN = web3.utils.BN;
+require("chai").use(require("chai-bignumber")(BN));
 
 var TastingFactory = artifacts.require("./TastingFactory.sol");
 var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(TastingFactory, function(accounts) {
-  function byteToString(a) {
-    return trimNull(web3.toUtf8(a));
-  }
-
-  function trimNull(a) {
-    var c = a.indexOf("\0");
-    if (c > -1) {
-      return a.substr(0, c);
-    }
-    return a;
-  }
-
   beforeEach(async () => {
     this.actorTokenInstance = await ActorFactory.deployed();
     this.tokenInstance = await TastingFactory.deployed();
@@ -30,12 +20,12 @@ contract(TastingFactory, function(accounts) {
       const receipt = await this.tokenInstance.addCupProfile(
         accounts[1],
         1,
-        "Caramelo",
-        "Panela",
-        "Frutas",
-        "citrica",
-        "ligero",
-        "prolongado",
+        web3.utils.utf8ToHex("Caramelo"),
+        web3.utils.utf8ToHex("Panela"),
+        web3.utils.utf8ToHex("Frutas"),
+        web3.utils.utf8ToHex("citrica"),
+        web3.utils.utf8ToHex("ligero"),
+        web3.utils.utf8ToHex("prolongado"),
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         8000,
         {
@@ -60,30 +50,29 @@ contract(TastingFactory, function(accounts) {
         accounts[3],
         "logs the added profile taster address"
       );
-      expect(byteToString(receipt.logs[0].args._aroma)).to.be.equal(
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._aroma)).to.be.equal(
         "Caramelo",
         "logs the added cup profile aroma"
       );
-      expect(byteToString(receipt.logs[0].args._sweetness)).to.be.equal(
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._sweetness)).to.be.equal(
         "Panela",
         "logs the added cup profile sweetness"
       );
-      expect(byteToString(receipt.logs[0].args._flavor)).to.be.equal(
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._flavor)).to.be.equal(
         "Frutas",
         "logs the added cup profile flavor"
       );
-      expect(byteToString(receipt.logs[0].args._acidity)).to.be.equal(
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._acidity)).to.be.equal(
         "citrica",
         "logs the added cup profile acidity"
       );
-      expect(byteToString(receipt.logs[0].args._body)).to.be.equal(
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._body)).to.be.equal(
         "ligero",
         "logs the added cup profile body"
       );
-      expect(byteToString(receipt.logs[0].args._aftertaste)).to.be.equal(
-        "prolongado",
-        "logs the added cup profile aftertaste"
-      );
+      expect(
+        web3.utils.hexToUtf8(receipt.logs[0].args._aftertaste)
+      ).to.be.equal("prolongado", "logs the added cup profile aftertaste");
       expect(receipt.logs[0].args._imageHash).to.be.equal(
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "logs the added cup profile aftertaste"
@@ -113,12 +102,12 @@ contract(TastingFactory, function(accounts) {
         const receiptFail = await this.tokenInstance.addCupProfile(
           accounts[1],
           1,
-          "Caramelo",
-          "Panela",
-          "citrica",
-          "ligero",
-          "Frutas",
-          "prolongado",
+          web3.utils.utf8ToHex("Caramelo"),
+          web3.utils.utf8ToHex("Panela"),
+          web3.utils.utf8ToHex("citrica"),
+          web3.utils.utf8ToHex("ligero"),
+          web3.utils.utf8ToHex("Frutas"),
+          web3.utils.utf8ToHex("prolongado"),
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
           8000,
           { from: accounts[4] }
@@ -137,27 +126,27 @@ contract(TastingFactory, function(accounts) {
     it("Gets a cup profile", async () => {
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
       expect(cupProfile[0].toNumber()).to.be.equal(1);
-      expect(byteToString(cupProfile[1])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[1])).to.be.equal(
         "Caramelo",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[2])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[2])).to.be.equal(
         "Panela",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[3])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[3])).to.be.equal(
         "Frutas",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[4])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[4])).to.be.equal(
         "citrica",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[5])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[5])).to.be.equal(
         "ligero",
         "Value is equal to inserted"
       );
-      expect(byteToString(cupProfile[6])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[6])).to.be.equal(
         "prolongado",
         "Value is equal to inserted"
       );
@@ -174,12 +163,12 @@ contract(TastingFactory, function(accounts) {
     it("Updates a cup profile", async () => {
       const receipt = await this.tokenInstance.updateCupProfileById(
         1,
-        "Caramelo 2",
-        "Panela 2",
-        "Frutas 2",
-        "citrica 2",
-        "ligero 2",
-        "prolongado 2",
+        web3.utils.utf8ToHex("Caramelo 2"),
+        web3.utils.utf8ToHex("Panela 2"),
+        web3.utils.utf8ToHex("Frutas 2"),
+        web3.utils.utf8ToHex("citrica 2"),
+        web3.utils.utf8ToHex("ligero 2"),
+        web3.utils.utf8ToHex("prolongado 2"),
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         9000
       );
@@ -194,28 +183,28 @@ contract(TastingFactory, function(accounts) {
         "logs the updated cup profile id"
       );
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
-      expect(byteToString(cupProfile[1])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[1])).to.be.equal(
         "Caramelo 2",
         "Value is equal to updated"
       );
-      expect(byteToString(cupProfile[2])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[2])).to.be.equal(
         "Panela 2",
         "Value is equal to updated"
       );
-      expect(byteToString(cupProfile[3])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[3])).to.be.equal(
         "Frutas 2",
         "Value is equal to updated"
       );
-      expect(byteToString(cupProfile[4])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[4])).to.be.equal(
         "citrica 2",
         "Value is equal to updated"
       );
-      expect(byteToString(cupProfile[5])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[5])).to.be.equal(
         "ligero 2",
         "Value is equal to updated"
       );
 
-      expect(byteToString(cupProfile[6])).to.be.equal(
+      expect(web3.utils.hexToUtf8(cupProfile[6])).to.be.equal(
         "prolongado 2",
         "Value is equal to updated"
       );

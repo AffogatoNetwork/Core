@@ -1,13 +1,11 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.0;
 
-import "./Utils.sol";
 import "./ActorFactory.sol";
 
 //TODO: Destroy Tasting
 //TODO: Should add ownerAddress
-contract TastingFactory is Utils{
-
-   event LogAddCupProfile(
+contract TastingFactory {
+    event LogAddCupProfile(
         uint indexed _id,
         uint _coffeeBatchId,
         address _tasterAddress,
@@ -20,7 +18,7 @@ contract TastingFactory is Utils{
         string _imageHash,
         uint16 _cuppingNote
     );
-   event LogUpdateCupProfile(
+    event LogUpdateCupProfile(
         uint indexed _id,
         bytes32 _aroma,
         bytes32 _sweetness,
@@ -32,9 +30,9 @@ contract TastingFactory is Utils{
         uint16 _cuppingNote
     );
 
-   ActorFactory actor;
+    ActorFactory actor;
 
-   struct CupProfile{
+    struct CupProfile {
         uint uid;
         bytes32 aroma;
         bytes32 sweetness;
@@ -56,37 +54,21 @@ contract TastingFactory is Utils{
         actor = ActorFactory(_actorAddress);
     }
 
-    function getTasterCupProfileCount(address _taster)public view returns (uint){
+    function getTasterCupProfileCount(address _taster) public view returns (uint) {
         return tasterToCupProfiles[_taster].length;
     }
 
-    function getCoffeeCupProfileCount(uint _coffeeBatch)public view returns (uint){
+    function getCoffeeCupProfileCount(uint _coffeeBatch) public view returns (uint) {
         return coffeeBatchToCupProfiles[_coffeeBatch].length;
     }
 
-    function getCupProfileById(uint uid) public view returns(
-        uint,
-        bytes32, 
-        bytes32, 
-        bytes32, 
-        bytes32, 
-        bytes32,
-        bytes32, 
-        string,
-        uint16
-        ){
+    function getCupProfileById(uint uid)
+        public
+        view
+        returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32, bytes32, string memory, uint16)
+    {
         CupProfile memory cupProfile = cupProfiles[uid];
-        return(
-            cupProfile.uid,
-            cupProfile.aroma,
-            cupProfile.sweetness,
-            cupProfile.flavor,
-            cupProfile.acidity,
-            cupProfile.body,
-            cupProfile.aftertaste,
-            cupProfile.imageHash,
-            cupProfile.cuppingNote
-        );
+        return (cupProfile.uid, cupProfile.aroma, cupProfile.sweetness, cupProfile.flavor, cupProfile.acidity, cupProfile.body, cupProfile.aftertaste, cupProfile.imageHash, cupProfile.cuppingNote);
     }
 
     function addCupProfile(
@@ -98,17 +80,29 @@ contract TastingFactory is Utils{
         bytes32 _acidity,
         bytes32 _body,
         bytes32 _aftertaste,
-        string _imageHash,
+        string memory _imageHash,
         uint16 _cuppingNote
     ) public {
-        require(actor.isAllowed(_owner,msg.sender));
+        require(actor.isAllowed(_owner, msg.sender));
         uint uid = tastingCount;
-        CupProfile memory cupProfile = CupProfile(uid,_aroma,_sweetness,_flavor,_acidity,_body,_aftertaste,_imageHash,_cuppingNote);
+        CupProfile memory cupProfile = CupProfile(uid, _aroma, _sweetness, _flavor, _acidity, _body, _aftertaste, _imageHash, _cuppingNote);
         tasterToCupProfiles[msg.sender].push(uid);
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
         cupProfiles[uid] = cupProfile;
         tastingCount++;
-        emit LogAddCupProfile(uid,_coffeeBatchId,msg.sender,_aroma,_sweetness,_flavor,_acidity,_body,_aftertaste,_imageHash,_cuppingNote);
+        emit LogAddCupProfile(
+            uid,
+            _coffeeBatchId,
+            msg.sender,
+            _aroma,
+            _sweetness,
+            _flavor,
+            _acidity,
+            _body,
+            _aftertaste,
+            _imageHash,
+            _cuppingNote
+        );
     }
     //TODO: Tastings can't be updated
     function updateCupProfileById(
@@ -119,7 +113,7 @@ contract TastingFactory is Utils{
         bytes32 _acidity,
         bytes32 _body,
         bytes32 _aftertaste,
-        string _imageHash,
+        string memory _imageHash,
         uint16 _cuppingNote
     ) public {
         require(cupProfiles[_uid].aroma != 0);
@@ -132,6 +126,6 @@ contract TastingFactory is Utils{
         cupProfile.aftertaste = _aftertaste;
         cupProfile.imageHash = _imageHash;
         cupProfile.cuppingNote = _cuppingNote;
-        emit LogUpdateCupProfile(_uid,_aroma,_sweetness,_flavor,_acidity,_body,_aftertaste,_imageHash,_cuppingNote);
+        emit LogUpdateCupProfile(_uid, _aroma, _sweetness, _flavor, _acidity, _body, _aftertaste, _imageHash, _cuppingNote);
     }
 }
