@@ -1,6 +1,8 @@
 pragma solidity ^0.5.0;
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Libraries/Pausable.sol';
 
-contract Coffee {
+contract Coffee is Ownable, Pausable {
     //TODO: rename to Factory
     //TODO: add is coffee batch owner
     event LogAddCoffeeBatch(
@@ -50,7 +52,7 @@ contract Coffee {
         return (coffeeBatch.uid, coffeeBatch.owner, coffeeBatch.farmUid, coffeeBatch.altitude, coffeeBatch.variety, coffeeBatch.process, coffeeBatch.size, coffeeBatch.isSold);
     }
 
-    function addCoffeeBatch(uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
+    function addCoffeeBatch(uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public whenNotPaused {
         //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp);
         //Fixes memory error that doesn't allow to create memory objects in structs
         uint uid = coffeeBatchCount;
@@ -61,7 +63,7 @@ contract Coffee {
         emit LogAddCoffeeBatch(uid, msg.sender, _farmUid, _altitude, _variety, _process, _size, false);
     }
     //TODO: Only owner should update
-    function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public {
+    function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size)  public whenNotPaused {
         //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp);
         //Fixes memory error that doesn't allow to create memory objects in structs
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
@@ -79,5 +81,9 @@ contract Coffee {
             return true;
         }
         return false;
+    }
+
+    function destroy() public onlyOwner {
+        selfdestruct(owner());
     }
 }

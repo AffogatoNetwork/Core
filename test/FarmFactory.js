@@ -11,6 +11,11 @@ contract(FarmFactory, function(accounts) {
   });
 
   describe("Farm Validations", () => {
+    it("...should set an owner.", async () => {
+      var owner = await this.tokenInstance.owner();
+      owner.should.be.equal(accounts[0]);
+    });
+
     it("Adds a farm", async () => {
       const receipt = await this.tokenInstance.addFarm(
         web3.utils.utf8ToHex("Los Encinos"),
@@ -161,5 +166,102 @@ contract(FarmFactory, function(accounts) {
         expect(result).to.be.equal(false, "it should revert on not owner");
       }
     });
+
+    it("...should pause and unpause the contract.", async () => {
+      var receipt = await this.tokenInstance.pause({
+        from: accounts[0]
+      });
+      receipt.logs.length.should.equal(1, "trigger one event");
+      receipt.logs[0].event.should.equal(
+        "Paused",
+        "should be the Paused event"
+      );
+      var paused = await this.tokenInstance.paused({
+        from: accounts[0]
+      });
+      paused.should.be.true;
+      var revert = false;
+      try {
+        await this.tokenInstance.pause({
+          from: accounts[1]
+        });
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Only owner");
+      }
+      expect(revert).to.equal(true, "Should revert on no permissions");
+      var receipt = await this.tokenInstance.unpause({
+        from: accounts[0]
+      });
+      receipt.logs.length.should.equal(1, "trigger one event");
+      receipt.logs[0].event.should.equal(
+        "Unpaused",
+        "should be the Unpaused event"
+      );
+      paused = await this.tokenInstance.paused({
+        from: accounts[0]
+      });
+      paused.should.be.false;
+    });
+
+    it("...should stop on pause.", async () => {
+      await this.tokenInstance.pause({
+        from: accounts[0]
+      });
+      var revert = false;
+      try {
+        await this.tokenInstance.addFarm(
+          web3.utils.utf8ToHex("Los Encinos"),
+          web3.utils.utf8ToHex("Honduras"),
+          web3.utils.utf8ToHex("Francisco Morazan"),
+          web3.utils.utf8ToHex("Santa Lucia"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          { from: accounts[0] }
+        );
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Contract is paused");
+      }
+      expect(revert).to.equal(true, "Should revert on paused contract");
+      revert = false;
+      try {
+        await this.tokenInstance.updateFarm(
+          1,
+          web3.utils.utf8ToHex("Los Encinos 2"),
+          web3.utils.utf8ToHex("Honduras 2"),
+          web3.utils.utf8ToHex("Francisco Morazan 2"),
+          web3.utils.utf8ToHex("Santa Lucia 2"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+          { from: accounts[0] }
+        );
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Contract is paused");
+      }
+      expect(revert).to.equal(true, "Should revert on paused contract");
+      await this.tokenInstance.unpause({
+        from: accounts[0]
+      });
+    });
+
+    it("...should selfdestruct only by owner.", async () => {
+      revert = false;
+      try {
+        await this.tokenInstance.destroy({ from: accounts[1] });
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Only owner");
+      }
+      expect(revert).to.equal(true, "Should revert on not owner");
+      const code = await web3.eth.getCode(this.tokenInstance.address);
+      code.should.not.equal("0x");
+    });
+
+    /*TODO: Refactor everything to another test
+    it("...should delete the contract.", async () => {
+      await this.tokenInstance.destroy({ from: accounts[0] });
+      const code = await web3.eth.getCode(this.tokenInstance.address);
+      code.should.equal("0x");
+    });*/
   });
 });

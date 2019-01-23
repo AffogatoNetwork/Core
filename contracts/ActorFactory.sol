@@ -1,7 +1,10 @@
-pragma solidity ^0.5.0;
+pragma solidity 0.5.0;
+
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Libraries/Pausable.sol';
 
 //TODO: use Id instead of address
-contract ActorFactory {
+contract ActorFactory is Ownable, Pausable {
     event LogAddActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email);
 
     event LogUpdateActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email);
@@ -42,7 +45,7 @@ contract ActorFactory {
         return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email);
     }
 
-    function addActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email) public {
+    function addActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email) public whenNotPaused {
         require(addressToActor[msg.sender].name == 0);
         Actor memory actor = Actor(_name, _typeOfActor, _country, _region, _email);
         addressToActor[msg.sender] = actor;
@@ -50,7 +53,7 @@ contract ActorFactory {
         emit LogAddActor(msg.sender, _name, _typeOfActor, _country, _region, _email);
     }
 
-    function updateActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email) public {
+    function updateActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email) public whenNotPaused {
         require(!(addressToActor[msg.sender].name == 0));
         Actor memory actor = addressToActor[msg.sender];
         actor.name = _name;
@@ -62,11 +65,15 @@ contract ActorFactory {
         emit LogUpdateActor(msg.sender, _name, _typeOfActor, _country, _region, _email);
     }
 
-    function approve(address _spender, bool _value) public returns (bool) {
+    function approve(address _spender, bool _value) public whenNotPaused returns (bool) {
         //TODO: user must have account
         //TODO: User shouldn't give permissions to itself
         allowed_[msg.sender][_spender] = _value;
         emit LogApproval(msg.sender, _spender, _value);
         return true;
+    }
+
+    function destroy() public onlyOwner {
+        selfdestruct(owner());
     }
 }

@@ -1,10 +1,11 @@
 pragma solidity ^0.5.0;
-
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Libraries/Pausable.sol';
 import "./ActorFactory.sol";
 
 //TODO: Destroy Tasting
 //TODO: Should add ownerAddress
-contract TastingFactory {
+contract TastingFactory is Ownable, Pausable{
     event LogAddCupProfile(
         uint indexed _id,
         uint _coffeeBatchId,
@@ -82,7 +83,7 @@ contract TastingFactory {
         bytes32 _aftertaste,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public {
+    ) public whenNotPaused {
         require(actor.isAllowed(_owner, msg.sender));
         uint uid = tastingCount;
         CupProfile memory cupProfile = CupProfile(uid, _aroma, _sweetness, _flavor, _acidity, _body, _aftertaste, _imageHash, _cuppingNote);
@@ -115,7 +116,7 @@ contract TastingFactory {
         bytes32 _aftertaste,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public {
+    ) public whenNotPaused {
         require(cupProfiles[_uid].aroma != 0);
         CupProfile storage cupProfile = cupProfiles[_uid];
         cupProfile.aroma = _aroma;
@@ -127,5 +128,9 @@ contract TastingFactory {
         cupProfile.imageHash = _imageHash;
         cupProfile.cuppingNote = _cuppingNote;
         emit LogUpdateCupProfile(_uid, _aroma, _sweetness, _flavor, _acidity, _body, _aftertaste, _imageHash, _cuppingNote);
+    }
+
+    function destroy() public onlyOwner {
+        selfdestruct(owner());
     }
 }
