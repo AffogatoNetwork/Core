@@ -16,6 +16,11 @@ contract(TastingFactory, function(accounts) {
   });
 
   describe("Tasting Validations", () => {
+    it("...should set an owner.", async () => {
+      var owner = await this.tokenInstance.owner();
+      owner.should.be.equal(accounts[0]);
+    });
+
     it("Adds a cup profile", async () => {
       const receipt = await this.tokenInstance.addCupProfile(
         accounts[1],
@@ -217,5 +222,111 @@ contract(TastingFactory, function(accounts) {
         "Value is equal to updated"
       );
     });
+
+    it("...should pause and unpause the contract.", async () => {
+      var receipt = await this.tokenInstance.pause({
+        from: accounts[0]
+      });
+      receipt.logs.length.should.equal(1, "trigger one event");
+      receipt.logs[0].event.should.equal(
+        "Paused",
+        "should be the Paused event"
+      );
+      var paused = await this.tokenInstance.paused({
+        from: accounts[0]
+      });
+      paused.should.be.true;
+      var revert = false;
+      try {
+        await this.tokenInstance.pause({
+          from: accounts[1]
+        });
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Only owner");
+      }
+      expect(revert).to.equal(true, "Should revert on no permissions");
+      var receipt = await this.tokenInstance.unpause({
+        from: accounts[0]
+      });
+      receipt.logs.length.should.equal(1, "trigger one event");
+      receipt.logs[0].event.should.equal(
+        "Unpaused",
+        "should be the Unpaused event"
+      );
+      paused = await this.tokenInstance.paused({
+        from: accounts[0]
+      });
+      paused.should.be.false;
+    });
+
+    it("...should stop on pause.", async () => {
+      await this.tokenInstance.pause({
+        from: accounts[0]
+      });
+      var revert = false;
+      try {
+        await this.tokenInstance.addCupProfile(
+          accounts[1],
+          1,
+          web3.utils.utf8ToHex("Caramelo"),
+          web3.utils.utf8ToHex("Panela"),
+          web3.utils.utf8ToHex("Frutas"),
+          web3.utils.utf8ToHex("citrica"),
+          web3.utils.utf8ToHex("ligero"),
+          web3.utils.utf8ToHex("prolongado"),
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          8000,
+          {
+            from: accounts[3]
+          }
+        );
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Contract is paused");
+      }
+      expect(revert).to.equal(true, "Should revert on paused contract");
+      revert = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          1,
+          web3.utils.utf8ToHex("Caramelo 2"),
+          web3.utils.utf8ToHex("Panela 2"),
+          web3.utils.utf8ToHex("Frutas 2"),
+          web3.utils.utf8ToHex("citrica 2"),
+          web3.utils.utf8ToHex("ligero 2"),
+          web3.utils.utf8ToHex("prolongado 2"),
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          9000
+        );
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Contract is paused");
+      }
+      expect(revert).to.equal(true, "Should revert on paused contract");
+      await this.tokenInstance.unpause({
+        from: accounts[0]
+      });
+    });
+
+    it("...should selfdestruct only by owner.", async () => {
+      revert = false;
+      try {
+        await this.tokenInstance.destroy({ from: accounts[1] });
+      } catch (err) {
+        revert = true;
+        assert(err.reason === "Only owner");
+      }
+      expect(revert).to.equal(true, "Should revert on not owner");
+      const code = await web3.eth.getCode(this.tokenInstance.address);
+      code.should.not.equal("0x");
+    });
+
+    /*TODO: Refactor everything to another test
+    it("...should delete the contract.", async () => {
+      await this.tokenInstance.destroy({ from: accounts[0] });
+      const code = await web3.eth.getCode(this.tokenInstance.address);
+      code.should.equal("0x");
+    });*/
   });
 });

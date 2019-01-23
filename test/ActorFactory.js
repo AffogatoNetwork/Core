@@ -11,6 +11,11 @@ contract(ActorFactory, function(accounts) {
   });
 
   describe("Actor Validations", () => {
+    it("...should set an owner.", async () => {
+      var owner = await this.tokenInstance.owner();
+      owner.should.be.equal(accounts[0]);
+    });
+
     it("Adds an Actor", async () => {
       const receipt = await this.tokenInstance.addActor(
         web3.utils.utf8ToHex("Toño Stark"),
@@ -205,4 +210,110 @@ contract(ActorFactory, function(accounts) {
     const result = await this.tokenInstance.isAllowed(accounts[1], accounts[3]);
     result.should.be.true;
   });
+
+  it("...should pause and unpause the contract.", async () => {
+    var receipt = await this.tokenInstance.pause({
+      from: accounts[0]
+    });
+    receipt.logs.length.should.equal(1, "trigger one event");
+    receipt.logs[0].event.should.equal("Paused", "should be the Paused event");
+    var paused = await this.tokenInstance.paused({
+      from: accounts[0]
+    });
+    paused.should.be.true;
+    var revert = false;
+    try {
+      await this.tokenInstance.pause({
+        from: accounts[1]
+      });
+    } catch (err) {
+      revert = true;
+      assert(err.reason === "Only owner");
+    }
+    expect(revert).to.equal(true, "Should revert on no permissions");
+    var receipt = await this.tokenInstance.unpause({
+      from: accounts[0]
+    });
+    receipt.logs.length.should.equal(1, "trigger one event");
+    receipt.logs[0].event.should.equal(
+      "Unpaused",
+      "should be the Unpaused event"
+    );
+    paused = await this.tokenInstance.paused({
+      from: accounts[0]
+    });
+    paused.should.be.false;
+  });
+
+  it("...should stop on pause.", async () => {
+    await this.tokenInstance.pause({
+      from: accounts[0]
+    });
+    var revert = false;
+    try {
+      await this.tokenInstance.addActor(
+        web3.utils.utf8ToHex("Eduardo Garner"),
+        web3.utils.utf8ToHex("farmer"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Choluteca"),
+        web3.utils.utf8ToHex("ceegarner@hotmail.com"),
+        {
+          from: accounts[9]
+        }
+      );
+    } catch (err) {
+      revert = true;
+      assert(err.reason === "Contract is paused");
+    }
+    expect(revert).to.equal(true, "Should revert on paused contract");
+    revert = false;
+    try {
+      await this.tokenInstance.updateActor(
+        web3.utils.utf8ToHex("Eduardo Garner"),
+        web3.utils.utf8ToHex("taster"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Choluteca"),
+        web3.utils.utf8ToHex("ceegarner@hotmail.com"),
+        {
+          from: accounts[9]
+        }
+      );
+    } catch (err) {
+      revert = true;
+      assert(err.reason === "Contract is paused");
+    }
+    expect(revert).to.equal(true, "Should revert on paused contract");
+    revert = false;
+    try {
+      await this.tokenInstance.approve(accounts[4], true, {
+        from: accounts[1]
+      });
+    } catch (err) {
+      revert = true;
+      assert(err.reason === "Contract is paused");
+    }
+    await this.tokenInstance.unpause({
+      from: accounts[0]
+    });
+  });
+
+  it("...should selfdestruct only by owner.", async () => {
+    revert = false;
+    try {
+      await this.tokenInstance.destroy({ from: accounts[1] });
+    } catch (err) {
+      revert = true;
+      assert(err.reason === "Only owner");
+    }
+    expect(revert).to.equal(true, "Should revert on not owner");
+    const code = await web3.eth.getCode(this.tokenInstance.address);
+    code.should.not.equal("0x");
+  });
+
+  /*TODO: Refactor everything to another test
+  it("...should delete the contract.", async () => {
+    await this.tokenInstance.destroy({ from: accounts[0] });
+    const code = await web3.eth.getCode(this.tokenInstance.address);
+    code.should.equal("0x");
+  });*/
 });

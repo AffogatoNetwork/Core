@@ -1,7 +1,9 @@
 pragma solidity ^0.5.0;
 import "./ActorFactory.sol";
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Libraries/Pausable.sol';
 
-contract CertificateFactory {
+contract CertificateFactory is Ownable, Pausable {
     event LogAddCertificate(
         uint indexed _id,
         address _certifierAddress,
@@ -43,7 +45,7 @@ contract CertificateFactory {
 
     //TODO: Should insert if no actor?
     function addCertificate(bytes32 _name, string memory _imageHash, string memory _description, string memory _additionalInformation)
-        public
+        public whenNotPaused
     {
         uint uid = certificatesCount;
         Certificate memory certificate = Certificate(uid, _name, _imageHash, _description, _additionalInformation);
@@ -53,10 +55,13 @@ contract CertificateFactory {
         emit LogAddCertificate(uid, msg.sender, _name, _imageHash, _description, _additionalInformation);
     }
 
-    function assignCertificate(address _owner, uint _coffeeBatchId, uint _certificateId) public {
+    function assignCertificate(address _owner, uint _coffeeBatchId, uint _certificateId) public whenNotPaused {
         require(actor.isAllowed(_owner, msg.sender));
         coffeeBatchToCertificates[_coffeeBatchId].push(_certificateId);
         emit LogAssignCertificate(_owner, msg.sender, _coffeeBatchId, _certificateId);
     }
 
+    function destroy() public onlyOwner {
+        selfdestruct(owner());
+    }
 }
