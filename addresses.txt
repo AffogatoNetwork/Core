@@ -1,0 +1,23 @@
+Rinkeby
+==========================
+
+'ActorFactory'
+--------------------------
+> contract address:    0xD0d8CF036B4BBb31886a28Fb824Da3817F4e1452
+
+'TastingFactory'
+--------------------------
+> contract address:    0x83C1113dfdb4Ca0ba680bdF6DF16f90D239a2aD6
+
+'CertificateFactory'
+--------------------------
+> contract address:    0x4A946DAC23484ADFc3B9184141885B11849ca668
+
+'FarmFactory'
+--------------------------
+> contract address:    0xD488DD80Eee5249883de5124DD50879f3a10B3d5
+
+'Coffee'
+--------------------------
+> contract address:    0x34e207654942229856814F001B150d56f0998c7d
+
