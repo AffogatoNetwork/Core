@@ -9499,150 +9499,174 @@
     "4": {
       "events": {},
       "links": {},
-      "address": "0xD0d8CF036B4BBb31886a28Fb824Da3817F4e1452",
-      "transactionHash": "0x30e4b83e098b8d9e5c019d259969128194d8d74aeffd1681244f78e783287ab7"
+      "address": "0x701Dc137A12CdBde515cE0C4Dff580Bf24B2E7A7",
+      "transactionHash": "0x27b693dc04a49be220498e426c7833469e33ae4af4e754d94381ca1b998ae021"
     },
-    "100": {
+    "1234": {
+      "events": {
+        "0x5eaca636502e7a909c70644d06f7b7b6c991a69033a95d1e5be6c270e42e9439": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_typeOfActor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_country",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_region",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_email",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddActor",
+          "type": "event",
+          "signature": "0x5eaca636502e7a909c70644d06f7b7b6c991a69033a95d1e5be6c270e42e9439"
+        },
+        "0xdb5a0e93d1fe84dc79f3fe971bea44038bfebececfb7699c6f1c1588ed841855": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_typeOfActor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_country",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_region",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_email",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogUpdateActor",
+          "type": "event",
+          "signature": "0xdb5a0e93d1fe84dc79f3fe971bea44038bfebececfb7699c6f1c1588ed841855"
+        },
+        "0x6cc438beee050a8338ac87dc4353c517532095b48b678a7e50f680da7e6c7891": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "_allowed",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_value",
+              "type": "bool"
+            }
+          ],
+          "name": "LogApproval",
+          "type": "event",
+          "signature": "0x6cc438beee050a8338ac87dc4353c517532095b48b678a7e50f680da7e6c7891"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
+      "links": {},
+      "address": "0x91A9cB5e296d14c58d177AFE9fCC5a162478077B",
+      "transactionHash": "0xb89a2a1311c1336b5456141fa6d0d91f3412be95406d82cc80459df823252f94"
+    },
+    "1548726988226": {
       "events": {},
       "links": {},
-      "address": "0xa1c7cc10046e22e043b92ff0f222e01d7c946e99",
-      "transactionHash": "0xd69a2975295f227615ab930fe8c3e734f5bcef24b1508887221df826910445e2"
+      "address": "0x816F63Cb4e0B149E297286A088aAbe7D4278376A",
+      "transactionHash": "0xd4e2c6fa23a0d93719f08ebbac808f64c8bba7d4082b517861be962674fdf0da"
     },
-    "4447": {
+    "1548727380825": {
       "events": {},
       "links": {},
-      "address": "0x75c35c980c0d37ef46df04d31a140b65503c0eed",
-      "transactionHash": "0xbd6ffd728b4459fa1f2b90486cd035f637246e875eccb3eb622fa173e8c3adc2"
-    },
-    "1535498288062": {
-      "events": {},
-      "links": {},
-      "address": "0x6e3ed900c60ee50efd689e00d36a8c3925e970f1",
-      "transactionHash": "0xb843c4c9b75537e3bb663684c7a0d9b80365d1d18bbae560ac700fc0aa3da36f"
-    },
-    "1535836116867": {
-      "events": {},
-      "links": {},
-      "address": "0xeb8dc7099d310e5347efe18470b90c7b8ade8380",
-      "transactionHash": "0x9e68e9628d7ec8f85ed6a974eea9e44a15ef511cc5f7e68a76044d3f29b28337"
-    },
-    "1535842132618": {
-      "events": {},
-      "links": {},
-      "address": "0xd1e30add00e86882f643a4c48ec6d5a415415885",
-      "transactionHash": "0x31128b852056ea7d6724f8c57c21058cc5a0e72f46af9cd22b968086fc468d28"
-    },
-    "1536504715906": {
-      "events": {},
-      "links": {},
-      "address": "0x66c22658179eab1447e149b60eb4adfcdd530578",
-      "transactionHash": "0x1bd1edf8d5afd34924d369a1da6f7c990db199de01f2b9dd30beb81b509a0ee2"
-    },
-    "1536506846483": {
-      "events": {},
-      "links": {},
-      "address": "0xa20f9463d7694dfa6838f1b664300d332289fc4c",
-      "transactionHash": "0x31128b852056ea7d6724f8c57c21058cc5a0e72f46af9cd22b968086fc468d28"
-    },
-    "1536533694159": {
-      "events": {},
-      "links": {},
-      "address": "0x86757b17527b59cbbaa7de4396d10c36d1bb4fc6",
-      "transactionHash": "0xd71482409a036da309d7a8b4961b31408682c3b05406695ee2e4a4599c7310bf"
-    },
-    "1536613845483": {
-      "events": {},
-      "links": {},
-      "address": "0x5e7acb4cc4c903b1926c2f77594670c1efb8c518",
-      "transactionHash": "0xa14ff6917dec5d44c4d59f00322b9222ab34d02bf48bc424eb5195d88d012922"
-    },
-    "1536619013559": {
-      "events": {},
-      "links": {},
-      "address": "0x46e5fe32c7582d39d3dbbfc3acfa98d3fb8b2bab",
-      "transactionHash": "0xa14ff6917dec5d44c4d59f00322b9222ab34d02bf48bc424eb5195d88d012922"
-    },
-    "1536699882739": {
-      "events": {},
-      "links": {},
-      "address": "0x87c7d4994af86272a9e801193c30ea6ad880666c",
-      "transactionHash": "0xa14ff6917dec5d44c4d59f00322b9222ab34d02bf48bc424eb5195d88d012922"
-    },
-    "1536701169469": {
-      "events": {},
-      "links": {},
-      "address": "0x153efdb106bfd906d85c012da89317942657abc7",
-      "transactionHash": "0x63dd727505eff42ba6ff2fa3cf48fa0248255df6fee5c2955f50a245d3a5b0f5"
-    },
-    "1537045115838": {
-      "events": {},
-      "links": {},
-      "address": "0x5d3d1b492a8a7e3480906b4f7263274f269f2b58",
-      "transactionHash": "0x202ae584c10a07b595df70f43e034f018108e19aab1994e3b53f390218222af5"
-    },
-    "1537382865086": {
-      "events": {},
-      "links": {},
-      "address": "0x428a463ea406ebff6ea29bd30cc6d3528546309e",
-      "transactionHash": "0x15ecb628b26460d576af600b454a84ed59442727357738a28244a7b7c0433516"
-    },
-    "1537745136647": {
-      "events": {},
-      "links": {},
-      "address": "0x1e36fac683770938030262b129f8f32527498d62",
-      "transactionHash": "0x15ecb628b26460d576af600b454a84ed59442727357738a28244a7b7c0433516"
-    },
-    "1537905829076": {
-      "events": {},
-      "links": {},
-      "address": "0x9190058d30da7a4acc4f3729aebcae3697ddf935",
-      "transactionHash": "0xab376152554aad9fedc4449a1cf9e8426c07446c617b150e648590b93967d555"
-    },
-    "1538007482883": {
-      "events": {},
-      "links": {},
-      "address": "0x53c2221636f87618f642b134f474df471085895b",
-      "transactionHash": "0x15ecb628b26460d576af600b454a84ed59442727357738a28244a7b7c0433516"
-    },
-    "1542574359857": {
-      "events": {},
-      "links": {},
-      "address": "0x418714fee2d939a1ffe7ea4c02e871e5eba11ddc",
-      "transactionHash": "0x8b52465a0eab6ce7cebb832dfb46afc7f3a4776de939eb6dfa8f9134fce0f06a"
-    },
-    "1542685172797": {
-      "events": {},
-      "links": {},
-      "address": "0x7e8199ab8aae2dca7538f03d5627e3a5bea555e8",
-      "transactionHash": "0x0f1172d78b252e29e866e451066d155cd70cf5264e7fee92d70e5511c4b679e2"
-    },
-    "1548264525003": {
-      "events": {},
-      "links": {},
-      "address": "0x713c3178154286392a577A2B8262c32151EE133D",
-      "transactionHash": "0xcbdb30d1655f0820bde682e8b22fc364aee59c35d2f15cce0298a722a756c00b"
-    },
-    "1548292817349": {
-      "events": {},
-      "links": {},
-      "address": "0x6F07735a31ab855f0c10Ed7369991110AefAEF31",
-      "transactionHash": "0xe725017466ea56bf2e0d42ae553d0aec5aa40cd98b24fa4b4334dda88002a506"
-    },
-    "1548356043106": {
-      "events": {},
-      "links": {},
-      "address": "0x1b7F78356C3aDFc5F024686dA363D499Db08ffBB",
-      "transactionHash": "0x3c2c1482339e2767b980e0bc90afb2348c5b18c89cd5f33e16fef615260574f4"
-    },
-    "1548534834447": {
-      "events": {},
-      "links": {},
-      "address": "0xD0def6E9abc6242F36EaFc407A0e41abD0ADD90d",
-      "transactionHash": "0x855a0b9190b9bc961d9a373824012e356bbb108462ecbf58ffa814658e129116"
+      "address": "0x7ad2b27F182ae6D01ce2582EF970Be6eDC5c632d",
+      "transactionHash": "0xf70f6187e705cc1d64c1500fb200d97fd8ff10b82c788d3425a8f202c3283e1a"
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-28T02:09:13.472Z",
+  "updatedAt": "2019-01-30T16:23:43.324Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

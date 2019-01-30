@@ -7929,150 +7929,166 @@
     "4": {
       "events": {},
       "links": {},
-      "address": "0x34e207654942229856814F001B150d56f0998c7d",
-      "transactionHash": "0xb34c8c7e59564ece9d210293b8f2d358dbc95b3a4e0b8c84e1cac2a2f4434e73"
+      "address": "0xbA8d95e5a45eCC27Fc6C67De8A3270e7f29d8D0e",
+      "transactionHash": "0x3fe013a300f8ca6deee86a570ff39cbeb786847f8523fb179feaff6917431aa8"
     },
-    "100": {
+    "1234": {
+      "events": {
+        "0xda0e499d70467a0ca4fb42c053a056fe9a6ffb184ddf18c89510487f666dc70a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_farmUid",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_altitude",
+              "type": "uint16"
+            },
+            {
+              "indexed": false,
+              "name": "_variety",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_process",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_size",
+              "type": "uint32"
+            },
+            {
+              "indexed": false,
+              "name": "_isSold",
+              "type": "bool"
+            }
+          ],
+          "name": "LogAddCoffeeBatch",
+          "type": "event",
+          "signature": "0xda0e499d70467a0ca4fb42c053a056fe9a6ffb184ddf18c89510487f666dc70a"
+        },
+        "0x2a43ace8dbca349f2a9860a83d861a1ee80c96e4ddf82b7077ca0c918d2c7aac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_farmUid",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_altitude",
+              "type": "uint16"
+            },
+            {
+              "indexed": false,
+              "name": "_variety",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_process",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_size",
+              "type": "uint32"
+            },
+            {
+              "indexed": false,
+              "name": "_isSold",
+              "type": "bool"
+            }
+          ],
+          "name": "LogUpdateCoffeeBatch",
+          "type": "event",
+          "signature": "0x2a43ace8dbca349f2a9860a83d861a1ee80c96e4ddf82b7077ca0c918d2c7aac"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
+      "links": {},
+      "address": "0xd7624591EC6e68D32a1bD3272c0b65dD2cBdb21d",
+      "transactionHash": "0x638b30e682f3b42da1c1bcef77a01089d57777ef6cdee896ae562e96a5cb5bff"
+    },
+    "1548726988226": {
       "events": {},
       "links": {},
-      "address": "0xe657258a9652cc6290f556a07d8547d0cbdb0871",
-      "transactionHash": "0x7dab070c698a585fdeb7a7fc991e2ebce4e07b9c09265bab57146e91fe263fc3"
+      "address": "0xBe2EeFd4f24a6C2ACFd06Ecd67CD6590aB5fdFA6",
+      "transactionHash": "0x051581db0cc71636052d685ee6c03231a10076f2d745d4ac4433218f6e54f111"
     },
-    "4447": {
+    "1548727380825": {
       "events": {},
       "links": {},
-      "address": "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b",
-      "transactionHash": "0x8c7ae66b0052b375e07e98b0914a2035c4830c13f938207cd1e7f2dc4ae80803"
-    },
-    "1535498288062": {
-      "events": {},
-      "links": {},
-      "address": "0x307d8c104ce338b9bf44bf004866134cd74c2c0b",
-      "transactionHash": "0x30e0fde30eececd96380b91cb63964763fd49bc8e5cb12001b92697b952357ef"
-    },
-    "1535836116867": {
-      "events": {},
-      "links": {},
-      "address": "0x18be5d146d5f3b8b33b142708c4756a5f5aa630f",
-      "transactionHash": "0x79a8a885ca0f2af584dd63674a462a7296115285e0ed75454e8ed7718df7c4e1"
-    },
-    "1535842132618": {
-      "events": {},
-      "links": {},
-      "address": "0xaefcb64cc1edc60bd808caccda94bc8a85066feb",
-      "transactionHash": "0x7ca8f4330c7b115a64ad02d3158cec4eaf1391bb9e017b04efeee5ce29bffb7a"
-    },
-    "1536504715906": {
-      "events": {},
-      "links": {},
-      "address": "0x881e7a43236a9582a95f8a99979d8efa50f65ad3",
-      "transactionHash": "0xbdc25164a0c6fda3c96e94250d7806a169768d3de5bc74ca8d23853b4e9522f0"
-    },
-    "1536506846483": {
-      "events": {},
-      "links": {},
-      "address": "0x1497559eb96a051cd53c285eab93b7178471a2c6",
-      "transactionHash": "0xdf8f07443482a2a937de1970eac0d1ddc093a41f79da4d8f35ac1566e334be38"
-    },
-    "1536533694159": {
-      "events": {},
-      "links": {},
-      "address": "0x5f2d4de8acef81de7364a5f35493390bc78b91d2",
-      "transactionHash": "0x5b6a25931d53610e0f8c239879ee31bd83f042958b537f49ae89ac34bf7cba0e"
-    },
-    "1536613845483": {
-      "events": {},
-      "links": {},
-      "address": "0x8409e363cf39aa84246b3d9d314492134598311a",
-      "transactionHash": "0xdf8f07443482a2a937de1970eac0d1ddc093a41f79da4d8f35ac1566e334be38"
-    },
-    "1536619013559": {
-      "events": {},
-      "links": {},
-      "address": "0x894c3ea26afd35214a549558f3b7d0b8e4ae200f",
-      "transactionHash": "0xdf8f07443482a2a937de1970eac0d1ddc093a41f79da4d8f35ac1566e334be38"
-    },
-    "1536699882739": {
-      "events": {},
-      "links": {},
-      "address": "0x9aa12643084057d4f164a61877c6b709c20f46d7",
-      "transactionHash": "0xdf8f07443482a2a937de1970eac0d1ddc093a41f79da4d8f35ac1566e334be38"
-    },
-    "1536701169469": {
-      "events": {},
-      "links": {},
-      "address": "0x16c398b7583c8bdc88f29d7ab438966e4dd75269",
-      "transactionHash": "0xfa978d370d010248954a694ea4a46a09f8be897e5c142e7bea4855255d9bad5b"
-    },
-    "1537045115838": {
-      "events": {},
-      "links": {},
-      "address": "0xfa099b24435764e52befbd7b5d0a144ae7fafe7b",
-      "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
-    },
-    "1537382865086": {
-      "events": {},
-      "links": {},
-      "address": "0x566288fe73d9a08fb742e7cac4ea2092a4edfda3",
-      "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
-    },
-    "1537745136647": {
-      "events": {},
-      "links": {},
-      "address": "0x4ec6d14753f34acfbb3deb88833a6a63cc095d55",
-      "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
-    },
-    "1537905829076": {
-      "events": {},
-      "links": {},
-      "address": "0x1e0d99942dad7023573a355c7572831ce16e7eb0",
-      "transactionHash": "0xeb4fa28d144fac62a34914f38e808a16e70efb88f9eb8893d2d0c87742d58d7f"
-    },
-    "1538007482883": {
-      "events": {},
-      "links": {},
-      "address": "0x97c3695184bb96eb8ae02a31730a4897e2719658",
-      "transactionHash": "0xc65209774dfc12dba237b090b487548a111e69e9e10699bb5b2699cb2e008259"
-    },
-    "1542574359857": {
-      "events": {},
-      "links": {},
-      "address": "0xfe9469c80267bf0b77ef75f053652bd0771b5bcb",
-      "transactionHash": "0x9cdb9e7001b577f1028f9683f450c5b6e29018dbe76725339ab13de682d4b08e"
-    },
-    "1542685172797": {
-      "events": {},
-      "links": {},
-      "address": "0xf4d5aef76bbecc5536dd6ab4e01f5257b0862e6e",
-      "transactionHash": "0x974d1838f1f4acec27bb7f8ffb3a1201c36321ecd27895318f15ed315e336dd0"
-    },
-    "1548264525003": {
-      "events": {},
-      "links": {},
-      "address": "0x04674998785eae2f76F880452c00a8c519cdeE92",
-      "transactionHash": "0x49210ebe90930a004db39c901b60f114553cd3fa0941cf5fb0b88f5f7b6e6256"
-    },
-    "1548292817349": {
-      "events": {},
-      "links": {},
-      "address": "0xfd6c8dF8883354525Cd379A795C847A1B888eA17",
-      "transactionHash": "0xb2d465266ebae84ff380fb51b4676d0e099279ae00c3cf5ec07b675ff98ece57"
-    },
-    "1548356043106": {
-      "events": {},
-      "links": {},
-      "address": "0xB0b3Af23ECC16a8CcC373a3276643f1101c29109",
-      "transactionHash": "0x5cde94c7c6e9014e8a8e5da5a56e75177ac8bbb723efb9ae9b2fab075fcd35fb"
-    },
-    "1548534834447": {
-      "events": {},
-      "links": {},
-      "address": "0xf4297416ce1562bC803d1B34057FbbCf8A9EF76e",
-      "transactionHash": "0xa48e31c2a7d42e9110c56ea010040243cd86001800c658a59ab628a6940afcb9"
+      "address": "0x8B64cBF88819B5F6b8B148A2e17a244f204e4826",
+      "transactionHash": "0x67dae2ce2226e8fe9332654545ca1738e947013e47e3c1a90bbaf6f4ec60cb47"
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-28T02:09:13.464Z",
+  "updatedAt": "2019-01-30T16:23:43.351Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

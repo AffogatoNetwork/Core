@@ -11,7 +11,7 @@ module.exports = {
     development: {
       host: "localhost",
       port: 8545,
-      network_id: "*" // Match any network id
+      network_id: "1234" // Match any network id
     },
     rinkeby: {
       // must be a thunk, otherwise truffle commands may hang in CI

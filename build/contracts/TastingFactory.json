@@ -10294,144 +10294,191 @@
     "4": {
       "events": {},
       "links": {},
-      "address": "0x83C1113dfdb4Ca0ba680bdF6DF16f90D239a2aD6",
-      "transactionHash": "0xbfb79c984853221282187206eb3071751b8f1e1cae041be7ad3e027e18097e14"
+      "address": "0xB775800F3edAAd8D56E6de1E7d97fabdF42Ed91e",
+      "transactionHash": "0xbfac89a96e26e42c43b9af8c55bb567bcd96e65f26aa148d92e6cca144ab20cb"
     },
-    "100": {
+    "1234": {
+      "events": {
+        "0x028fab2af9f6df3e6215ef542e8bd298b7ac1c79aa0a798a4355a91fad738fdf": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_coffeeBatchId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_tasterAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_aroma",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_sweetness",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_flavor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_acidity",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_body",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_aftertaste",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_imageHash",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_cuppingNote",
+              "type": "uint16"
+            }
+          ],
+          "name": "LogAddCupProfile",
+          "type": "event",
+          "signature": "0x028fab2af9f6df3e6215ef542e8bd298b7ac1c79aa0a798a4355a91fad738fdf"
+        },
+        "0x5d07727eac4519d7b42068cdde43f994c10f6a086258a4c36ab03303039a8008": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_aroma",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_sweetness",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_flavor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_acidity",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_body",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_aftertaste",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_imageHash",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_cuppingNote",
+              "type": "uint16"
+            }
+          ],
+          "name": "LogUpdateCupProfile",
+          "type": "event",
+          "signature": "0x5d07727eac4519d7b42068cdde43f994c10f6a086258a4c36ab03303039a8008"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
+      "links": {},
+      "address": "0x683d010C0A75b3cB76ab043D2AaB71AA371D90e5",
+      "transactionHash": "0xbd543ef3e95207cb0bdf3ac014e794c7b100714c34c7e809964506d3fd3bc6cc"
+    },
+    "1548726988226": {
       "events": {},
       "links": {},
-      "address": "0x4b365ffdbba42a87f04f3d1fe3912b411ac58e39",
-      "transactionHash": "0xda4ad9edc822727d3fa07e9072428a59b579848f3a7ef4fc0a33a97393c050d4"
+      "address": "0xbd559B71E0b071679F9E01ed906dD97DE6D8f699",
+      "transactionHash": "0x25dada598f83dcbc76362beea184e1bc54482b9c1ce0b40a57766a37cdb5c4bd"
     },
-    "4447": {
+    "1548727380825": {
       "events": {},
       "links": {},
-      "address": "0x82d50ad3c1091866e258fd0f1a7cc9674609d254",
-      "transactionHash": "0x85757a3409069b3b5f614226ecd23b5abe9ed6928948455ceefa192f854f739f"
-    },
-    "1535836116867": {
-      "events": {},
-      "links": {},
-      "address": "0xe026e85ea3f3fc29a9793e9bf3b8f5d98e66f582",
-      "transactionHash": "0x45b09543587fb78ea108c118c7f5f80f54ec6f6834e323ae8f718dffae387762"
-    },
-    "1535842132618": {
-      "events": {},
-      "links": {},
-      "address": "0xaf122cec6b9f50f5fed34c2da716c18211ee9b11",
-      "transactionHash": "0x45b09543587fb78ea108c118c7f5f80f54ec6f6834e323ae8f718dffae387762"
-    },
-    "1536504715906": {
-      "events": {},
-      "links": {},
-      "address": "0x4521f67ffaca0a514ee71cd345b7ace936778e7f",
-      "transactionHash": "0xf7fb69329cc64a96e43ae624cace647482ddbed10465d37651155dc50b4e08ef"
-    },
-    "1536506846483": {
-      "events": {},
-      "links": {},
-      "address": "0xb966dbec7a2a9b3e33d11447983f6286edcb2729",
-      "transactionHash": "0x7c96b000387880526c1af62c119367d47287c012d94a4aff0bd851b7d93a987d"
-    },
-    "1536533694159": {
-      "events": {},
-      "links": {},
-      "address": "0x00f81fd7a16513c48eff3758e4af967151224279",
-      "transactionHash": "0x4357e82cd54c6b0207f707681e1e4e6ea778885a8ba5d27dd2a3c363d4263828"
-    },
-    "1536613845483": {
-      "events": {},
-      "links": {},
-      "address": "0x4afb41da998bbb9371534f3bb635a20d98db53dd",
-      "transactionHash": "0x74c1683a2491d0ab1c8c570a1aa12e269234f0a5a85981ebcbd1d81e2a72d75b"
-    },
-    "1536619013559": {
-      "events": {},
-      "links": {},
-      "address": "0x36ec4ae288cc54cf0279fb96f664de430108c595",
-      "transactionHash": "0x74c1683a2491d0ab1c8c570a1aa12e269234f0a5a85981ebcbd1d81e2a72d75b"
-    },
-    "1536699882739": {
-      "events": {},
-      "links": {},
-      "address": "0xb6dedd4e1cbbbcbe9a3e41f4bb2633f0cb454013",
-      "transactionHash": "0x74c1683a2491d0ab1c8c570a1aa12e269234f0a5a85981ebcbd1d81e2a72d75b"
-    },
-    "1536701169469": {
-      "events": {},
-      "links": {},
-      "address": "0x2aa5080a5497c0ddbbde21ecdf0eebe1d3c296f0",
-      "transactionHash": "0x74c1683a2491d0ab1c8c570a1aa12e269234f0a5a85981ebcbd1d81e2a72d75b"
-    },
-    "1537045115838": {
-      "events": {},
-      "links": {},
-      "address": "0xed3eea86b0d9ea6d4bbb9afd2a098760823394b7",
-      "transactionHash": "0xeec1477452ff3deb6672143ab650b0718b9af4e667d016109a4e0acb8e2147cb"
-    },
-    "1537382865086": {
-      "events": {},
-      "links": {},
-      "address": "0xcef495d1b3ee36fcd6cce1b8f280a616edc6e9b9",
-      "transactionHash": "0xa112403c6bd24d10624255c41f38b4c7623a8bafbaf61c85ddbcd036dfe503e4"
-    },
-    "1537745136647": {
-      "events": {},
-      "links": {},
-      "address": "0x8ae475dfff3ad8b54bb30bcd74c86247037e5571",
-      "transactionHash": "0xb353e3516b4d50be60684946373c72efba831c1d0345ad66454d1355d1976280"
-    },
-    "1537905829076": {
-      "events": {},
-      "links": {},
-      "address": "0x8e21d91c8a1b0abe6e3b24c6b30ce5212ab0bd7f",
-      "transactionHash": "0x79fff237e93eb3a9bf441be7652c4ed7eb162f3a7e04c639bff2fa2b2a636480"
-    },
-    "1538007482883": {
-      "events": {},
-      "links": {},
-      "address": "0x45b40bb317ff6378f345d4b80ec50da2c7ebe93f",
-      "transactionHash": "0x5aa407d2d88a75617e3c465585758ebe80bf48bda9bd225d5f336dd1c5dc8dd9"
-    },
-    "1542574359857": {
-      "events": {},
-      "links": {},
-      "address": "0x5166812f1615e377ffd523c1d93947f87660a0c4",
-      "transactionHash": "0x1237133b3456fc73b09f92252d8559a6c699dbee8c46a98fe1d127c838342c6d"
-    },
-    "1542685172797": {
-      "events": {},
-      "links": {},
-      "address": "0xbd1b16795838d13f333d3d74d3ba26687babc2ce",
-      "transactionHash": "0x66ebd0eca3eec9a7b9b305483b2ae56de1d3f4b30f6581ebe1a27532db19b4bf"
-    },
-    "1548264525003": {
-      "events": {},
-      "links": {},
-      "address": "0x31dBACf9D8E2811eAa90A162261B10A2e440B952",
-      "transactionHash": "0x6980433fe1f5092a7e0a164d4fe742ad4d230dffd2f8595374987f122c3b5459"
-    },
-    "1548292817349": {
-      "events": {},
-      "links": {},
-      "address": "0xDC6DC8d45A86b7711b90EE0203E3562029972118",
-      "transactionHash": "0xaff8ee11f27dcc19dfe7d70971dd292431c9877974ec87d6e10ec6b5a689e440"
-    },
-    "1548356043106": {
-      "events": {},
-      "links": {},
-      "address": "0xC81DD23b4b0D2Dd864A945c9656A7397D4F2bF1C",
-      "transactionHash": "0xdd08f1bae9f2ce3d8dd8d2e50700bfe4f961ca77587f310ed31a72eed452dbad"
-    },
-    "1548534834447": {
-      "events": {},
-      "links": {},
-      "address": "0xD18Ed04873f720dD0de5828D375a688B75EA77de",
-      "transactionHash": "0x90bca7032d59debe7c1241531c37a5df210d38ae5207ed6dc3e31b67dfd8ba51"
+      "address": "0x32943a6EE2F0e849Fd82eaC4a16120C5cEA1DA6C",
+      "transactionHash": "0xcfc360727ddaada511bebd25861d695777d63af03e120218e14e908f1e2be434"
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-28T02:09:13.483Z",
+  "updatedAt": "2019-01-30T16:23:43.346Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

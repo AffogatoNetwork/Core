@@ -6172,60 +6172,141 @@
     "4": {
       "events": {},
       "links": {},
-      "address": "0x4A946DAC23484ADFc3B9184141885B11849ca668",
-      "transactionHash": "0x8af5f40902871c5700c9c505c8578b464386456b5230b83313fe08323f449e9a"
+      "address": "0x919ba42759357cf70d6FD9016D916672ca881E48",
+      "transactionHash": "0x038be40b24148e3619e7f1d013fd2c0c5213c5b411c281983d61e8bd5219ca25"
     },
-    "100": {
+    "1234": {
+      "events": {
+        "0x1c0301de5558dec00629290b8c99777b715c30ed012dfbf0db1fbe20281e3109": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_certifierAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_imageHash",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_description",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_additionalInformation",
+              "type": "string"
+            }
+          ],
+          "name": "LogAddCertificate",
+          "type": "event",
+          "signature": "0x1c0301de5558dec00629290b8c99777b715c30ed012dfbf0db1fbe20281e3109"
+        },
+        "0xbc8258cddc647771b60213e7f91eb27f55113c4f17a0489a603d084c0648869c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_ownerAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_certifierAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_coffeeBatchId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_certificateId",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogAssignCertificate",
+          "type": "event",
+          "signature": "0xbc8258cddc647771b60213e7f91eb27f55113c4f17a0489a603d084c0648869c"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
+      "links": {},
+      "address": "0xA0DCEaC9e4BEe0b07FCcC5289336926bF417DaE3",
+      "transactionHash": "0x2863363f48ebdcc19472a03df9939a85ab9df95cadc4d8dd10c89393d636e89c"
+    },
+    "1548726988226": {
       "events": {},
       "links": {},
-      "address": "0xdfe745b0efa322d07960c84295944a666f990876",
-      "transactionHash": "0x25ba1c3407be90685b919c5997b980b72dbcc53f66606fa20de8c382cb999740"
+      "address": "0x9401F4C69e4dCbF5648146001a91175654141e3B",
+      "transactionHash": "0x8d90b68a09b5635d3e5d7ca578317242295fff03d3f3f24ac0019021889de1e5"
     },
-    "4447": {
+    "1548727380825": {
       "events": {},
       "links": {},
-      "address": "0xdda6327139485221633a1fcd65f4ac932e60a2e1",
-      "transactionHash": "0x73354e65cfd94cac6fecd6966796dd87372a87ecc8b2c77a890ce61b95a7c611"
-    },
-    "1542574359857": {
-      "events": {},
-      "links": {},
-      "address": "0x211d18324c60621452d8ac31b74a845424dc6351",
-      "transactionHash": "0x5e6e944a7abe52166e02c5100b1186162cbdf91b9670e4940c1fa8270be3cd63"
-    },
-    "1542685172797": {
-      "events": {},
-      "links": {},
-      "address": "0x4f309e94b63324953310ff82487cdbc093e58b49",
-      "transactionHash": "0x61cfa6a26d290d6cb6ddd6d23b267ae646459b741eed22fba10131740663a0fc"
-    },
-    "1548264525003": {
-      "events": {},
-      "links": {},
-      "address": "0x42085A50bCeFa499082a4541b8217A87784B2AA1",
-      "transactionHash": "0xbf03e7a192a79a410ca787fb1fa5f0064188482c3fb4616d5bdd6a13c00f77ba"
-    },
-    "1548292817349": {
-      "events": {},
-      "links": {},
-      "address": "0x7B82E5f12FdBB4D60586E4Fd643dE0a18819e7f1",
-      "transactionHash": "0xa874550f3519c3a9dd300acdb079fe456c6d0870dadcedc3a893ac9289756f6d"
-    },
-    "1548356043106": {
-      "events": {},
-      "links": {},
-      "address": "0x42Df3066f685eCD63250CEC320C34f6e7517C800",
-      "transactionHash": "0x4e2163cea2e9edfed5029714e71f7aee36f7c53c9da64503e820865787ea5b14"
-    },
-    "1548534834447": {
-      "events": {},
-      "links": {},
-      "address": "0x20bE03f0A4F1DC110D5906553eD43E8f89Bd6C61",
-      "transactionHash": "0x8bf0183b894970a49a364f39859b4b50d2ec362a61d86520afa194fe22020604"
+      "address": "0x4f9d785bb66d2fc27E943ca6D9f154305430b99c",
+      "transactionHash": "0x32a70f57d3d8e48e4e7700e53a0a72aaa97ea4a1229fcad01908422e2dd64a0c"
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-28T02:09:13.486Z",
+  "updatedAt": "2019-01-30T16:23:43.331Z",
   "devdoc": {
     "methods": {
       "isOwner()": {
