@@ -23,6 +23,8 @@ contract(ActorFactory, function(accounts) {
         web3.utils.utf8ToHex("Honduras"),
         web3.utils.utf8ToHex("Francisco Morazan"),
         web3.utils.utf8ToHex("tony@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
         { from: accounts[1] }
       );
       receipt.logs.length.should.be.equal(1, "trigger one event");
@@ -51,6 +53,14 @@ contract(ActorFactory, function(accounts) {
       web3.utils
         .hexToUtf8(receipt.logs[0].args._email)
         .should.be.equal("tony@stark.com", "logs the inserted actor email");
+      receipt.logs[0].args._imageHash.should.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "logs the inserted actor image"
+      );
+      receipt.logs[0].args._bio.should.be.equal(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
+        "logs the inserted actor bio"
+      );
       const actorCount = await this.tokenInstance.getActorCount();
       expect(actorCount.toNumber()).to.be.equal(
         1,
@@ -63,7 +73,9 @@ contract(ActorFactory, function(accounts) {
           web3.utils.utf8ToHex("farmer"),
           web3.utils.utf8ToHex("Honduras"),
           web3.utils.utf8ToHex("Choluteca"),
-          web3.utils.utf8ToHex("ceegarner@hotmail.com"),
+          web3.utils.utf8ToHex("tony@stark.com"),
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
           {
             from: accounts[1]
           }
@@ -105,6 +117,14 @@ contract(ActorFactory, function(accounts) {
         "tony@stark.com",
         "Email same as inserted"
       );
+      expect(actor[5]).to.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "image hash same as inserted"
+      );
+      expect(actor[6]).to.be.equal(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
+        "bio same as inserted"
+      );
     });
 
     it("Updates an Actor", async () => {
@@ -114,6 +134,8 @@ contract(ActorFactory, function(accounts) {
         web3.utils.utf8ToHex("Honduras"),
         web3.utils.utf8ToHex("Choluteca"),
         web3.utils.utf8ToHex("ceegarner@hotmail.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rz",
+        "Vivamus in risus a tortor semper suscipit id vitae enim.",
         {
           from: accounts[1]
         }
@@ -145,6 +167,14 @@ contract(ActorFactory, function(accounts) {
           "ceegarner@hotmail.com",
           "logs the updated actor email"
         );
+      receipt.logs[0].args._imageHash.should.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rz",
+        "logs the inserted actor image"
+      );
+      receipt.logs[0].args._bio.should.be.equal(
+        "Vivamus in risus a tortor semper suscipit id vitae enim.",
+        "logs the inserted actor bio"
+      );
       const actor = await this.tokenInstance.getActor(accounts[1], {
         from: accounts[0]
       });
@@ -167,6 +197,14 @@ contract(ActorFactory, function(accounts) {
       expect(web3.utils.hexToUtf8(actor[4])).to.be.equal(
         "ceegarner@hotmail.com",
         "Email same as updated"
+      );
+      expect(actor[5]).to.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rz",
+        "image hash same as inserted"
+      );
+      expect(actor[6]).to.be.equal(
+        "Vivamus in risus a tortor semper suscipit id vitae enim.",
+        "bio same as inserted"
       );
     });
 
@@ -257,6 +295,8 @@ contract(ActorFactory, function(accounts) {
         web3.utils.utf8ToHex("Honduras"),
         web3.utils.utf8ToHex("Choluteca"),
         web3.utils.utf8ToHex("ceegarner@hotmail.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
         {
           from: accounts[9]
         }
@@ -274,6 +314,8 @@ contract(ActorFactory, function(accounts) {
         web3.utils.utf8ToHex("Honduras"),
         web3.utils.utf8ToHex("Choluteca"),
         web3.utils.utf8ToHex("ceegarner@hotmail.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
         {
           from: accounts[9]
         }
