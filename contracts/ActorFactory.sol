@@ -5,9 +5,9 @@ import './Libraries/Pausable.sol';
 
 //TODO: use Id instead of address
 contract ActorFactory is Ownable, Pausable {
-    event LogAddActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email);
+    event LogAddActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string _imageHash, string _bio);
 
-    event LogUpdateActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email);
+    event LogUpdateActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email,string _imageHash, string _bio);
 
     event LogApproval(address indexed _owner, address indexed _allowed, bool _value);
 
@@ -17,6 +17,8 @@ contract ActorFactory is Ownable, Pausable {
         bytes32 country;
         bytes32 region;
         bytes32 email;
+        string imageHash;
+        string bio;
     }
 
     mapping(address => Actor) public addressToActor;
@@ -35,25 +37,25 @@ contract ActorFactory is Ownable, Pausable {
         return allowed_[_owner][_target];
     }
 
-    function returnOwner() public view returns (bytes32, bytes32, bytes32, bytes32, bytes32) {
+    function returnOwner() public view returns (bytes32, bytes32, bytes32, bytes32, bytes32, string memory, string memory) {
         Actor memory actor = addressToActor[msg.sender];
-        return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email);
+        return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email, actor.imageHash, actor.bio);
     }
 
-    function getActor(address _actorAddress) public view returns (bytes32, bytes32, bytes32, bytes32, bytes32) {
+    function getActor(address _actorAddress) public view returns (bytes32, bytes32, bytes32, bytes32, bytes32,string memory,string memory) {
         Actor memory actor = addressToActor[_actorAddress];
-        return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email);
+        return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email, actor.imageHash, actor.bio);
     }
 
-    function addActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email) public whenNotPaused {
+    function addActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string memory _imageHash, string memory _bio) public whenNotPaused {
         require(addressToActor[msg.sender].name == 0);
-        Actor memory actor = Actor(_name, _typeOfActor, _country, _region, _email);
+        Actor memory actor = Actor(_name, _typeOfActor, _country, _region, _email, _imageHash, _bio);
         addressToActor[msg.sender] = actor;
         actorsIds.push(msg.sender);
-        emit LogAddActor(msg.sender, _name, _typeOfActor, _country, _region, _email);
+        emit LogAddActor(msg.sender, _name, _typeOfActor, _country, _region, _email,_imageHash, _bio);
     }
 
-    function updateActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email) public whenNotPaused {
+    function updateActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string memory _imageHash, string memory _bio) public whenNotPaused {
         require(!(addressToActor[msg.sender].name == 0));
         Actor memory actor = addressToActor[msg.sender];
         actor.name = _name;
@@ -61,8 +63,10 @@ contract ActorFactory is Ownable, Pausable {
         actor.country = _country;
         actor.region = _region;
         actor.email = _email;
+        actor.imageHash = _imageHash;
+        actor.bio = _bio;
         addressToActor[msg.sender] = actor;
-        emit LogUpdateActor(msg.sender, _name, _typeOfActor, _country, _region, _email);
+        emit LogUpdateActor(msg.sender, _name, _typeOfActor, _country, _region, _email,_imageHash,_bio);
     }
 
     function approve(address _spender, bool _value) public whenNotPaused returns (bool) {
