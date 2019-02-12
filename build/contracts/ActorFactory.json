@@ -9497,10 +9497,154 @@
   },
   "networks": {
     "4": {
-      "events": {},
+      "events": {
+        "0x5eaca636502e7a909c70644d06f7b7b6c991a69033a95d1e5be6c270e42e9439": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_typeOfActor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_country",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_region",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_email",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddActor",
+          "type": "event",
+          "signature": "0x5eaca636502e7a909c70644d06f7b7b6c991a69033a95d1e5be6c270e42e9439"
+        },
+        "0xdb5a0e93d1fe84dc79f3fe971bea44038bfebececfb7699c6f1c1588ed841855": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_typeOfActor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_country",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_region",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_email",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogUpdateActor",
+          "type": "event",
+          "signature": "0xdb5a0e93d1fe84dc79f3fe971bea44038bfebececfb7699c6f1c1588ed841855"
+        },
+        "0x6cc438beee050a8338ac87dc4353c517532095b48b678a7e50f680da7e6c7891": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "_allowed",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_value",
+              "type": "bool"
+            }
+          ],
+          "name": "LogApproval",
+          "type": "event",
+          "signature": "0x6cc438beee050a8338ac87dc4353c517532095b48b678a7e50f680da7e6c7891"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
       "links": {},
-      "address": "0x701Dc137A12CdBde515cE0C4Dff580Bf24B2E7A7",
-      "transactionHash": "0x27b693dc04a49be220498e426c7833469e33ae4af4e754d94381ca1b998ae021"
+      "address": "0x76613DE0c5901145D3E8C288adA68f10D4c86C1c",
+      "transactionHash": "0xde0efc26bb943af7f75792f1efccbbf43f6182f09557f4ed2f913092d919e501"
     },
     "1234": {
       "events": {
@@ -9666,7 +9810,7 @@
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-30T16:23:43.324Z",
+  "updatedAt": "2019-02-11T20:53:08.073Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

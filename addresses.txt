@@ -1,23 +1,101 @@
-Rinkeby
-==========================
+1_initial_migration.js
+======================
 
-'ActorFactory'
---------------------------
-> contract address:    0xD0d8CF036B4BBb31886a28Fb824Da3817F4e1452
+   Replacing 'Migrations'
+   ----------------------
+   > transaction hash:    0xd4b2cd25dd3e59b0ca26f6e43e7f756ba5c329c211c36af8bf5d73f733015bc1
+   > Blocks: 0            Seconds: 13
+   > contract address:    0x59790d81b0105553041c5a53cEb08fF99eb49330
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             18.33365044
+   > gas used:            284908
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00569816 ETH
 
-'TastingFactory'
---------------------------
-> contract address:    0x83C1113dfdb4Ca0ba680bdF6DF16f90D239a2aD6
 
-'CertificateFactory'
---------------------------
-> contract address:    0x4A946DAC23484ADFc3B9184141885B11849ca668
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.00569816 ETH
 
-'FarmFactory'
---------------------------
-> contract address:    0xD488DD80Eee5249883de5124DD50879f3a10B3d5
 
-'Coffee'
---------------------------
-> contract address:    0x34e207654942229856814F001B150d56f0998c7d
+2_deploy_contracts.js
+=====================
+
+   Replacing 'ActorFactory'
+   ------------------------
+   > transaction hash:    0xde0efc26bb943af7f75792f1efccbbf43f6182f09557f4ed2f913092d919e501
+   > Blocks: 0            Seconds: 12
+   > contract address:    0x76613DE0c5901145D3E8C288adA68f10D4c86C1c
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             18.30062722
+   > gas used:            1609127
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.03218254 ETH
+
+
+   Replacing 'TastingFactory'
+   --------------------------
+   > transaction hash:    0x05bb26e8c7253d338221e7065514476af61d03f841eeb954844d9f2532b7a675
+   > Blocks: 0            Seconds: 8
+   > contract address:    0x07E1299c9165fFfEcD7B617822Bce36C8b8D51fc
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             18.26256342
+   > gas used:            1903190
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0380638 ETH
+
+
+   Replacing 'CertificateFactory'
+   ------------------------------
+   > transaction hash:    0x4654c30ad8b1072d71a9d8c042405015a653cf2ce569cb35d31389eb54e735b5
+   > Blocks: 0            Seconds: 12
+   > contract address:    0x950CAf47604Afb7699BFF3279E1822F4db063e61
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             18.22250358
+   > gas used:            2002992
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.04005984 ETH
+
+
+   Replacing 'FarmFactory'
+   -----------------------
+   > transaction hash:    0x43d53f865924b2e9ba43672169e2031adac40746a139dcc811c453592221c5e7
+   > Blocks: 0            Seconds: 12
+   > contract address:    0x35E982Bbe99eC7534705B7c31C3D47E7EA4Ef539
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             18.1882034
+   > gas used:            1715009
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.03430018 ETH
+
+
+   Replacing 'Coffee'
+   ------------------
+   > transaction hash:    0x0c3635502cb8ab9379c8c94a03ab2c550edafd1449053a1dd5905d6e110aceba
+   > Blocks: 1            Seconds: 24
+   > contract address:    0xF588FC4b1d690a63FF03ce9C761be87ACfc4d0De
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             18.15793708
+   > gas used:            1513316
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.03026632 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.17487268 ETH
+
+
+Summary
+=======
+> Total deployments:   6
+> Final cost:          0.18057084 ETH
 

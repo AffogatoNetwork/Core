@@ -7927,10 +7927,146 @@
   },
   "networks": {
     "4": {
-      "events": {},
+      "events": {
+        "0xda0e499d70467a0ca4fb42c053a056fe9a6ffb184ddf18c89510487f666dc70a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_farmUid",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_altitude",
+              "type": "uint16"
+            },
+            {
+              "indexed": false,
+              "name": "_variety",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_process",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_size",
+              "type": "uint32"
+            },
+            {
+              "indexed": false,
+              "name": "_isSold",
+              "type": "bool"
+            }
+          ],
+          "name": "LogAddCoffeeBatch",
+          "type": "event",
+          "signature": "0xda0e499d70467a0ca4fb42c053a056fe9a6ffb184ddf18c89510487f666dc70a"
+        },
+        "0x2a43ace8dbca349f2a9860a83d861a1ee80c96e4ddf82b7077ca0c918d2c7aac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_farmUid",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_altitude",
+              "type": "uint16"
+            },
+            {
+              "indexed": false,
+              "name": "_variety",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_process",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_size",
+              "type": "uint32"
+            },
+            {
+              "indexed": false,
+              "name": "_isSold",
+              "type": "bool"
+            }
+          ],
+          "name": "LogUpdateCoffeeBatch",
+          "type": "event",
+          "signature": "0x2a43ace8dbca349f2a9860a83d861a1ee80c96e4ddf82b7077ca0c918d2c7aac"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
       "links": {},
-      "address": "0xbA8d95e5a45eCC27Fc6C67De8A3270e7f29d8D0e",
-      "transactionHash": "0x3fe013a300f8ca6deee86a570ff39cbeb786847f8523fb179feaff6917431aa8"
+      "address": "0xF588FC4b1d690a63FF03ce9C761be87ACfc4d0De",
+      "transactionHash": "0x0c3635502cb8ab9379c8c94a03ab2c550edafd1449053a1dd5905d6e110aceba"
     },
     "1234": {
       "events": {
@@ -8088,7 +8224,7 @@
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-30T16:23:43.351Z",
+  "updatedAt": "2019-02-11T20:53:08.087Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

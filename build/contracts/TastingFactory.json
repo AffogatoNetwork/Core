@@ -10292,10 +10292,171 @@
   },
   "networks": {
     "4": {
-      "events": {},
+      "events": {
+        "0x028fab2af9f6df3e6215ef542e8bd298b7ac1c79aa0a798a4355a91fad738fdf": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_coffeeBatchId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_tasterAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_aroma",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_sweetness",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_flavor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_acidity",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_body",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_aftertaste",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_imageHash",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_cuppingNote",
+              "type": "uint16"
+            }
+          ],
+          "name": "LogAddCupProfile",
+          "type": "event",
+          "signature": "0x028fab2af9f6df3e6215ef542e8bd298b7ac1c79aa0a798a4355a91fad738fdf"
+        },
+        "0x5d07727eac4519d7b42068cdde43f994c10f6a086258a4c36ab03303039a8008": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_aroma",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_sweetness",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_flavor",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_acidity",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_body",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_aftertaste",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_imageHash",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_cuppingNote",
+              "type": "uint16"
+            }
+          ],
+          "name": "LogUpdateCupProfile",
+          "type": "event",
+          "signature": "0x5d07727eac4519d7b42068cdde43f994c10f6a086258a4c36ab03303039a8008"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
       "links": {},
-      "address": "0xB775800F3edAAd8D56E6de1E7d97fabdF42Ed91e",
-      "transactionHash": "0xbfac89a96e26e42c43b9af8c55bb567bcd96e65f26aa148d92e6cca144ab20cb"
+      "address": "0x07E1299c9165fFfEcD7B617822Bce36C8b8D51fc",
+      "transactionHash": "0x05bb26e8c7253d338221e7065514476af61d03f841eeb954844d9f2532b7a675"
     },
     "1234": {
       "events": {
@@ -10478,7 +10639,7 @@
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-30T16:23:43.346Z",
+  "updatedAt": "2019-02-11T20:53:08.096Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

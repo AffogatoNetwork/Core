@@ -7564,10 +7564,141 @@
   },
   "networks": {
     "4": {
-      "events": {},
+      "events": {
+        "0xd3098ac7a01b8686f2c8cf144119f6859cf9c56bf618f465fe488e3e6656e46f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_ownerAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_country",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_region",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_village",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_story",
+              "type": "string"
+            }
+          ],
+          "name": "LogAddFarm",
+          "type": "event",
+          "signature": "0xd3098ac7a01b8686f2c8cf144119f6859cf9c56bf618f465fe488e3e6656e46f"
+        },
+        "0x7f5e4e1c4757aaf20449560bac8ece2ff17e57224d66d47680d9f30bf3fdab2f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_ownerAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_country",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_region",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_village",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_story",
+              "type": "string"
+            }
+          ],
+          "name": "LogUpdateFarm",
+          "type": "event",
+          "signature": "0x7f5e4e1c4757aaf20449560bac8ece2ff17e57224d66d47680d9f30bf3fdab2f"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
       "links": {},
-      "address": "0x846b28c0908ac722294954Ff45d8525d020C2B91",
-      "transactionHash": "0x003eedfc95cbbaf480985c5446cb22efd0c67dbf74b6f493d4da149227d64ba4"
+      "address": "0x35E982Bbe99eC7534705B7c31C3D47E7EA4Ef539",
+      "transactionHash": "0x43d53f865924b2e9ba43672169e2031adac40746a139dcc811c453592221c5e7"
     },
     "1234": {
       "events": {
@@ -7720,7 +7851,7 @@
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-30T16:23:43.340Z",
+  "updatedAt": "2019-02-11T20:53:08.101Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

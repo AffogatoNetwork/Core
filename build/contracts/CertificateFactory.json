@@ -6170,10 +6170,121 @@
   },
   "networks": {
     "4": {
-      "events": {},
+      "events": {
+        "0x1c0301de5558dec00629290b8c99777b715c30ed012dfbf0db1fbe20281e3109": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_certifierAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "_imageHash",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_description",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_additionalInformation",
+              "type": "string"
+            }
+          ],
+          "name": "LogAddCertificate",
+          "type": "event",
+          "signature": "0x1c0301de5558dec00629290b8c99777b715c30ed012dfbf0db1fbe20281e3109"
+        },
+        "0xbc8258cddc647771b60213e7f91eb27f55113c4f17a0489a603d084c0648869c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_ownerAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_certifierAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_coffeeBatchId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_certificateId",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogAssignCertificate",
+          "type": "event",
+          "signature": "0xbc8258cddc647771b60213e7f91eb27f55113c4f17a0489a603d084c0648869c"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
       "links": {},
-      "address": "0x919ba42759357cf70d6FD9016D916672ca881E48",
-      "transactionHash": "0x038be40b24148e3619e7f1d013fd2c0c5213c5b411c281983d61e8bd5219ca25"
+      "address": "0x950CAf47604Afb7699BFF3279E1822F4db063e61",
+      "transactionHash": "0x4654c30ad8b1072d71a9d8c042405015a653cf2ce569cb35d31389eb54e735b5"
     },
     "1234": {
       "events": {
@@ -6306,7 +6417,7 @@
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2019-01-30T16:23:43.331Z",
+  "updatedAt": "2019-02-11T20:53:08.105Z",
   "devdoc": {
     "methods": {
       "isOwner()": {
