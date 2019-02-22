@@ -1,6 +1,5 @@
 pragma solidity ^0.5.0;
-import "./ActorFactory.sol";
-import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './ActorFactory.sol';
 import './Libraries/Pausable.sol';
 
 contract CertificateFactory is Ownable, Pausable {

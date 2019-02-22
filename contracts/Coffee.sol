@@ -1,5 +1,5 @@
 pragma solidity ^0.5.0;
-import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+
 import './Libraries/Pausable.sol';
 
 contract Coffee is Ownable, Pausable {
