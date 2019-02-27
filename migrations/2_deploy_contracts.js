@@ -8,7 +8,7 @@ module.exports = function(deployer) {
   deployer.deploy(ActorFactory).then(async instance => {
     await deployer.deploy(TastingFactory, instance.address);
     await deployer.deploy(CertificateFactory, instance.address);
+    await deployer.deploy(FarmFactory, instance.address);
   });
-  deployer.deploy(FarmFactory);
   deployer.deploy(Coffee);
 };

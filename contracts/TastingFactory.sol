@@ -72,6 +72,7 @@ contract TastingFactory is Ownable, Pausable{
         return (cupProfile.uid, cupProfile.aroma, cupProfile.sweetness, cupProfile.flavor, cupProfile.acidity, cupProfile.body, cupProfile.aftertaste, cupProfile.imageHash, cupProfile.cuppingNote);
     }
 
+    //TODO: require to be a taster
     function addCupProfile(
         address _owner,
         uint _coffeeBatchId,
@@ -105,7 +106,7 @@ contract TastingFactory is Ownable, Pausable{
             _cuppingNote
         );
     }
-    //TODO: Tastings can't be updated
+
     function updateCupProfileById(
         uint _uid,
         bytes32 _aroma,
