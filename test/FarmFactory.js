@@ -9,6 +9,7 @@ var ActorFactory = artifacts.require("./ActorFactory.sol");
 contract(FarmFactory, function(accounts) {
   beforeEach(async () => {
     this.actorTokenInstance = await ActorFactory.deployed();
+
     this.tokenInstance = await FarmFactory.deployed();
     await this.actorTokenInstance.approve(accounts[5], true, {
       from: accounts[1]
@@ -176,6 +177,16 @@ contract(FarmFactory, function(accounts) {
     });
 
     it("...should allow a cooperative to add a farm", async () => {
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("Frederick Tercero"),
+        web3.utils.utf8ToHex("cooperative"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("freederick@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus.",
+        { from: accounts[5] }
+      );
       const receipt = await this.tokenInstance.cooperativeAddFarm(
         web3.utils.utf8ToHex("Cual Tricicleta"),
         web3.utils.utf8ToHex("Honduras"),
@@ -254,7 +265,7 @@ contract(FarmFactory, function(accounts) {
           { from: accounts[6] }
         );
       } catch (err) {
-        isException = false;
+        isException = true;
         assert(err.reason === "not a cooperative");
       }
       expect(isException).to.be.equal(

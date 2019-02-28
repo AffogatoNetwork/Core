@@ -49,7 +49,7 @@ contract FarmFactory  is Ownable, Pausable {
      * @dev Throws if called by any account other than a cooperative.
      */
     modifier isCooperative(){
-         bytes32 actorType = bytes32("Cooperative");
+         bytes32 actorType = bytes32("cooperative");
         require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");
         _;
     }
