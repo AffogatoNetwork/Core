@@ -1,8 +1,9 @@
 pragma solidity ^0.5.0;
 
 import './Libraries/Pausable.sol';
+import "./ActorFactory.sol";
 
-contract Coffee is Ownable, Pausable {
+contract CoffeeBatchFactory is Ownable, Pausable {
     //TODO: rename to Factory
     //TODO: add is coffee batch owner
     event LogAddCoffeeBatch(
@@ -15,6 +16,19 @@ contract Coffee is Ownable, Pausable {
         uint32 _size,
         bool _isSold
     );
+
+    event LogCooperativeAddCoffeeBatch(
+        uint indexed _id,
+        address _owner,
+        uint _farmUid,
+        uint16 _altitude,
+        bytes32 _variety,
+        bytes32 _process,
+        uint32 _size,
+        bool _isSold,
+        address _cooperativeAddress
+    );
+
     event LogUpdateCoffeeBatch(
         uint indexed _id,
         uint _farmUid,
@@ -24,6 +38,25 @@ contract Coffee is Ownable, Pausable {
         uint32 _size,
         bool _isSold
     );
+
+    /**
+     * @dev Throws if called by any account not allowed.
+     */
+    modifier isAllowed(address _farmerAddress, address _target){
+        require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
+        _;
+    }
+
+    /**
+     * @dev Throws if called by any account other than a cooperative.
+     */
+    modifier isCooperative(){
+         bytes32 actorType = bytes32("cooperative");
+        require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");
+        _;
+    }
+
+     ActorFactory actor;
 
     struct CoffeeBatch {
         uint uid;
@@ -42,6 +75,11 @@ contract Coffee is Ownable, Pausable {
     // mapping(uint256 => CoffeeBatch) coffeeBatches;
     // uint256[] coffeeBatchIds;
     uint coffeeBatchCount = 1;
+
+    constructor(address _actorAddress) public {
+        actor = ActorFactory(_actorAddress);
+    }
+
 
     function getFarmCoffeeBatchCount(uint _farmUid) public view returns (uint count) {
         return farmToBatches[_farmUid].length;
@@ -62,6 +100,17 @@ contract Coffee is Ownable, Pausable {
         farmToBatches[_farmUid].push(uid);
         emit LogAddCoffeeBatch(uid, msg.sender, _farmUid, _altitude, _variety, _process, _size, false);
     }
+
+    function cooperativeAddCoffeeBatch(uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size, address _farmerAddress) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
+        uint uid = coffeeBatchCount;
+        CoffeeBatch memory coffeeBatch = CoffeeBatch(uid, _farmerAddress, _farmUid, _altitude, _variety, _process, _size, false);
+        coffeeBatchCount++;
+        coffeeBatches[uid] = coffeeBatch;
+        farmToBatches[_farmUid].push(uid);
+        emit LogCooperativeAddCoffeeBatch(uid, _farmerAddress, _farmUid, _altitude, _variety, _process, _size, false, msg.sender);
+    }
+
+    
     //TODO: Only owner should update
     function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size)  public whenNotPaused {
         //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp);
