@@ -6,9 +6,20 @@ import './Libraries/Pausable.sol';
 contract ActorFactory is Ownable, Pausable {
     event LogAddActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string _imageHash, string _bio);
 
+    event LogCooperativeAddActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string _imageHash, string _bio, address _cooperativeAddress);
+
     event LogUpdateActor(address indexed _id, bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email,string _imageHash, string _bio);
 
     event LogApproval(address indexed _owner, address indexed _allowed, bool _value);
+
+    /**
+     * @dev Throws if called by any account other than a cooperative.
+     */
+    modifier isCooperative(){
+         bytes32 actorType = bytes32("cooperative");
+        require(getAccountType(msg.sender) == actorType, "not a cooperative");
+        _;
+    }
 
     struct Actor {
         bytes32 name;
@@ -52,6 +63,16 @@ contract ActorFactory is Ownable, Pausable {
         addressToActor[msg.sender] = actor;
         actorsIds.push(msg.sender);
         emit LogAddActor(msg.sender, _name, _typeOfActor, _country, _region, _email,_imageHash, _bio);
+    }
+
+    function cooperativeAddActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string memory _imageHash, string memory _bio, address _owner) public whenNotPaused isCooperative {
+        require(addressToActor[_owner].name == 0);
+        Actor memory actor = Actor(_name, _typeOfActor, _country, _region, _email, _imageHash, _bio);
+        addressToActor[_owner] = actor;
+        actorsIds.push(_owner);
+        allowed_[_owner][msg.sender] = true;
+        emit LogCooperativeAddActor(_owner, _name, _typeOfActor, _country, _region, _email,_imageHash, _bio, msg.sender);
+        emit LogApproval(_owner, msg.sender, true);
     }
 
     function updateActor(bytes32 _name, bytes32 _typeOfActor, bytes32 _country, bytes32 _region, bytes32 _email, string memory _imageHash, string memory _bio) public whenNotPaused {
