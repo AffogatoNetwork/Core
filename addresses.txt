@@ -3,11 +3,11 @@
 
    Deploying 'Migrations'
    ----------------------
-   > transaction hash:    0x1c0f4d55e215060978d6389000b7e026a76898c37d6df4c14c9741e175d74ee9
+   > transaction hash:    0x2bf563b865d95c5df112f0d978896c4c6bf7d0e228f8237a17ef31afbd5fa4a6
    > Blocks: 0            Seconds: 8
-   > contract address:    0x9FE0C4DdE8d6ECdF5d09D8824b9eB8d031f867e9
+   > contract address:    0x0E9eF302312b36274C8c3b52F9BA3CecC14aE29E
    > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
-   > balance:             18.00055304
+   > balance:             17.80074944
    > gas used:            284908
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -25,24 +25,24 @@
 
    Deploying 'ActorFactory'
    ------------------------
-   > transaction hash:    0x3c63dc0dbcea3c547ad147d2e30d2837ccab51aff1b450fa152f7b5c4037a42b
+   > transaction hash:    0xafe073e7630de3d5d23275baef58bdde53882ef9256f7f7325019dcaec46ff8d
    > Blocks: 0            Seconds: 12
-   > contract address:    0x86AE3EC5f4044538577Bb211F1e7F11721ce6080
+   > contract address:    0xb372162881e81b9BEF0B44451666782550E9106b
    > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
-   > balance:             17.94967842
-   > gas used:            2501697
+   > balance:             17.74036048
+   > gas used:            2977414
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.05003394 ETH
+   > total cost:          0.05954828 ETH
 
 
    Deploying 'TastingFactory'
    --------------------------
-   > transaction hash:    0x693bf66b299c5366b3a895aaa14dd276293c2cc5405c1c77bf6124e8fdec0c1a
-   > Blocks: 0            Seconds: 8
-   > contract address:    0x3156330176206536F5908DcE9e82Ab679d22F8b9
+   > transaction hash:    0x302415f7e3fa0e2f460efe863f8c0779095f0a35aea6788c7dcbef57f5749db5
+   > Blocks: 0            Seconds: 12
+   > contract address:    0x5b0Bcd90E47bEE648d8E52c7e5e78A2B4D13584A
    > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
-   > balance:             17.91161462
+   > balance:             17.70229668
    > gas used:            1903190
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -51,11 +51,11 @@
 
    Deploying 'CertificateFactory'
    ------------------------------
-   > transaction hash:    0x4aef2fcbf1416eacad9ec9bf8bfe076a8a9f7390a8f8167d560e0b3f66246aaf
-   > Blocks: 0            Seconds: 8
-   > contract address:    0x248BaaeF608129296C246Bd85d9b816aB37b2Fe7
+   > transaction hash:    0x476131ff8c5a1cc2f8ef83a9cde39b4f49d701b50e7e153bfa155fc7bad8003a
+   > Blocks: 2            Seconds: 16
+   > contract address:    0xDb7CAA79B278bff536dC9d9588135FC063ea7661
    > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
-   > balance:             17.87155478
+   > balance:             17.66223684
    > gas used:            2002992
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -64,38 +64,37 @@
 
    Deploying 'FarmFactory'
    -----------------------
-   > transaction hash:    0x511887b9ab84ee790c0f2c0b3b4d3f9f86732261df89df32f91831fdd232f6ca
+   > transaction hash:    0xb8f6d9d765bf720f266aea5fdf54eea25726c9a984f431153eef384beaab91fe
    > Blocks: 0            Seconds: 8
-   > contract address:    0x3BFC6A2093C5F9f64575e9f1800F56dA5e95406f
+   > contract address:    0x6aF00fd07766d64D14bbC190aEfD618b59B3c3fd
    > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
-   > balance:             17.8372546
-   > gas used:            1715009
+   > balance:             17.61732636
+   > gas used:            2245524
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.03430018 ETH
+   > total cost:          0.04491048 ETH
 
 
-   Deploying 'Coffee'
-   ------------------
-   > transaction hash:    0x2a72ba31368a38e7d36acdbf579bb2cc494664682c31cd2f7d2e487e26190b6e
-   > Blocks: 0            Seconds: 8
-   > contract address:    0x46b7A04FB7D1Ee5E5E3b5aA4b7B852F5A89DCA29
+   Deploying 'CoffeeBatchFactory'
+   ------------------------------
+   > transaction hash:    0xcc429f5746a6a7533f23bd54059fd9379c766a7209fbb2646c9b60a890d9fbf6
+   > Blocks: 0            Seconds: 12
+   > contract address:    0x5f1cA40b8f4892B1A97F879f676c5c995F9A183D
    > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
-   > balance:             17.80698828
-   > gas used:            1513316
+   > balance:             17.57727774
+   > gas used:            2002431
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.03026632 ETH
+   > total cost:          0.04004862 ETH
 
 
    > Saving migration to chain.
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.19272408 ETH
+   > Total cost:          0.22263102 ETH
 
 
 Summary
 =======
 > Total deployments:   6
-> Final cost:          0.19842224 ETH
-
+> Final cost:          0.22832918 ETH
