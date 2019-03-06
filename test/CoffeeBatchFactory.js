@@ -2,11 +2,21 @@ require("chai").should();
 require("chai").expect;
 var BN = web3.utils.BN;
 require("chai").use(require("chai-bignumber")(BN));
-var Coffee = artifacts.require("./Coffee.sol");
 
-contract(Coffee, accounts => {
+var CoffeeBatchFactory = artifacts.require("./CoffeeBatchFactory.sol");
+var ActorFactory = artifacts.require("./ActorFactory.sol");
+
+contract(CoffeeBatchFactory, accounts => {
   beforeEach(async () => {
-    this.tokenInstance = await Coffee.deployed();
+    this.actorTokenInstance = await ActorFactory.deployed();
+
+    await this.actorTokenInstance.approve(accounts[5], true, {
+      from: accounts[0]
+    });
+    await this.actorTokenInstance.approve(accounts[6], true, {
+      from: accounts[0]
+    });
+    this.tokenInstance = await CoffeeBatchFactory.deployed();
   });
 
   describe("Coffee Bacth Validations", () => {
@@ -100,6 +110,115 @@ contract(Coffee, accounts => {
       result.should.be.true;
       const resultFail = await this.tokenInstance.actorIsOwner(accounts[1], 1);
       resultFail.should.be.false;
+    });
+
+    it("should let a cooperative to add a Coffee Batch", async () => {
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("Frederick Tercero"),
+        web3.utils.utf8ToHex("cooperative"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("freederick@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus.",
+        { from: accounts[5] }
+      );
+      const receipt = await this.tokenInstance.cooperativeAddCoffeeBatch(
+        1,
+        1200,
+        web3.utils.utf8ToHex("Catuai Rojo"),
+        web3.utils.utf8ToHex("Washed"),
+        10000,
+        accounts[0],
+        { from: accounts[5] }
+      );
+      receipt.logs.length.should.be.equal(1, "triggers one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeAddCoffeeBatch",
+        "should be the LogCooperativeAddCoffeeBatch event"
+      );
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        2,
+        "Logs the inserted uid"
+      );
+      expect(receipt.logs[0].args._owner).to.be.equal(
+        accounts[0],
+        "Logs the inserted owner"
+      );
+      expect(receipt.logs[0].args._farmUid.toNumber()).to.be.equal(
+        1,
+        "Logs the inserted Farm uid"
+      );
+      expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
+        1200,
+        "Logs the inserted altitude"
+      );
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._variety)
+        .should.be.equal("Catuai Rojo", "Logs the inserted variety");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._process)
+        .should.be.equal("Washed", "Logs the inserted process");
+      expect(receipt.logs[0].args._size.toNumber()).to.be.equal(
+        10000,
+        "Logs the inserted size"
+      );
+      expect(receipt.logs[0].args._cooperativeAddress).to.be.equal(
+        accounts[5],
+        "Logs the inserted cooperative address"
+      );
+      receipt.logs[0].args._isSold.should.be.false;
+      const count = await this.tokenInstance.getFarmCoffeeBatchCount(1);
+      expect(count.toNumber()).to.be.equal(
+        2,
+        "Coffee Batches for farm should be 2"
+      );
+
+      let isException = false;
+      try {
+        await this.tokenInstance.cooperativeAddCoffeeBatch(
+          1,
+          1200,
+          web3.utils.utf8ToHex("Catuai Rojo"),
+          web3.utils.utf8ToHex("Washed"),
+          10000,
+          accounts[0],
+          { from: accounts[1] }
+        );
+        receipt.logs.length.should.be.equal(1, "triggers one event");
+        receipt.logs[0].event.should.be.equal(
+          "LogCooperativeAddCoffeeBatch",
+          "should be the LogCooperativeAddCoffeeBatch event"
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
+      isException = false;
+
+      try {
+        await this.tokenInstance.cooperativeAddCoffeeBatch(
+          1,
+          1200,
+          web3.utils.utf8ToHex("Catuai Rojo"),
+          web3.utils.utf8ToHex("Washed"),
+          10000,
+          accounts[0],
+          { from: accounts[6] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
     });
 
     it("...should pause and unpause the contract.", async () => {

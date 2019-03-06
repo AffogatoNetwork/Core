@@ -21,10 +21,10 @@ npm install -g ganache-cli
 
 ### Installing and Testing
 
-Run ganache application or the cli in order to start testing
+Run ganache application or the cli in order to start testing with the network 1234
 
 ```
-ganache-cli -p 8545
+ganache-cli -i 1234
 ```
 
 Compile the project
@@ -41,10 +41,28 @@ truffle test
 
 ## Deployment
 
-With ganache runing just migrate the project and you will be ready.
+
+### Local Testnet
+
+With ganache runing just migrate the project with the network 1234 and you will be ready.
 
 ```
-truffle migrate 
+truffle migrate --network development
+``` 
+
+### Rinkeby Testnet
+
+Create a .env file with the following values:
+
+```
+MNENOMIC="MNEMONIC KEY OF ACCOUNT WITH RINKEBY ETH"
+RINKEBY_API_URL="Rinkeby api URL"
+``` 
+
+Run migration with the rinkeby network
+
+```
+truffle migrate --network rinkeby
 ``` 
 
 ## Authors

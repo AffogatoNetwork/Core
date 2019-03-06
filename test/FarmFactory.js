@@ -4,10 +4,19 @@ var BN = web3.utils.BN;
 require("chai").use(require("chai-bignumber")(BN));
 
 var FarmFactory = artifacts.require("./FarmFactory.sol");
+var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(FarmFactory, function(accounts) {
   beforeEach(async () => {
+    this.actorTokenInstance = await ActorFactory.deployed();
+
     this.tokenInstance = await FarmFactory.deployed();
+    await this.actorTokenInstance.approve(accounts[5], true, {
+      from: accounts[1]
+    });
+    await this.actorTokenInstance.approve(accounts[6], true, {
+      from: accounts[1]
+    });
   });
 
   describe("Farm Validations", () => {
@@ -165,6 +174,104 @@ contract(FarmFactory, function(accounts) {
       if (result) {
         expect(result).to.be.equal(false, "it should revert on not owner");
       }
+    });
+
+    it("...should allow a cooperative to add a farm", async () => {
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("Frederick Tercero"),
+        web3.utils.utf8ToHex("cooperative"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("freederick@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus.",
+        { from: accounts[5] }
+      );
+      const receipt = await this.tokenInstance.cooperativeAddFarm(
+        web3.utils.utf8ToHex("Cual Tricicleta"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("Valle de Angeles"),
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        accounts[1],
+        { from: accounts[5] }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeAddFarm",
+        "should be the LogCooperativeAddFarm event"
+      );
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        2,
+        "logs the added farm id"
+      );
+      receipt.logs[0].args._ownerAddress.should.be.equal(
+        accounts[1],
+        "logs the added owner address"
+      );
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._name)
+        .should.be.equal("Cual Tricicleta", "logs the added farm name");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._country)
+        .should.be.equal("Honduras", "logs the added farm country");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._region)
+        .should.be.equal("Francisco Morazan", "logs the added farm region");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._village)
+        .should.be.equal("Valle de Angeles", "logs the added farm village");
+      receipt.logs[0].args._story.should.be.equal(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "logs the added farm story"
+      );
+      receipt.logs[0].args._cooperativeAddress.should.be.equal(
+        accounts[5],
+        "logs the added cooperative address"
+      );
+
+      const count = await this.tokenInstance.getFarmersFarmsCount(accounts[1]);
+      count.toNumber().should.be.equal(1, "Farms counter should increase");
+      let isException = false;
+      try {
+        await this.tokenInstance.cooperativeAddFarm(
+          web3.utils.utf8ToHex("Cual Tricicleta"),
+          web3.utils.utf8ToHex("Honduras"),
+          web3.utils.utf8ToHex("Francisco Morazan"),
+          web3.utils.utf8ToHex("Valle de Angeles"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          accounts[1],
+          { from: accounts[4] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
+      isException = false;
+
+      try {
+        await this.tokenInstance.cooperativeAddFarm(
+          web3.utils.utf8ToHex("Cual Tricicleta"),
+          web3.utils.utf8ToHex("Honduras"),
+          web3.utils.utf8ToHex("Francisco Morazan"),
+          web3.utils.utf8ToHex("Valle de Angeles"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          accounts[1],
+          { from: accounts[6] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
     });
 
     it("...should pause and unpause the contract.", async () => {
