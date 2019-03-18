@@ -354,6 +354,54 @@ contract(ActorFactory, function(accounts) {
       );
     });
 
+    it("...should allow a cooperative to add an Allowed", async () => {
+      const receipt = await this.tokenInstance.cooperativeApprove(
+        accounts[4],
+        accounts[6],
+        true,
+        {
+          from: accounts[5]
+        }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeApproval",
+        "should be the LogCooperativeApproval event"
+      );
+      receipt.logs[0].args._owner.should.be.equal(
+        accounts[4],
+        "logs the owner address"
+      );
+      receipt.logs[0].args._allowed.should.be.equal(
+        accounts[6],
+        "logs the allowed address"
+      );
+      receipt.logs[0].args._value.should.be.true;
+      receipt.logs[0].args._cooperativeAddress.should.be.equal(
+        accounts[5],
+        "logs the cooperative address"
+      );
+      let isException = false;
+
+      try {
+        await this.tokenInstance.cooperativeApprove(
+          accounts[4],
+          accounts[7],
+          true,
+          {
+            from: accounts[6]
+          }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
+    });
+
     it("...should pause and unpause the contract.", async () => {
       var receipt = await this.tokenInstance.pause({
         from: accounts[0]
