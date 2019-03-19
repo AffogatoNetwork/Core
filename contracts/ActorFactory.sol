@@ -12,6 +12,8 @@ contract ActorFactory is Ownable, Pausable {
 
     event LogApproval(address indexed _owner, address indexed _allowed, bool _value);
 
+    event LogCooperativeApproval(address indexed _owner, address indexed _allowed, bool _value, address _cooperativeAddress);
+
     /**
      * @dev Throws if called by any account other than a cooperative.
      */
@@ -94,6 +96,14 @@ contract ActorFactory is Ownable, Pausable {
         //TODO: User shouldn't give permissions to itself
         allowed_[msg.sender][_spender] = _value;
         emit LogApproval(msg.sender, _spender, _value);
+        return true;
+    }
+
+    function cooperativeApprove(address allower, address _spender, bool _value) public whenNotPaused isCooperative returns (bool) {
+        //TODO: user must have account
+        //TODO: User shouldn't give permissions to itself
+        allowed_[allower][_spender] = _value;
+        emit LogCooperativeApproval(allower, _spender, _value, msg.sender);
         return true;
     }
 
