@@ -274,6 +274,97 @@ contract(FarmFactory, function(accounts) {
       );
     });
 
+    it("...should allow cooperative to updates a farm", async () => {
+      const receipt = await this.tokenInstance.cooperativeUpdateFarm(
+        2,
+        web3.utils.utf8ToHex("Cual Tricicleta 2"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("Santa Lucia"),
+        "Lorem ipsum.",
+        accounts[1],
+        { from: accounts[5] }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeUpdateFarm",
+        "should be the LogCooperativeUpdateFarm event"
+      );
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        2,
+        "logs the updated farm id"
+      );
+      receipt.logs[0].args._ownerAddress.should.be.equal(
+        accounts[1],
+        "logs the updated owner address"
+      );
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._name)
+        .should.be.equal("Cual Tricicleta 2", "logs the updated farm name");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._country)
+        .should.be.equal("Honduras", "logs the updated farm country");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._region)
+        .should.be.equal("Francisco Morazan", "logs the updated farm region");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._village)
+        .should.be.equal("Santa Lucia", "logs the updated farm village");
+      receipt.logs[0].args._story.should.be.equal(
+        "Lorem ipsum.",
+        "logs the updated farm story"
+      );
+      receipt.logs[0].args._cooperativeAddress.should.be.equal(
+        accounts[5],
+        "logs the updated cooperative address"
+      );
+
+      const count = await this.tokenInstance.getFarmersFarmsCount(accounts[1]);
+      count.toNumber().should.be.equal(1, "Farms counter should stay the same");
+      let isException = false;
+      try {
+        await this.tokenInstance.cooperativeUpdateFarm(
+          2,
+          web3.utils.utf8ToHex("Cual Tricicleta 3"),
+          web3.utils.utf8ToHex("Honduras"),
+          web3.utils.utf8ToHex("Francisco Morazan"),
+          web3.utils.utf8ToHex("Santa Lucia"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          accounts[1],
+          { from: accounts[4] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
+      isException = false;
+
+      try {
+        await this.tokenInstance.cooperativeUpdateFarm(
+          2,
+          web3.utils.utf8ToHex("Cual Tricicleta 3"),
+          web3.utils.utf8ToHex("Honduras"),
+          web3.utils.utf8ToHex("Francisco Morazan"),
+          web3.utils.utf8ToHex("Valle de Angeles"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          accounts[1],
+          { from: accounts[6] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
+    });
+
     it("...should pause and unpause the contract.", async () => {
       var receipt = await this.tokenInstance.pause({
         from: accounts[0]
