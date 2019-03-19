@@ -37,6 +37,17 @@ contract FarmFactory  is Ownable, Pausable {
         string _story
     );
 
+    event LogCooperativeUpdateFarm(
+        uint indexed _id,
+        address _ownerAddress,
+        bytes32 _name,
+        bytes32 _country,
+        bytes32 _region,
+        bytes32 _village,
+        string _story,
+        address _cooperativeAddress
+    );
+
     /**
      * @dev Throws if called by any account not allowed.
      */
@@ -94,7 +105,6 @@ contract FarmFactory  is Ownable, Pausable {
     }
 
     function cooperativeAddFarm(bytes32 _name, bytes32 _country, bytes32 _region, bytes32 _village, string memory _story, address _farmerAddress) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
-        
         uint uid = farmsCount;
         Farm memory farm = Farm(uid, _farmerAddress, _name, _country, _region, _village, _story);
         farmerToFarms[_farmerAddress].push(uid);
@@ -113,6 +123,18 @@ contract FarmFactory  is Ownable, Pausable {
         farm.village = _village;
         farm.story = _story;
         emit LogUpdateFarm(_uid, farm.ownerAddress, _name, _country, _region, _village, _story);
+    }
+
+      function cooperativeUpdateFarm(uint _uid, bytes32 _name, bytes32 _country, bytes32 _region, bytes32 _village, string memory _story, address _farmerAddress) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
+        require(farms[_uid].name != 0);
+        require(farms[_uid].ownerAddress == _farmerAddress);
+        Farm storage farm = farms[_uid];
+        farm.name = _name;
+        farm.country = _country;
+        farm.region = _region;
+        farm.village = _village;
+        farm.story = _story;
+        emit LogCooperativeUpdateFarm(_uid, farm.ownerAddress, _name, _country, _region, _village, _story, msg.sender);
     }
 
     function destroy() public onlyOwner {
