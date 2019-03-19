@@ -4,7 +4,6 @@ import './Libraries/Pausable.sol';
 import "./ActorFactory.sol";
 
 contract CoffeeBatchFactory is Ownable, Pausable {
-    //TODO: rename to Factory
     //TODO: add is coffee batch owner
     event LogAddCoffeeBatch(
         uint indexed _id,
@@ -32,11 +31,24 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     event LogUpdateCoffeeBatch(
         uint indexed _id,
         uint _farmUid,
+        address _owner,
         uint16 _altitude,
         bytes32 _variety,
         bytes32 _process,
         uint32 _size,
         bool _isSold
+    );
+
+    event LogCooperativeUpdateCoffeeBatch(
+        uint indexed _id,
+        uint _farmUid,
+        address _owner,
+        uint16 _altitude,
+        bytes32 _variety,
+        bytes32 _process,
+        uint32 _size,
+        bool _isSold,
+        address _cooperativeAddress
     );
 
     /**
@@ -110,18 +122,25 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         emit LogCooperativeAddCoffeeBatch(uid, _farmerAddress, _farmUid, _altitude, _variety, _process, _size, false, msg.sender);
     }
 
-    
-    //TODO: Only owner should update
-    function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size)  public whenNotPaused {
-        //   Action memory action = Action(msg.sender,"creation",_additionalInformation, _timestamp);
-        //Fixes memory error that doesn't allow to create memory objects in structs
+    function updateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size) public whenNotPaused {
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
+        require(coffeeBatch.owner == msg.sender, "not owner");
+        coffeeBatch.farmUid = _farmUid;
+        coffeeBatch.altitude = _altitude;
+        coffeeBatch.variety = _variety;
+        coffeeBatch.process = _process;
+        coffeeBatch.size = _size;
+        emit LogUpdateCoffeeBatch(_coffeeUid, _farmUid, msg.sender, _altitude, _variety, _process, _size, coffeeBatch.isSold);
+    }
+
+     function cooperativeUpdateCoffeeBatch(uint _coffeeUid, uint _farmUid, uint16 _altitude, bytes32 _variety, bytes32 _process, uint32 _size, address _farmerAddress) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
         coffeeBatch.farmUid = _farmUid;
         coffeeBatch.altitude = _altitude;
         coffeeBatch.variety = _variety;
         coffeeBatch.process = _process;
         coffeeBatch.size = _size;
-        emit LogUpdateCoffeeBatch(_coffeeUid, _farmUid, _altitude, _variety, _process, _size, coffeeBatch.isSold);
+        emit LogCooperativeUpdateCoffeeBatch(_coffeeUid, _farmUid, _farmerAddress, _altitude, _variety, _process, _size, coffeeBatch.isSold,msg.sender);
     }
 
     function actorIsOwner(address _owner, uint _coffeeBatchId) public view returns (bool) {

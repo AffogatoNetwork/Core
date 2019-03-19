@@ -112,7 +112,76 @@ contract(CoffeeBatchFactory, accounts => {
       resultFail.should.be.false;
     });
 
-    it("should let a cooperative to add a Coffee Batch", async () => {
+    it("...should update a Coffee Batch", async () => {
+      const receipt = await this.tokenInstance.updateCoffeeBatch(
+        1,
+        1,
+        1250,
+        web3.utils.utf8ToHex("Catuai Amarillo"),
+        web3.utils.utf8ToHex("Washed"),
+        20000,
+        { from: accounts[0] }
+      );
+      receipt.logs.length.should.be.equal(1, "triggers one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogUpdateCoffeeBatch",
+        "should be the LogUpdateCoffeeBatch event"
+      );
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
+        "Logs the updated uid"
+      );
+      expect(receipt.logs[0].args._owner).to.be.equal(
+        accounts[0],
+        "Logs the updated owner"
+      );
+      expect(receipt.logs[0].args._farmUid.toNumber()).to.be.equal(
+        1,
+        "Logs the updated Farm uid"
+      );
+      expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
+        1250,
+        "Logs the updated altitude"
+      );
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._variety)
+        .should.be.equal("Catuai Amarillo", "Logs the updated variety");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._process)
+        .should.be.equal("Washed", "Logs the updated process");
+      expect(receipt.logs[0].args._size.toNumber()).to.be.equal(
+        20000,
+        "Logs the updated size"
+      );
+      receipt.logs[0].args._isSold.should.be.false;
+      const count = await this.tokenInstance.getFarmCoffeeBatchCount(1);
+      expect(count.toNumber()).to.be.equal(
+        1,
+        "Coffee Batches for farm should still be 1"
+      );
+
+      let isException = false;
+      try {
+        await this.tokenInstance.updateCoffeeBatch(
+          1,
+          1,
+          1250,
+          web3.utils.utf8ToHex("Catuai Amarillo"),
+          web3.utils.utf8ToHex("Washed"),
+          20000,
+          { from: accounts[5] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not owner");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not owner of account"
+      );
+    });
+
+    it("...should let a cooperative to add a Coffee Batch", async () => {
       await this.actorTokenInstance.addActor(
         web3.utils.utf8ToHex("Frederick Tercero"),
         web3.utils.utf8ToHex("cooperative"),
@@ -185,11 +254,6 @@ contract(CoffeeBatchFactory, accounts => {
           accounts[0],
           { from: accounts[1] }
         );
-        receipt.logs.length.should.be.equal(1, "triggers one event");
-        receipt.logs[0].event.should.be.equal(
-          "LogCooperativeAddCoffeeBatch",
-          "should be the LogCooperativeAddCoffeeBatch event"
-        );
       } catch (err) {
         isException = true;
         assert(err.reason === "not authorized");
@@ -206,6 +270,103 @@ contract(CoffeeBatchFactory, accounts => {
           1,
           1200,
           web3.utils.utf8ToHex("Catuai Rojo"),
+          web3.utils.utf8ToHex("Washed"),
+          10000,
+          accounts[0],
+          { from: accounts[6] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
+    });
+
+    it("...should let a cooperative to update a Coffee Batch", async () => {
+      const receipt = await this.tokenInstance.cooperativeUpdateCoffeeBatch(
+        1,
+        1,
+        1300,
+        web3.utils.utf8ToHex("Catuai Amarillo"),
+        web3.utils.utf8ToHex("Washed"),
+        10000,
+        accounts[0],
+        { from: accounts[5] }
+      );
+      receipt.logs.length.should.be.equal(1, "triggers one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeUpdateCoffeeBatch",
+        "should be the LogCooperativeUpdateCoffeeBatch event"
+      );
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
+        "Logs the updated uid"
+      );
+      expect(receipt.logs[0].args._owner).to.be.equal(
+        accounts[0],
+        "Logs the updated owner"
+      );
+      expect(receipt.logs[0].args._farmUid.toNumber()).to.be.equal(
+        1,
+        "Logs the updated Farm uid"
+      );
+      expect(receipt.logs[0].args._altitude.toNumber()).to.be.equal(
+        1300,
+        "Logs the updated altitude"
+      );
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._variety)
+        .should.be.equal("Catuai Amarillo", "Logs the updated variety");
+      web3.utils
+        .hexToUtf8(receipt.logs[0].args._process)
+        .should.be.equal("Washed", "Logs the updated process");
+      expect(receipt.logs[0].args._size.toNumber()).to.be.equal(
+        10000,
+        "Logs the updated size"
+      );
+      expect(receipt.logs[0].args._cooperativeAddress).to.be.equal(
+        accounts[5],
+        "Logs the updated cooperative address"
+      );
+      receipt.logs[0].args._isSold.should.be.false;
+      const count = await this.tokenInstance.getFarmCoffeeBatchCount(1);
+      expect(count.toNumber()).to.be.equal(
+        2,
+        "Coffee Batches for farm should be 2"
+      );
+
+      let isException = false;
+      try {
+        await this.tokenInstance.cooperativeUpdateCoffeeBatch(
+          1,
+          1,
+          1200,
+          web3.utils.utf8ToHex("Catuai Amarillo"),
+          web3.utils.utf8ToHex("Washed"),
+          10000,
+          accounts[0],
+          { from: accounts[1] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
+      isException = false;
+
+      try {
+        await this.tokenInstance.cooperativeUpdateCoffeeBatch(
+          1,
+          1,
+          1200,
+          web3.utils.utf8ToHex("Catuai Amarillo"),
           web3.utils.utf8ToHex("Washed"),
           10000,
           accounts[0],
