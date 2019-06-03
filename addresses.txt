@@ -1,3 +1,7 @@
+RINKEBY
+======================
+
+
 1_initial_migration.js
 ======================
 
@@ -98,3 +102,127 @@ Summary
 =======
 > Total deployments:   6
 > Final cost:          0.25072144 ETH
+
+
+ROPSTEN 
+======================================
+
+Starting migrations...
+======================
+> Network name:    'ropsten'
+> Network id:      3
+> Block gas limit: 0x7a1200
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0x1d22d1cf444e1fe6a6642289ff56f817653ee3b03e8983f6d91206bc1412067a
+   > Blocks: 1            Seconds: 8
+   > contract address:    0x9a1E08c2BC6874ABA025B8Ca32D7a4Eb972e3546
+   > block number:        5725752
+   > block timestamp:     1559594781
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             0.99430184
+   > gas used:            284908
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00569816 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.00569816 ETH
+
+
+2_deploy_contracts.js
+=====================
+
+   Deploying 'ActorFactory'
+   ------------------------
+   > transaction hash:    0x03e810e68b86475827af3a49becc70870f86b509b566d0945211ca825eb0fee1
+   > Blocks: 0            Seconds: 5
+   > contract address:    0x902C68ED3bde2e270a747A507BF59329ba33fbfC
+   > block number:        5725754
+   > block timestamp:     1559594791
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             0.92980524
+   > gas used:            3182796
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.06365592 ETH
+
+
+   Deploying 'TastingFactory'
+   --------------------------
+   > transaction hash:    0x34a0c0f4f0a5ef6392f32e7bca49ff09d4e492e13fb32b5c487bcacf96d43a70
+   > Blocks: 0            Seconds: 4
+   > contract address:    0xD71c29232c7c6dd911Ed2f8e7eFCA2bE88870184
+   > block number:        5725755
+   > block timestamp:     1559594801
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             0.89164544
+   > gas used:            1907990
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0381598 ETH
+
+
+   Deploying 'CertificateFactory'
+   ------------------------------
+   > transaction hash:    0xb42b8f0b3860f59e903bd78f975c16c488b388f69a841f989558ea194f2cc44a
+   > Blocks: 3            Seconds: 22
+   > contract address:    0x565fB618Fd7DF589fbaD78cE784c67bFc7851F42
+   > block number:        5725758
+   > block timestamp:     1559594823
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             0.8514896
+   > gas used:            2007792
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.04015584 ETH
+
+
+   Deploying 'FarmFactory'
+   -----------------------
+   > transaction hash:    0xdc3a092e7cacd4719dc70906b2a65a06e755d5ca788c07abad2a79f9e32dc344
+   > Blocks: 0            Seconds: 21
+   > contract address:    0xa244c40751d09574740f6be64B13b11e2064Fe56
+   > block number:        5725760
+   > block timestamp:     1559594840
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             0.79703424
+   > gas used:            2722768
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05445536 ETH
+
+
+   Deploying 'CoffeeBatchFactory'
+   ------------------------------
+   > transaction hash:    0x6643a107b987b25dff037568cb86dffb3296559a4a6ba53a81f077294afae47a
+   > Blocks: 0            Seconds: 13
+   > contract address:    0xD0d8CF036B4BBb31886a28Fb824Da3817F4e1452
+   > block number:        5725762
+   > block timestamp:     1559594878
+   > account:             0xfF9Fe9664e7e0A289A3c64c9e057bCa27Be6685A
+   > balance:             0.74796044
+   > gas used:            2453690
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0490738 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.24550072 ETH
+
+
+Summary
+=======
+> Total deployments:   6
+> Final cost:          0.25119888 ETH

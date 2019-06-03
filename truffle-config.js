@@ -18,6 +18,13 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(mnemonic, process.env.RINKEBY_API_URL),
       network_id: "4"
+    },
+    ropsten: {
+      // must be a thunk, otherwise truffle commands may hang in CI
+      provider: () =>
+        new HDWalletProvider(mnemonic, process.env.ROPSTEN_API_URL),
+      network_id: "3",
+      skipDryRun: true
     }
   }
 };
