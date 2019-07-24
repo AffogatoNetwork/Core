@@ -252,9 +252,9 @@ contract ActorFactory is Ownable, Pausable {
       * @return true if is success
       * @dev Only Cooperatives can call this method
       */
-    function cooperativeApprove(address allower, address _allowed, bool _value) public whenNotPaused isCooperative returns (bool) {
-        allowed_[allower][_allowed] = _value;
-        emit LogCooperativeApproval(allower, _allowed, _value, msg.sender);
+    function cooperativeApprove(address _allower, address _allowed, bool _value) public whenNotPaused isCooperative returns (bool) {
+        allowed_[_allower][_allowed] = _value;
+        emit LogCooperativeApproval(_allower, _allowed, _value, msg.sender);
         return true;
     }
 
