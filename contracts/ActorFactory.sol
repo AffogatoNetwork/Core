@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 /** @title Actor Factory.
-    @author Affogato
+ *  @author Affogato
  */
 
 import './Libraries/Pausable.sol';
