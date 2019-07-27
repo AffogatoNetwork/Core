@@ -8,11 +8,11 @@ import './Libraries/Pausable.sol';
 import "./ActorFactory.sol";
 
 /** TODO:
- * Approve should work like ERC Standard
- * Should work as ERC-721
+ * Should be able to burn farms
  */
 
 contract FarmFactory  is Ownable, Pausable {
+
     /** @notice Logs when a Farm is created. */
     event LogAddFarm(
         uint indexed _id,
@@ -93,10 +93,9 @@ contract FarmFactory  is Ownable, Pausable {
     mapping(uint => Farm) public farms;
     uint farmsCount = 1;
 
-    /**
-     * @notice Sets the actor factory
-     * @param _actorAddress contract address of ActorFactory
-     */
+    /** @notice Sets the actor factory
+      * @param _actorAddress contract address of ActorFactory
+      */
     constructor(address _actorAddress) public {
         actor = ActorFactory(_actorAddress);
     }
