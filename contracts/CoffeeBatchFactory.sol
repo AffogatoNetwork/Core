@@ -206,7 +206,8 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         uint32 _size
     ) public whenNotPaused {
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
-        require(coffeeBatch.owner == msg.sender, "not owner");
+        require(coffeeBatch.owner != address(0), "require coffee batch to exist");
+        require(coffeeBatch.owner == msg.sender, "require sender to be the owner");
         coffeeBatch.farmUid = _farmUid;
         coffeeBatch.altitude = _altitude;
         coffeeBatch.variety = _variety;
@@ -235,6 +236,8 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         address _farmerAddress
     ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
+        require(coffeeBatch.owner != address(0), "require coffee batch to exist");
+        require(coffeeBatch.owner == _farmerAddress, "require the farmer to be the owner");
         coffeeBatch.farmUid = _farmUid;
         coffeeBatch.altitude = _altitude;
         coffeeBatch.variety = _variety;

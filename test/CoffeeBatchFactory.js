@@ -13,6 +13,9 @@ contract(CoffeeBatchFactory, accounts => {
     await this.actorTokenInstance.approve(accounts[5], true, {
       from: accounts[0]
     });
+    await this.actorTokenInstance.approve(accounts[5], true, {
+      from: accounts[8]
+    });
     await this.actorTokenInstance.approve(accounts[6], true, {
       from: accounts[0]
     });
@@ -163,17 +166,37 @@ contract(CoffeeBatchFactory, accounts => {
       let isException = false;
       try {
         await this.tokenInstance.updateCoffeeBatch(
+          100,
+          1,
+          1250,
+          web3.utils.utf8ToHex("Catuai Amarillo"),
+          web3.utils.utf8ToHex("Washed"),
+          20000,
+          { from: accounts[0] }
+        );
+      } catch (err) {
+        console.log(err);
+        isException = true;
+        assert(err.reason === "require coffee batch to exist");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not existing coffee batch"
+      );
+      isException = false;
+      try {
+        await this.tokenInstance.updateCoffeeBatch(
           1,
           1,
           1250,
           web3.utils.utf8ToHex("Catuai Amarillo"),
           web3.utils.utf8ToHex("Washed"),
           20000,
-          { from: accounts[5] }
+          { from: accounts[1] }
         );
       } catch (err) {
         isException = true;
-        assert(err.reason === "not owner");
+        assert(err.reason === "require sender to be the owner");
       }
       expect(isException).to.be.equal(
         true,
@@ -339,6 +362,50 @@ contract(CoffeeBatchFactory, accounts => {
       );
 
       let isException = false;
+      try {
+        await this.tokenInstance.cooperativeUpdateCoffeeBatch(
+          100,
+          1,
+          1200,
+          web3.utils.utf8ToHex("Catuai Amarillo"),
+          web3.utils.utf8ToHex("Washed"),
+          10000,
+          accounts[0],
+          { from: accounts[5] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require coffee batch to exist");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not existing coffee batch"
+      );
+
+      isException = false;
+      try {
+        await this.tokenInstance.cooperativeUpdateCoffeeBatch(
+          1,
+          1,
+          1200,
+          web3.utils.utf8ToHex("Catuai Amarillo"),
+          web3.utils.utf8ToHex("Washed"),
+          10000,
+          accounts[8],
+          { from: accounts[5] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require the farmer to be the owner");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on farmer not being the owner"
+      );
+
+      isException = false;
       try {
         await this.tokenInstance.cooperativeUpdateCoffeeBatch(
           1,
