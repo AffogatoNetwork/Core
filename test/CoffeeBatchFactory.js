@@ -175,7 +175,6 @@ contract(CoffeeBatchFactory, accounts => {
           { from: accounts[0] }
         );
       } catch (err) {
-        console.log(err);
         isException = true;
         assert(err.reason === "require coffee batch to exist");
       }

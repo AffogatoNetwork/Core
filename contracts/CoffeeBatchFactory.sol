@@ -1,16 +1,16 @@
 pragma solidity ^0.5.0;
 
-/** @title Actor Factory.
- *  @author Affogato
- */
+/** @title Coffee Batch Factory.
+  * @author Affogato
+  */
 
 import './Libraries/Pausable.sol';
 import "./ActorFactory.sol";
 
 /** TODO:
- * Should be able to burn coffeeBatch
- * Update coffee Batch to save more information of the state of the coffee, cherry, wet, etc.
- */
+  * Should be able to burn coffeeBatch
+  * Update coffee Batch to save more information of the state of the coffee, cherry, wet, etc.
+  */
 
 contract CoffeeBatchFactory is Ownable, Pausable {
     /** @notice Logs when a Coffee Batch is created. */
@@ -63,17 +63,13 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         address _cooperativeAddress
     );
 
-    /**
-     * @notice Throws if called by any account not allowed.
-     */
+    /** @notice Throws if called by any account not allowed. */
     modifier isAllowed(address _farmerAddress, address _target){
         require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
         _;
     }
 
-    /**
-     * @notice Throws if called by any account other than a cooperative.
-     */
+    /** @notice Throws if called by any account other than a cooperative. */
     modifier isCooperative(){
          bytes32 actorType = bytes32("cooperative");
         require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");

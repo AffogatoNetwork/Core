@@ -1,15 +1,15 @@
 pragma solidity ^0.5.0;
 
-/** @title Actor Factory.
- *  @author Affogato
- */
+/** @title Farm Factory.
+  * @author Affogato
+  */
 
 import './Libraries/Pausable.sol';
 import "./ActorFactory.sol";
 
 /** TODO:
- * Should be able to burn farms
- */
+  * Should be able to burn farms
+  */
 
 contract FarmFactory  is Ownable, Pausable {
 
@@ -59,17 +59,13 @@ contract FarmFactory  is Ownable, Pausable {
         address _cooperativeAddress
     );
 
-    /**
-     * @notice Throws if called by any account not allowed.
-     */
+    /** @notice Throws if called by any account not allowed. */
     modifier isAllowed(address _farmerAddress, address _target){
         require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
         _;
     }
 
-    /**
-     * @notice Throws if called by any account other than a cooperative.
-     */
+    /** @notice Throws if called by any account other than a cooperative. */
     modifier isCooperative(){
          bytes32 actorType = bytes32("cooperative");
         require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");
