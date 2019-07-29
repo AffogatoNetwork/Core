@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.9;
 
 /** @title Actor Factory.
  *  @author Affogato
@@ -10,6 +10,7 @@ import './Libraries/Pausable.sol';
  * Approve should work like ERC Standard
  * Id, Name, Country, Region, Email, Image Hash and Bio aren't needed on the blockchain
  * Cooperative Update Actor
+ * actorsIds is A reachable exception has been detected.
  */
 
 contract ActorFactory is Ownable, Pausable {
