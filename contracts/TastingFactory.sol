@@ -52,6 +52,7 @@ contract TastingFactory is Ownable, Pausable{
         string profile;
         string imageHash; /** @dev IPFS hash*/
         uint16 cuppingNote; /** @dev Range from 0 to 100*/
+        address tasterAddress;
     }
 
     mapping(address => uint[]) public tasterToCupProfiles;
@@ -93,7 +94,8 @@ contract TastingFactory is Ownable, Pausable{
             uint,
             string memory _profile,
             string memory,
-            uint16
+            uint16,
+            address
         )
     {
         CupProfile memory cupProfile = cupProfiles[_uid];
@@ -101,7 +103,8 @@ contract TastingFactory is Ownable, Pausable{
             cupProfile.uid,
             cupProfile.profile,
             cupProfile.imageHash,
-            cupProfile.cuppingNote
+            cupProfile.cuppingNote,
+            cupProfile.tasterAddress
         );
     }
 
@@ -113,7 +116,6 @@ contract TastingFactory is Ownable, Pausable{
       * @param _cuppingNote of the coffee batch.
       * @dev sender must be a taster and must be allowed
       */
-    //TODO: require to be a taster
     function addCupProfile(
         address _farmerAddress,
         uint _coffeeBatchId,
@@ -126,7 +128,8 @@ contract TastingFactory is Ownable, Pausable{
             uid,
             _profile,
             _imageHash,
-            _cuppingNote
+            _cuppingNote,
+            msg.sender
         );
         tasterToCupProfiles[msg.sender].push(uid);
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
@@ -141,14 +144,21 @@ contract TastingFactory is Ownable, Pausable{
             _cuppingNote
         );
     }
-
+    /** @notice Updates a cup profile
+      * @param _uid of the cup profile.
+      * @param _profile id of the coffee batch.
+      * @param _imageHash of the coffee batch.
+      * @param _cuppingNote of the coffee batch.
+      * @dev sender must be a taster and must be creator
+      */
     function updateCupProfileById(
         uint _uid,
         string memory _profile,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public whenNotPaused {
-        require(cupProfiles[_uid].cuppingNote != 0);
+    ) public whenNotPaused isTaster {
+        require(cupProfiles[_uid].cuppingNote != 0, "cup profile should't be empty");
+        require(cupProfiles[_uid].tasterAddress == msg.sender,"updater should be the taster");
         CupProfile storage cupProfile = cupProfiles[_uid];
         cupProfile.profile = _profile;
         cupProfile.imageHash = _imageHash;
@@ -156,6 +166,9 @@ contract TastingFactory is Ownable, Pausable{
         emit LogUpdateCupProfile(_uid, _profile, _imageHash, _cuppingNote);
     }
 
+    /** @notice destroys contract
+      * @dev Only Owner can call this method
+      */
     function destroy() public onlyOwner {
         selfdestruct(owner());
     }

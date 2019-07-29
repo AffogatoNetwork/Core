@@ -146,6 +146,10 @@ contract(TastingFactory, function(accounts) {
         80,
         "Value is equal to inserted"
       );
+      expect(cupProfile[4]).to.be.equal(
+        accounts[3],
+        "Value is equal to inserted"
+      );
     });
 
     it("Updates a cup profile", async () => {
@@ -153,7 +157,10 @@ contract(TastingFactory, function(accounts) {
         1,
         "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-        9000
+        90,
+        {
+          from: accounts[3]
+        }
       );
 
       receipt.logs.length.should.be.equal(1, "trigger one event");
@@ -175,8 +182,74 @@ contract(TastingFactory, function(accounts) {
         "Value is equal to updated"
       );
       expect(cupProfile[3].toNumber()).to.be.equal(
-        9000,
+        90,
         "Value is equal to updated"
+      );
+
+      let isException = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          1,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
+          { from: accounts[4] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be a taster");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not taster account"
+      );
+
+      isException = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          100,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
+          { from: accounts[3] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "cup profile should't be empty");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on empty cup profile"
+      );
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("Taster Hulk 2"),
+        web3.utils.utf8ToHex("taster"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("taster2@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
+        { from: accounts[5] }
+      );
+      isException = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          1,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
+          { from: accounts[5] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "updater should be the taster");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on updater not being the taster"
       );
     });
 
@@ -228,7 +301,7 @@ contract(TastingFactory, function(accounts) {
           1,
           "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-          8000,
+          80,
           {
             from: accounts[3]
           }
@@ -244,7 +317,7 @@ contract(TastingFactory, function(accounts) {
           1,
           "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-          9000
+          90
         );
       } catch (err) {
         revert = true;
