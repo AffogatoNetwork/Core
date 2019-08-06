@@ -10,7 +10,10 @@ contract(TastingFactory, function(accounts) {
   beforeEach(async () => {
     this.actorTokenInstance = await ActorFactory.deployed();
     this.tokenInstance = await TastingFactory.deployed();
-    const allowed = await this.actorTokenInstance.approve(accounts[3], true, {
+    await this.actorTokenInstance.approve(accounts[3], true, {
+      from: accounts[1]
+    });
+    await this.actorTokenInstance.approve(accounts[4], true, {
       from: accounts[1]
     });
   });
@@ -22,17 +25,23 @@ contract(TastingFactory, function(accounts) {
     });
 
     it("Adds a cup profile", async () => {
+      //creates a taster
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("Taster Hulk"),
+        web3.utils.utf8ToHex("taster"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("taster@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
+        { from: accounts[3] }
+      );
       const receipt = await this.tokenInstance.addCupProfile(
         accounts[1],
         1,
-        web3.utils.utf8ToHex("Caramelo"),
-        web3.utils.utf8ToHex("Panela"),
-        web3.utils.utf8ToHex("Frutas"),
-        web3.utils.utf8ToHex("citrica"),
-        web3.utils.utf8ToHex("ligero"),
-        web3.utils.utf8ToHex("prolongado"),
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-        8000,
+        80,
         {
           from: accounts[3]
         }
@@ -55,35 +64,16 @@ contract(TastingFactory, function(accounts) {
         accounts[3],
         "logs the added profile taster address"
       );
-      expect(web3.utils.hexToUtf8(receipt.logs[0].args._aroma)).to.be.equal(
-        "Caramelo",
-        "logs the added cup profile aroma"
+      expect(receipt.logs[0].args._profile).to.be.equal(
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
+        "logs the added profile "
       );
-      expect(web3.utils.hexToUtf8(receipt.logs[0].args._sweetness)).to.be.equal(
-        "Panela",
-        "logs the added cup profile sweetness"
-      );
-      expect(web3.utils.hexToUtf8(receipt.logs[0].args._flavor)).to.be.equal(
-        "Frutas",
-        "logs the added cup profile flavor"
-      );
-      expect(web3.utils.hexToUtf8(receipt.logs[0].args._acidity)).to.be.equal(
-        "citrica",
-        "logs the added cup profile acidity"
-      );
-      expect(web3.utils.hexToUtf8(receipt.logs[0].args._body)).to.be.equal(
-        "ligero",
-        "logs the added cup profile body"
-      );
-      expect(
-        web3.utils.hexToUtf8(receipt.logs[0].args._aftertaste)
-      ).to.be.equal("prolongado", "logs the added cup profile aftertaste");
       expect(receipt.logs[0].args._imageHash).to.be.equal(
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "logs the added cup profile aftertaste"
       );
       expect(receipt.logs[0].args._cuppingNote.toNumber()).to.be.equal(
-        8000,
+        80,
         "logs the added profile coffee cupping note"
       );
 
@@ -101,66 +91,63 @@ contract(TastingFactory, function(accounts) {
         1,
         "Coffee Batches Cup Profiles counter should increase"
       );
-
+      let isException = false;
       try {
-        var result = true;
-        const receiptFail = await this.tokenInstance.addCupProfile(
+        await this.tokenInstance.addCupProfile(
           accounts[1],
           1,
-          web3.utils.utf8ToHex("Caramelo"),
-          web3.utils.utf8ToHex("Panela"),
-          web3.utils.utf8ToHex("citrica"),
-          web3.utils.utf8ToHex("ligero"),
-          web3.utils.utf8ToHex("Frutas"),
-          web3.utils.utf8ToHex("prolongado"),
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-          8000,
+          80,
+          { from: accounts[5] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
+
+      isException = false;
+      try {
+        await this.tokenInstance.addCupProfile(
+          accounts[1],
+          1,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
           { from: accounts[4] }
         );
-      } catch (error) {
-        result = false;
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be a taster");
       }
-      if (result) {
-        expect(result).to.be.equal(
-          false,
-          "it should revert on not allowed account"
-        );
-      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not taster account"
+      );
     });
 
     it("Gets a cup profile", async () => {
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
       expect(cupProfile[0].toNumber()).to.be.equal(1);
-      expect(web3.utils.hexToUtf8(cupProfile[1])).to.be.equal(
-        "Caramelo",
-        "Value is equal to inserted"
+      expect(cupProfile[1]).to.be.equal(
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
+        "lValue is equal to inserted"
       );
-      expect(web3.utils.hexToUtf8(cupProfile[2])).to.be.equal(
-        "Panela",
-        "Value is equal to inserted"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[3])).to.be.equal(
-        "Frutas",
-        "Value is equal to inserted"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[4])).to.be.equal(
-        "citrica",
-        "Value is equal to inserted"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[5])).to.be.equal(
-        "ligero",
-        "Value is equal to inserted"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[6])).to.be.equal(
-        "prolongado",
-        "Value is equal to inserted"
-      );
-      expect(cupProfile[7]).to.be.equal(
+      expect(cupProfile[2]).to.be.equal(
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "Value is equal to inserted"
       );
-      expect(cupProfile[8].toNumber()).to.be.equal(
-        8000,
+      expect(cupProfile[3].toNumber()).to.be.equal(
+        80,
+        "Value is equal to inserted"
+      );
+      expect(cupProfile[4]).to.be.equal(
+        accounts[3],
         "Value is equal to inserted"
       );
     });
@@ -168,14 +155,12 @@ contract(TastingFactory, function(accounts) {
     it("Updates a cup profile", async () => {
       const receipt = await this.tokenInstance.updateCupProfileById(
         1,
-        web3.utils.utf8ToHex("Caramelo 2"),
-        web3.utils.utf8ToHex("Panela 2"),
-        web3.utils.utf8ToHex("Frutas 2"),
-        web3.utils.utf8ToHex("citrica 2"),
-        web3.utils.utf8ToHex("ligero 2"),
-        web3.utils.utf8ToHex("prolongado 2"),
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-        9000
+        90,
+        {
+          from: accounts[3]
+        }
       );
 
       receipt.logs.length.should.be.equal(1, "trigger one event");
@@ -188,38 +173,83 @@ contract(TastingFactory, function(accounts) {
         "logs the updated cup profile id"
       );
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
-      expect(web3.utils.hexToUtf8(cupProfile[1])).to.be.equal(
-        "Caramelo 2",
-        "Value is equal to updated"
+      expect(cupProfile[1]).to.be.equal(
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+        "lValue is equal to inserted"
       );
-      expect(web3.utils.hexToUtf8(cupProfile[2])).to.be.equal(
-        "Panela 2",
-        "Value is equal to updated"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[3])).to.be.equal(
-        "Frutas 2",
-        "Value is equal to updated"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[4])).to.be.equal(
-        "citrica 2",
-        "Value is equal to updated"
-      );
-      expect(web3.utils.hexToUtf8(cupProfile[5])).to.be.equal(
-        "ligero 2",
-        "Value is equal to updated"
-      );
-
-      expect(web3.utils.hexToUtf8(cupProfile[6])).to.be.equal(
-        "prolongado 2",
-        "Value is equal to updated"
-      );
-      expect(cupProfile[7]).to.be.equal(
+      expect(cupProfile[2]).to.be.equal(
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "Value is equal to updated"
       );
-      expect(cupProfile[8].toNumber()).to.be.equal(
-        9000,
+      expect(cupProfile[3].toNumber()).to.be.equal(
+        90,
         "Value is equal to updated"
+      );
+
+      let isException = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          1,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
+          { from: accounts[4] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be a taster");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not taster account"
+      );
+
+      isException = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          100,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
+          { from: accounts[3] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "cup profile should't be empty");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on empty cup profile"
+      );
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("Taster Hulk 2"),
+        web3.utils.utf8ToHex("taster"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("taster2@stark.com"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus. Pellentesque sit amet pellentesque justo. In sit amet nibh turpis. Sed dictum ornare erat. Ut tempus nulla quis imperdiet accumsan. Ut nec lacus vel neque tincidunt tempus eu in urna. Vivamus in risus a tortor semper suscipit id vitae enim.",
+        { from: accounts[5] }
+      );
+      isException = false;
+      try {
+        await this.tokenInstance.updateCupProfileById(
+          1,
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
+          80,
+          { from: accounts[5] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "updater should be the taster");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on updater not being the taster"
       );
     });
 
@@ -269,14 +299,9 @@ contract(TastingFactory, function(accounts) {
         await this.tokenInstance.addCupProfile(
           accounts[1],
           1,
-          web3.utils.utf8ToHex("Caramelo"),
-          web3.utils.utf8ToHex("Panela"),
-          web3.utils.utf8ToHex("Frutas"),
-          web3.utils.utf8ToHex("citrica"),
-          web3.utils.utf8ToHex("ligero"),
-          web3.utils.utf8ToHex("prolongado"),
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-          8000,
+          80,
           {
             from: accounts[3]
           }
@@ -290,14 +315,9 @@ contract(TastingFactory, function(accounts) {
       try {
         await this.tokenInstance.updateCupProfileById(
           1,
-          web3.utils.utf8ToHex("Caramelo 2"),
-          web3.utils.utf8ToHex("Panela 2"),
-          web3.utils.utf8ToHex("Frutas 2"),
-          web3.utils.utf8ToHex("citrica 2"),
-          web3.utils.utf8ToHex("ligero 2"),
-          web3.utils.utf8ToHex("prolongado 2"),
+          "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-          9000
+          90
         );
       } catch (err) {
         revert = true;

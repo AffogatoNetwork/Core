@@ -1,5 +1,4 @@
 require("dotenv").config(); // Store environment-specific variable from '.env' to process.env
-const path = require("path");
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
 var mnemonic = process.env.MNENOMIC;
@@ -7,6 +6,11 @@ var mnemonic = process.env.MNENOMIC;
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // to customize your Truffle configuration!
+  compilers: {
+    solc: {
+      version: "0.5.9" // Fetch exact version from solc-bin (default: truffle's version)
+    }
+  },
   networks: {
     development: {
       host: "localhost",
@@ -26,5 +30,6 @@ module.exports = {
       network_id: "3",
       skipDryRun: true
     }
-  }
+  },
+  plugins: ["truffle-security"]
 };

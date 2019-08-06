@@ -11,7 +11,8 @@
     "chai-as-promised": "^7.1.1",
     "dotenv": "^6.2.0",
     "openzeppelin-solidity": "^2.1.1",
-    "truffle-hdwallet-provider": "^1.0.2"
+    "truffle-hdwallet-provider": "^1.0.2",
+    "truffle-security": "^1.5.2"
   },
   "devDependencies": {
     "chai-bignumber": "^3.0.0"

@@ -155,10 +155,9 @@ contract(FarmFactory, function(accounts) {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
         "story equal to updated"
       );
-
+      let isException = false;
       try {
-        var result = true;
-        const receiptFail = await this.tokenInstance.updateFarm(
+        await this.tokenInstance.updateFarm(
           1,
           web3.utils.utf8ToHex("Los Encinos 2"),
           web3.utils.utf8ToHex("Honduras 2"),
@@ -167,13 +166,28 @@ contract(FarmFactory, function(accounts) {
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
           { from: accounts[4] }
         );
-      } catch (error) {
-        result = false;
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be the owner");
       }
+      expect(isException).to.be.equal(true, "it should revert on not owner");
 
-      if (result) {
-        expect(result).to.be.equal(false, "it should revert on not owner");
+      isException = false;
+      try {
+        await this.tokenInstance.updateFarm(
+          100,
+          web3.utils.utf8ToHex("Los Encinos 2"),
+          web3.utils.utf8ToHex("Honduras 2"),
+          web3.utils.utf8ToHex("Francisco Morazan 2"),
+          web3.utils.utf8ToHex("Santa Lucia 2"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+          { from: accounts[4] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require farm to exist");
       }
+      expect(isException).to.be.equal(true, "it should revert on farm not existing");
     });
 
     it("...should allow a cooperative to add a farm", async () => {

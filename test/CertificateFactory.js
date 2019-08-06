@@ -95,7 +95,7 @@ contract(CertificateFactory, function(accounts) {
         1,
         "logs the added certificate coffee batch id"
       );
-      receipt.logs[0].args._ownerAddress.should.be.equal(
+      receipt.logs[0].args._farmerAddress.should.be.equal(
         accounts[1],
         "logs the added certificate owner address"
       );
@@ -103,25 +103,23 @@ contract(CertificateFactory, function(accounts) {
         accounts[4],
         "logs the added certificate certifier address"
       );
-
+      let isException = false;
       try {
-        var result = true;
         const receiptFail = await this.tokenInstance.assignCertificate(
           accounts[1],
           1,
           1,
           { from: accounts[5] }
         );
-      } catch (error) {
-        result = false;
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
       }
 
-      if (result) {
-        expect(result).to.be.equal(
-          false,
-          "it should revert on not allowed account"
-        );
-      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
     });
 
     it("Gets a certificate", async () => {

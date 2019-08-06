@@ -1,49 +1,58 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.9;
+
+/** @title Coffee Batch Factory.
+  * @author Affogato
+  */
 
 import './Libraries/Pausable.sol';
 import "./ActorFactory.sol";
 
-//TODO: Destroy Tasting
-//TODO: Should add ownerAddress
+/** TODO:
+  * Should be able to burn Tastings
+  * Refactor to CupProfileFactory
+  */
+
 contract TastingFactory is Ownable, Pausable{
+
+    /** @notice Logs when a Cup Profile is created. */
     event LogAddCupProfile(
         uint indexed _id,
         uint _coffeeBatchId,
         address _tasterAddress,
-        bytes32 _aroma,
-        bytes32 _sweetness,
-        bytes32 _flavor,
-        bytes32 _acidity,
-        bytes32 _body,
-        bytes32 _aftertaste,
+        string _profile,
         string _imageHash,
         uint16 _cuppingNote
     );
+
+    /** @notice Logs when a Cup Profile is updated. */
     event LogUpdateCupProfile(
         uint indexed _id,
-        bytes32 _aroma,
-        bytes32 _sweetness,
-        bytes32 _flavor,
-        bytes32 _acidity,
-        bytes32 _body,
-        bytes32 _aftertaste,
+        string _profile,
         string _imageHash,
         uint16 _cuppingNote
     );
+
+    /** @notice Throws if called by any account not allowed. */
+    modifier isAllowed(address _farmerAddress, address _target){
+        require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a taster. */
+    modifier isTaster(){
+        bytes32 actorType = bytes32("taster");
+        require(actor.getAccountType(msg.sender) == actorType, "require sender to be a taster");
+        _;
+    }
 
     ActorFactory actor;
 
     struct CupProfile {
         uint uid;
-        bytes32 aroma;
-        bytes32 sweetness;
-        bytes32 flavor;
-        bytes32 acidity;
-        bytes32 body;
-        bytes32 aftertaste;
-        string imageHash;
-        //Precision two decimals 100.00
-        uint16 cuppingNote;
+        string profile;
+        string imageHash; /** @dev IPFS hash*/
+        uint16 cuppingNote; /** @dev Range from 0 to 100*/
+        address tasterAddress;
     }
 
     mapping(address => uint[]) public tasterToCupProfiles;
@@ -51,43 +60,77 @@ contract TastingFactory is Ownable, Pausable{
     mapping(uint => CupProfile) public cupProfiles;
     uint tastingCount = 1;
 
+    /** @notice Constructor, sets the actor factory
+      * @param _actorAddress contract address of ActorFactory
+      */
     constructor(address _actorAddress) public {
         actor = ActorFactory(_actorAddress);
     }
 
+    /** @notice Gets the number of Tastings per taster
+      * @param _taster address of the farmer to count
+      * @return returns a uint with the amount of tastings
+      */
     function getTasterCupProfileCount(address _taster) public view returns (uint) {
         return tasterToCupProfiles[_taster].length;
     }
 
+    /** @notice Gets the number of Tastings per coffee batch
+      * @param _coffeeBatch id of the coffee batch to count
+      * @return returns a uint with the amount of tastings
+      */
     function getCoffeeCupProfileCount(uint _coffeeBatch) public view returns (uint) {
         return coffeeBatchToCupProfiles[_coffeeBatch].length;
     }
 
-    function getCupProfileById(uint uid)
+    /** @notice Gets the data of the cup tasting by id.
+      * @param _uid uint with the id of the tasting.
+      * @return the values of the tasting.
+      */
+    function getCupProfileById(uint _uid)
         public
         view
-        returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32, bytes32, string memory, uint16)
+        returns (
+            uint,
+            string memory _profile,
+            string memory,
+            uint16,
+            address
+        )
     {
-        CupProfile memory cupProfile = cupProfiles[uid];
-        return (cupProfile.uid, cupProfile.aroma, cupProfile.sweetness, cupProfile.flavor, cupProfile.acidity, cupProfile.body, cupProfile.aftertaste, cupProfile.imageHash, cupProfile.cuppingNote);
+        CupProfile memory cupProfile = cupProfiles[_uid];
+        return (
+            cupProfile.uid,
+            cupProfile.profile,
+            cupProfile.imageHash,
+            cupProfile.cuppingNote,
+            cupProfile.tasterAddress
+        );
     }
 
-    //TODO: require to be a taster
+    /** @notice creates a new tasting
+      * @param _farmerAddress address of the farmer.
+      * @param _coffeeBatchId id of the coffee batch.
+      * @param _profile of the coffee batch.
+      * @param _imageHash of the coffee batch.
+      * @param _cuppingNote of the coffee batch.
+      * @dev sender must be a taster and must be allowed
+      */
     function addCupProfile(
-        address _owner,
+        address _farmerAddress,
         uint _coffeeBatchId,
-        bytes32 _aroma,
-        bytes32 _sweetness,
-        bytes32 _flavor,
-        bytes32 _acidity,
-        bytes32 _body,
-        bytes32 _aftertaste,
+        string memory _profile,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public whenNotPaused {
-        require(actor.isAllowed(_owner, msg.sender));
+    ) public whenNotPaused  isAllowed(_farmerAddress, msg.sender) isTaster{
         uint uid = tastingCount;
-        CupProfile memory cupProfile = CupProfile(uid, _aroma, _sweetness, _flavor, _acidity, _body, _aftertaste, _imageHash, _cuppingNote);
+        CupProfile memory cupProfile = CupProfile(
+            uid,
+            _profile,
+            _imageHash,
+            _cuppingNote,
+            msg.sender
+        );
         tasterToCupProfiles[msg.sender].push(uid);
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
         cupProfiles[uid] = cupProfile;
@@ -96,41 +139,36 @@ contract TastingFactory is Ownable, Pausable{
             uid,
             _coffeeBatchId,
             msg.sender,
-            _aroma,
-            _sweetness,
-            _flavor,
-            _acidity,
-            _body,
-            _aftertaste,
+            _profile,
             _imageHash,
             _cuppingNote
         );
     }
-
+    /** @notice Updates a cup profile
+      * @param _uid of the cup profile.
+      * @param _profile id of the coffee batch.
+      * @param _imageHash of the coffee batch.
+      * @param _cuppingNote of the coffee batch.
+      * @dev sender must be a taster and must be creator
+      */
     function updateCupProfileById(
         uint _uid,
-        bytes32 _aroma,
-        bytes32 _sweetness,
-        bytes32 _flavor,
-        bytes32 _acidity,
-        bytes32 _body,
-        bytes32 _aftertaste,
+        string memory _profile,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public whenNotPaused {
-        require(cupProfiles[_uid].aroma != 0);
+    ) public whenNotPaused isTaster {
+        require(cupProfiles[_uid].cuppingNote != 0, "cup profile should't be empty");
+        require(cupProfiles[_uid].tasterAddress == msg.sender,"updater should be the taster");
         CupProfile storage cupProfile = cupProfiles[_uid];
-        cupProfile.aroma = _aroma;
-        cupProfile.sweetness = _sweetness;
-        cupProfile.flavor = _flavor;
-        cupProfile.acidity = _acidity;
-        cupProfile.body = _body;
-        cupProfile.aftertaste = _aftertaste;
+        cupProfile.profile = _profile;
         cupProfile.imageHash = _imageHash;
         cupProfile.cuppingNote = _cuppingNote;
-        emit LogUpdateCupProfile(_uid, _aroma, _sweetness, _flavor, _acidity, _body, _aftertaste, _imageHash, _cuppingNote);
+        emit LogUpdateCupProfile(_uid, _profile, _imageHash, _cuppingNote);
     }
 
+    /** @notice destroys contract
+      * @dev Only Owner can call this method
+      */
     function destroy() public onlyOwner {
         selfdestruct(owner());
     }
