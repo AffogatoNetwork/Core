@@ -9,6 +9,7 @@ import "./ActorFactory.sol";
 
 /** TODO:
   * Should be able to burn farms
+  * Only Farmers should create farms
   */
 
 contract FarmFactory  is Ownable, Pausable {
