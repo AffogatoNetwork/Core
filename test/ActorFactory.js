@@ -75,14 +75,6 @@ contract(ActorFactory, function(accounts) {
       );
     });
 
-    it("... should destroy an Actor", async () => {
-      const actor = await this.tokenInstance.getAccountType(accounts[1]);
-      expect(web3.utils.hexToUtf8(actor)).to.be.equal(
-        "FARMER",
-        "Role same as inserted"
-      );
-    });
-
     it("...should allow actors to approve actors", async () => {
       const receipt = await this.tokenInstance.approve(accounts[3], true, {
         from: accounts[1]
@@ -109,6 +101,23 @@ contract(ActorFactory, function(accounts) {
         accounts[3]
       );
       result.should.be.true;
+    });
+
+    it("...should destroy an Actor", async () => {
+      const receipt = await this.tokenInstance.destroyActor({
+        from: accounts[1]
+      });
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogDestroyActor",
+        "should be the LogDestroyActor event"
+      );
+      receipt.logs[0].args._actorAddress.should.be.equal(
+        accounts[1],
+        "logs the deleted actor address"
+      );
+      const actor = await this.tokenInstance.actorExists(accounts[1]);
+      actor.should.be.false;
     });
   });
 

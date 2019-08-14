@@ -39,6 +39,17 @@ contract ActorFactory is Ownable, Pausable {
         bytes32 _role
     );
 
+    /** @notice Logs when an Actor is destroyed. */
+    event LogDestroyActor(
+        address _actorAddress
+    );
+
+    /** @notice Logs when a cooperative destroys an Actor. */
+    event LogCooperativeDestroyActor(
+        address _cooperativeAddress,
+        address _actorAddress
+    );
+
     /** @notice Logs when an Actor gives permission. */
     event LogApproval(
         address indexed _owner,
@@ -91,8 +102,42 @@ contract ActorFactory is Ownable, Pausable {
         return allowed_[_allower][_allowed];
     }
 
+    /** @notice checks if an actor exists
+      * @param _actorAddress address of actor to check
+      * @return true if is exists false if not
+      */
+    function actorExists(address _actorAddress) public view returns(bool){
+        if(
+            _farmers.has(_actorAddress) ||
+            _cooperatives.has(_actorAddress) ||
+            _certifiers.has(_actorAddress) ||
+            _technicians.has(_actorAddress) ||
+            _tasters.has(_actorAddress)
+        ){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if a role exists
+      * @param _role bytes32 of role to check
+      * @return true if is exists false if not
+      */
+    function isValidRole(bytes32 _role) internal pure returns(bool){
+        if(
+            _role == FARMER ||
+            _role == COOPERATIVE ||
+            _role == CERTIFIER ||
+            _role == TECHNICIAN ||
+            _role == TASTER
+        ){
+            return true;
+        }
+        return false;
+    }
+
     /** @notice creates a new actor
-      * @param _actorAddress type of account of the actor.
+      * @param _actorAddress address of the actor.
       * @param _role type of account of the actor.
       */
     function _addActor(address _actorAddress, bytes32 _role) private whenNotPaused {
@@ -144,7 +189,7 @@ contract ActorFactory is Ownable, Pausable {
         return true;
     }
 
-    /** @notice approves actor
+    /** @notice approves actor from cooperative
       * @param _allower address of actor to giving the permission.
       * @param _allowed address of actor to assign the permission.
       * @param _value value to be set.
@@ -157,38 +202,34 @@ contract ActorFactory is Ownable, Pausable {
         return true;
     }
 
-    /** @notice checks if an actor exists
-      * @param _actorAddress address of actor to check
-      * @return true if is exists false if not
+    /** @notice destroys an actor
+      * @param _actorAddress type of account of the actor.
+      * @param _role type of account of the actor.
       */
-    function actorExists(address _actorAddress) public view returns(bool){
-        if(
-            _farmers.has(_actorAddress) ||
-            _cooperatives.has(_actorAddress) ||
-            _certifiers.has(_actorAddress) ||
-            _technicians.has(_actorAddress) ||
-            _tasters.has(_actorAddress)
-        ){
-            return true;
+    function _destroyActor(address _actorAddress, bytes32 _role) private whenNotPaused {
+        require(actorExists(_actorAddress),"actor doesn't exists");
+        require(isValidRole(_role), "invalid role");
+        if( _role == FARMER){
+            _farmers.remove(_actorAddress);
+        } else if( _role == COOPERATIVE){
+            _cooperatives.remove(_actorAddress);
+        } else if( _role == CERTIFIER){
+            _certifiers.remove(_actorAddress);
+        } else if( _role == TECHNICIAN){
+            _technicians.remove(_actorAddress);
+        } else if( _role == TASTER){
+            _tasters.remove(_actorAddress);
         }
-        return false;
     }
 
-    /** @notice checks if a role exists
-      * @param _role bytes32 of role to check
-      * @return true if is exists false if not
+    /** @notice destroys an actor
+      * @notice destroys all permissions
+      * @dev only actor can destroy account
       */
-    function isValidRole(bytes32 _role) internal pure returns(bool){
-        if(
-            _role == FARMER ||
-            _role == COOPERATIVE ||
-            _role == CERTIFIER ||
-            _role == TECHNICIAN ||
-            _role == TASTER
-        ){
-            return true;
-        }
-        return false;
+    function destroyActor() public whenNotPaused {
+        bytes32 role = getAccountType(msg.sender);
+        _destroyActor(msg.sender,role);
+        emit LogDestroyActor(msg.sender);
     }
 
     /** @notice destroys contract
