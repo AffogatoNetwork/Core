@@ -65,9 +65,33 @@ contract ActorFactory is Ownable, Pausable {
         address _cooperativeAddress
     );
 
+    /** @notice Throws if called by any account other than a farmer. */
+    modifier isFarmer(){
+        require(_farmers.has(msg.sender), "not a farmer");
+        _;
+    }
+
     /** @notice Throws if called by any account other than a cooperative. */
     modifier isCooperative(){
         require(_cooperatives.has(msg.sender), "not a cooperative");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a taster. */
+    modifier isTaster(){
+        require(_tasters.has(msg.sender), "not a taster");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a certifier. */
+    modifier isCertifier(){
+        require(_certifiers.has(msg.sender), "not a certifier");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a technician. */
+    modifier isTechnician(){
+        require(_technicians.has(msg.sender), "not a technician");
         _;
     }
 
@@ -173,9 +197,9 @@ contract ActorFactory is Ownable, Pausable {
         bytes32 _role,
         address _actorAddress
     ) public whenNotPaused isCooperative {
-        _addActor(msg.sender, _role);
-        emit LogCooperativeAddActor(_actorAddress, msg.sender, _role);
-        emit LogApproval(_actorAddress, msg.sender, true);
+        _addActor(_actorAddress, _role);
+        cooperativeApprove(_actorAddress, msg.sender, true);
+        emit LogCooperativeAddActor(msg.sender, _actorAddress, _role);
     }
 
     /** @notice approves actor
@@ -223,13 +247,23 @@ contract ActorFactory is Ownable, Pausable {
     }
 
     /** @notice destroys an actor
-      * @notice destroys all permissions
       * @dev only actor can destroy account
       */
     function destroyActor() public whenNotPaused {
         bytes32 role = getAccountType(msg.sender);
         _destroyActor(msg.sender,role);
         emit LogDestroyActor(msg.sender);
+    }
+
+    /** @notice destroys an actor
+      * @param _actorAddress address of the actor.
+      * @dev Only Cooperatives can call this method
+      * @dev only actor can destroy account
+      */
+    function cooperativeDestroyActor(address _actorAddress) public whenNotPaused isCooperative {
+        bytes32 role = getAccountType(_actorAddress);
+        _destroyActor(_actorAddress,role);
+        emit LogCooperativeDestroyActor(msg.sender, _actorAddress);
     }
 
     /** @notice destroys contract
