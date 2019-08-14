@@ -4,51 +4,39 @@ pragma solidity ^0.5.9;
  *  @author Affogato
  */
 
-import './Libraries/Pausable.sol';
-
-/** TODO:
- * Approve should work like ERC Standard
- * Id, Name, Country, Region, Email, Image Hash and Bio aren't needed on the blockchain
- * Cooperative Update Actor
- * actorsIds is A reachable exception has been detected.
- */
+import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import "openzeppelin-solidity/contracts/access/Roles.sol";
 
 contract ActorFactory is Ownable, Pausable {
+    // TODO: modifiers for other roles
+
+    /** @notice Defines the roles of the actors. */
+    using Roles for Roles.Role;
+    Roles.Role private _farmers;
+    Roles.Role private _cooperatives;
+    Roles.Role private _certifiers;
+    Roles.Role private _technicians;
+    Roles.Role private _tasters;
+
+    /** Roles Constants */
+    bytes32 public constant FARMER = "FARMER";
+    bytes32 public constant COOPERATIVE = "COOPERATIVE";
+    bytes32 public constant CERTIFIER = "CERTIFIER";
+    bytes32 public constant TECHNICIAN = "TECHNICIAN";
+    bytes32 public constant TASTER = "TASTER";
+
     /** @notice Logs when an Actor is created. */
     event LogAddActor(
-        address indexed _id,
-        bytes32 _name,
-        bytes32 _typeOfActor,
-        bytes32 _country,
-        bytes32 _region,
-        bytes32 _email,
-        string _imageHash,
-        string _bio
+        address _actorAddress,
+        bytes32 _role
     );
 
     /** @notice Logs when a cooperative creates an Actor. */
     event LogCooperativeAddActor(
-        address indexed _id,
-        bytes32 _name,
-        bytes32 _typeOfActor,
-        bytes32 _country,
-        bytes32 _region,
-        bytes32 _email,
-        string _imageHash,
-        string _bio,
-        address _cooperativeAddress
-    );
-
-    /** @notice Logs when an Actor is updated. */
-    event LogUpdateActor(
-        address indexed _id,
-        bytes32 _name,
-        bytes32 _typeOfActor,
-        bytes32 _country,
-        bytes32 _region,
-        bytes32 _email,
-        string _imageHash,
-        string _bio
+        address _cooperativeAddress,
+        address _actorAddress,
+        bytes32 _role
     );
 
     /** @notice Logs when an Actor gives permission. */
@@ -68,38 +56,30 @@ contract ActorFactory is Ownable, Pausable {
 
     /** @notice Throws if called by any account other than a cooperative. */
     modifier isCooperative(){
-         bytes32 actorType = bytes32("cooperative");
-        require(getAccountType(msg.sender) == actorType, "not a cooperative");
+        require(_cooperatives.has(msg.sender), "not a cooperative");
         _;
     }
 
-    struct Actor {
-        bytes32 name;
-        bytes32 typeOfActor;
-        bytes32 country;
-        bytes32 region;
-        bytes32 email;
-        string imageHash;
-        string bio;
-    }
-
-    mapping(address => Actor) public addressToActor;
-    address[] public actorsIds;
+    /** @notice Mapping of permissions one account has given to other. */
     mapping(address => mapping(address => bool)) private allowed_;
 
-    /** @notice Gets the number of Actors
-      * @return returns a uint with the amount of the actors
-      */
-    function getActorCount() public view returns (uint count) {
-        return actorsIds.length;
-    }
-
-    /** @notice Creates a profile with user basic information.
+    /** @notice Gets the type of the account.
       * @param _owner address of the owner.
-      * @return returns a uint with the amount of the actors
+      * @return returns a bytes32 with the type of account or empty if there is no account
       */
     function getAccountType(address _owner) public view returns (bytes32) {
-        return addressToActor[_owner].typeOfActor;
+        if(_farmers.has(_owner)){
+            return FARMER;
+        }else if(_cooperatives.has(_owner)){
+            return COOPERATIVE;
+        }else if(_certifiers.has(_owner)){
+            return CERTIFIER;
+        }else if(_technicians.has(_owner)){
+            return TECHNICIAN;
+        }else if(_tasters.has(_owner)){
+            return TASTER;
+        }
+        return "";
     }
 
     /** @notice Checks if a user has permission from another user.
@@ -111,128 +91,46 @@ contract ActorFactory is Ownable, Pausable {
         return allowed_[_allower][_allowed];
     }
 
-    /** @notice Checks if message sender is the owner.
-      * @return the values of the actor.
-      * ! @dev this method is going to be deprecated on new version
-      */
-    function returnOwner() public view returns (
-        bytes32,
-        bytes32,
-        bytes32,
-        bytes32,
-        bytes32,
-        string memory,
-        string memory
-    ) {
-        Actor memory actor = addressToActor[msg.sender];
-        return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email, actor.imageHash, actor.bio);
-    }
-
-    /** @notice Gets the data of the actor.
-      * @param _actorAddress address of the actor.
-      * @return the values of the actor.
-      * ! @dev this method is going to be deprecated on new version
-      */
-    function getActor(address _actorAddress) public view returns (
-        bytes32,
-        bytes32,
-        bytes32,
-        bytes32,
-        bytes32,
-        string memory,
-        string memory
-    ) {
-        Actor memory actor = addressToActor[_actorAddress];
-        return (actor.name, actor.typeOfActor, actor.country, actor.region, actor.email, actor.imageHash, actor.bio);
-    }
-
     /** @notice creates a new actor
-      * @param _name name of the actor.
-      * @param _typeOfActor type of account of the actor.
-      * @param _country country of the actor.
-      * @param _region region of the actor.
-      * @param _email email of the actor.
-      * @param _imageHash hash of the image saved on ipfs of the actor.
-      * @param _bio bio of the actor.
-      * ! @dev this method is going to be deprecated on new version
+      * @param _actorAddress type of account of the actor.
+      * @param _role type of account of the actor.
       */
-    function addActor(
-        bytes32 _name,
-        bytes32 _typeOfActor,
-        bytes32 _country,
-        bytes32 _region,
-        bytes32 _email,
-        string memory _imageHash,
-        string memory _bio
-    ) public whenNotPaused {
-        require(addressToActor[msg.sender].name == 0, "actor shouldn't exist");
-        Actor memory actor = Actor(_name,_typeOfActor, _country, _region, _email, _imageHash, _bio);
-        addressToActor[msg.sender] = actor;
-        actorsIds.push(msg.sender);
-        emit LogAddActor(msg.sender, _name, _typeOfActor, _country, _region, _email,_imageHash, _bio);
+    function _addActor(address _actorAddress, bytes32 _role) private whenNotPaused {
+        require(!actorExists(_actorAddress),"actor already exists");
+        require(isValidRole(_role), "invalid role");
+        if( _role == FARMER){
+            _farmers.add(_actorAddress);
+        } else if( _role == COOPERATIVE){
+            _cooperatives.add(_actorAddress);
+        } else if( _role == CERTIFIER){
+            _certifiers.add(_actorAddress);
+        } else if( _role == TECHNICIAN){
+            _technicians.add(_actorAddress);
+        } else if( _role == TASTER){
+            _tasters.add(_actorAddress);
+        }
+    }
+
+    /** @notice creates a new actor from sender
+      * @param _role type of account of the actor.
+      */
+    function addActor(bytes32 _role) public whenNotPaused {
+        _addActor(msg.sender, _role);
+        emit LogAddActor(msg.sender, _role);
     }
 
     /** @notice Cooperative creates new actor
-      * @param _name name of the actor.
-      * @param _typeOfActor type of account of the actor.
-      * @param _country country of the actor.
-      * @param _region region of the actor.
-      * @param _email email of the actor.
-      * @param _imageHash hash of the image saved on ipfs of the actor.
-      * @param _bio bio of the actor.
-      * @param _owner address of the actor.
+      * @param _role type of account of the actor.
+      * @param _actorAddress address of the actor.
       * @dev Only Cooperatives can call this method
-      * ! @dev this method is going to be deprecated on new version
       */
     function cooperativeAddActor(
-        bytes32 _name,
-        bytes32 _typeOfActor,
-        bytes32 _country,
-        bytes32 _region,
-        bytes32 _email,
-        string memory _imageHash,
-        string memory _bio,
-        address _owner
+        bytes32 _role,
+        address _actorAddress
     ) public whenNotPaused isCooperative {
-        require(addressToActor[_owner].name == 0, "actor shouldn't exist");
-        Actor memory actor = Actor(_name, _typeOfActor, _country, _region, _email, _imageHash, _bio);
-        addressToActor[_owner] = actor;
-        actorsIds.push(_owner);
-        allowed_[_owner][msg.sender] = true;
-        emit LogCooperativeAddActor(_owner, _name, _typeOfActor, _country, _region, _email,_imageHash, _bio, msg.sender);
-        emit LogApproval(_owner, msg.sender, true);
-    }
-
-    /** @notice creates a new actor
-      * @param _name name of the actor.
-      * @param _typeOfActor type of account of the actor.
-      * @param _country country of the actor.
-      * @param _region region of the actor.
-      * @param _email email of the actor.
-      * @param _imageHash hash of the image saved on ipfs of the actor.
-      * @param _bio bio of the actor.
-      * ! @dev this method is going to be deprecated on new version
-      */
-    function updateActor(
-        bytes32 _name,
-        bytes32 _typeOfActor,
-        bytes32 _country,
-        bytes32 _region,
-        bytes32 _email,
-        string memory _imageHash,
-        string memory _bio
-    ) public whenNotPaused {
-        require(!(addressToActor[msg.sender].name == 0), "Actor should exist");
-        Actor memory actor = addressToActor[msg.sender];
-        actor.name = _name;
-        actor.typeOfActor = _typeOfActor;
-        actor.country = _country;
-        actor.region = _region;
-        actor.email = _email;
-        actor.imageHash = _imageHash;
-        actor.bio = _bio;
-        addressToActor[msg.sender] = actor;
-        emit LogUpdateActor(msg.sender, _name, _typeOfActor, _country, _region, _email,_imageHash,_bio);
+        _addActor(msg.sender, _role);
+        emit LogCooperativeAddActor(_actorAddress, msg.sender, _role);
+        emit LogApproval(_actorAddress, msg.sender, true);
     }
 
     /** @notice approves actor
@@ -259,10 +157,50 @@ contract ActorFactory is Ownable, Pausable {
         return true;
     }
 
+    /** @notice checks if an actor exists
+      * @param _actorAddress address of actor to check
+      * @return true if is exists false if not
+      */
+    function actorExists(address _actorAddress) public view returns(bool){
+        if(
+            _farmers.has(_actorAddress) ||
+            _cooperatives.has(_actorAddress) ||
+            _certifiers.has(_actorAddress) ||
+            _technicians.has(_actorAddress) ||
+            _tasters.has(_actorAddress)
+        ){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if a role exists
+      * @param _role bytes32 of role to check
+      * @return true if is exists false if not
+      */
+    function isValidRole(bytes32 _role) internal pure returns(bool){
+        if(
+            _role == FARMER ||
+            _role == COOPERATIVE ||
+            _role == CERTIFIER ||
+            _role == TECHNICIAN ||
+            _role == TASTER
+        ){
+            return true;
+        }
+        return false;
+    }
+
     /** @notice destroys contract
       * @dev Only Owner can call this method
       */
     function destroy() public onlyOwner {
-        selfdestruct(owner());
+        address payable owner = address(uint160(owner()));
+        selfdestruct(owner);
+    }
+
+    /** @notice reverts if ETH is sent */
+    function() external payable{
+      revert("Contract can't receive Ether");
     }
 }

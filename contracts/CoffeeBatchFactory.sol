@@ -4,7 +4,8 @@ pragma solidity ^0.5.9;
   * @author Affogato
   */
 
-import './Libraries/Pausable.sol';
+import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "./ActorFactory.sol";
 
 /** TODO:
@@ -98,7 +99,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     /** @notice Constructor, sets the actor factory
       * @param _actorAddress contract address of ActorFactory
       */
-    constructor(address _actorAddress) public {
+    constructor(address payable _actorAddress) public {
         actor = ActorFactory(_actorAddress);
     }
 
@@ -269,6 +270,12 @@ contract CoffeeBatchFactory is Ownable, Pausable {
       * @dev Only Owner can call this method
       */
     function destroy() public onlyOwner {
-        selfdestruct(owner());
+        address payable owner = address(uint160(owner()));
+        selfdestruct(owner);
+    }
+
+    /** @notice reverts if ETH is sent */
+    function() external payable{
+      revert("Contract can't receive Ether");
     }
 }
