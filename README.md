@@ -1,5 +1,5 @@
-# Affogato Network
-Affogato Network Smart Contract for building a Coffee Economy on Ethereum
+# Affogato Core
+Affogato's Core Smart Contract functions as a Data and Reputation Layer, used for building a Coffee Economy on Ethereum
 
 [![Build Status](https://travis-ci.com/crisgarner/affogato.svg?token=iyjjdAsC583CYX8hJTmX&branch=master)](https://travis-ci.com/crisgarner/affogato)
 
