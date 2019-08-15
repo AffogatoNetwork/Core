@@ -11,9 +11,10 @@ import "./ActorFactory.sol";
 /** TODO:
   * Should be able to burn farms
   * Only Farmers should create farms
+  * use zeppelin counter
   */
 
-contract FarmFactory  is Ownable, Pausable {
+contract FarmFactory is Ownable, Pausable {
 
     /** @notice Logs when a Farm is created. */
     event LogAddFarm(
@@ -61,6 +62,19 @@ contract FarmFactory  is Ownable, Pausable {
         address _cooperativeAddress
     );
 
+    /** @notice Logs when a Farm is destroyed. */
+    event LogDestroyFarm(
+        address _actorAddress,
+        uint _farmId
+    );
+
+    /** @notice Logs when a cooperative destroys a Farm. */
+    event LogCooperativeDestroyFarm(
+        address _cooperativeAddress,
+        address _actorAddress,
+        uint _farmId
+    );
+
     /** @notice Throws if called by any account not allowed. */
     modifier isAllowed(address _farmerAddress, address _target){
         require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
@@ -73,9 +87,16 @@ contract FarmFactory  is Ownable, Pausable {
         _;
     }
 
+    /** @notice Throws if called by any account other than a farmer. */
+    modifier onlyFarmer(){
+        require(actor.isFarmer(msg.sender), "not a farmer");
+        _;
+    }
+
+    /**@dev ActorFactory contract object */
     ActorFactory actor;
 
-    //Farms
+    /**@dev Farm struct object */
     struct Farm {
         uint uid;
         address ownerAddress;
@@ -86,7 +107,6 @@ contract FarmFactory  is Ownable, Pausable {
         string story;
     }
 
-    mapping(address => uint[]) public farmerToFarms;
     mapping(uint => Farm) public farms;
     uint farmsCount = 1;
 
@@ -95,14 +115,6 @@ contract FarmFactory  is Ownable, Pausable {
       */
     constructor(address payable _actorAddress) public {
         actor = ActorFactory(_actorAddress);
-    }
-
-    /** @notice Gets the number of Farms
-      * @param _farmer address of the farmer to count
-      * @return returns a uint with the amount of farms
-      */
-    function getFarmersFarmsCount(address _farmer) public view returns (uint) {
-        return farmerToFarms[_farmer].length;
     }
 
     /** @notice Gets the data of the farm by id.
@@ -143,10 +155,9 @@ contract FarmFactory  is Ownable, Pausable {
         bytes32 _region,
         bytes32 _village,
         string memory _story
-    ) public whenNotPaused {
+    ) public whenNotPaused onlyFarmer {
         uint uid = farmsCount;
         Farm memory farm = Farm(uid,msg.sender, _name, _country, _region, _village, _story);
-        farmerToFarms[msg.sender].push(uid);
         farms[uid] = farm;
         farmsCount++;
         emit LogAddFarm(uid, msg.sender, _name, _country, _region, _village, _story);
@@ -172,7 +183,6 @@ contract FarmFactory  is Ownable, Pausable {
     ) onlyCooperative {
         uint uid = farmsCount;
         Farm memory farm = Farm(uid, _farmerAddress, _name, _country, _region, _village, _story);
-        farmerToFarms[_farmerAddress].push(uid);
         farms[uid] = farm;
         farmsCount++;
         emit LogCooperativeAddFarm(uid,_farmerAddress, _name, _country, _region, _village, _story, msg.sender);
@@ -232,6 +242,37 @@ contract FarmFactory  is Ownable, Pausable {
         farm.village = _village;
         farm.story = _story;
         emit LogCooperativeUpdateFarm(_uid, farm.ownerAddress, _name, _country, _region, _village, _story, msg.sender);
+    }
+
+    /** @notice destroys a farm
+      * @param _farmId uint id of the farm.
+      * @dev only owner can destroy account
+      */
+    function _destroyFarm(uint _farmId) private whenNotPaused {
+       delete farms[_farmId];
+    }
+
+    /** @notice destroys a farm
+      * @param _farmId uint id of the farm.
+      * @dev only owner can destroy a farm
+      */
+    function destroyFarm(uint _farmId) public whenNotPaused {
+        require(farms[_farmId].ownerAddress == msg.sender, "require sender to be the owner");
+        _destroyFarm(_farmId);
+        emit LogDestroyFarm(msg.sender, _farmId);
+    }
+
+    /** @notice cooperative destroys a farm
+      * @param _farmId uint id of the farm.
+      * @dev only an allowed cooperative can destroy a farm
+      */
+    function cooperativeDestroyFarm(uint _farmId)
+        public whenNotPaused onlyCooperative
+        isAllowed(farms[_farmId].ownerAddress, msg.sender)
+    {
+        address farmerAddress = farms[_farmId].ownerAddress;
+        _destroyFarm(_farmId);
+        emit LogCooperativeDestroyFarm(msg.sender,farmerAddress, _farmId);
     }
 
     /** @notice destroys contract

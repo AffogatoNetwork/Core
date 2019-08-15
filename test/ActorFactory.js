@@ -96,7 +96,7 @@ contract(ActorFactory, function(accounts) {
       receipt.logs[0].args._value.should.be.true;
     });
 
-    it("Gets allowed", async () => {
+    it("...should get allowed", async () => {
       const result = await this.tokenInstance.isAllowed(
         accounts[1],
         accounts[3]
