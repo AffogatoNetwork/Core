@@ -9,22 +9,22 @@ Clone the project on your local machine for development and testing purposes. Se
 
 ### Prerequisites
 
-You need truffle, ganache, HD wallet, dotenv and chain in order to run the project
+You need truffle, ganache in order to run the project. 
 
 ```
-npm install truffle-hdwallet-provider-privkey
-npm install dotenv
-npm install chai
 npm install -g truffle
 npm install -g ganache-cli
+git clone git@github.com:AffogatoNetwork/Core.git
+cd core
+npm install
 ```
 
 ### Installing and Testing
 
-Run ganache application or the cli in order to start testing with the network 1234
+Run ganache application or the cli in order to start testing
 
 ```
-ganache-cli -i 1234
+ganache-cli
 ```
 
 Compile the project
@@ -33,7 +33,7 @@ Compile the project
 truffle compile 
 ```
 
-End with running the tests. Affogato uses Chai as an assertion library 
+Affogato uses Chai as an assertion library
 
 ```
 truffle test 
