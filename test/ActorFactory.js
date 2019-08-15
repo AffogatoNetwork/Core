@@ -1,4 +1,4 @@
-// ! TODO: add pause tests for all function
+// ! TODO: add pause tests for all function and revert on money transfer
 require("chai").should();
 require("chai").expect;
 var BN = web3.utils.BN;

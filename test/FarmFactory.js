@@ -8,15 +8,7 @@ var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(FarmFactory, function(accounts) {
   beforeEach(async () => {
-    this.actorTokenInstance = await ActorFactory.deployed();
-
     this.tokenInstance = await FarmFactory.deployed();
-    await this.actorTokenInstance.approve(accounts[5], true, {
-      from: accounts[1]
-    });
-    await this.actorTokenInstance.approve(accounts[6], true, {
-      from: accounts[1]
-    });
   });
 
   describe("Farm Validations", () => {
@@ -187,20 +179,43 @@ contract(FarmFactory, function(accounts) {
         isException = true;
         assert(err.reason === "require farm to exist");
       }
-      expect(isException).to.be.equal(true, "it should revert on farm not existing");
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on farm not existing"
+      );
+    });
+  });
+
+  describe("Cooperative Validations", () => {
+    before(async () => {
+      this.actorTokenInstance = await ActorFactory.deployed();
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[1]
+      });
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("COOPERATIVE"),
+        {
+          from: accounts[4]
+        }
+      );
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("COOPERATIVE"),
+        {
+          from: accounts[5]
+        }
+      );
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[6]
+      });
+      await this.actorTokenInstance.approve(accounts[5], true, {
+        from: accounts[1]
+      });
+      await this.actorTokenInstance.approve(accounts[6], true, {
+        from: accounts[1]
+      });
     });
 
     it("...should allow a cooperative to add a farm", async () => {
-      await this.actorTokenInstance.addActor(
-        web3.utils.utf8ToHex("Frederick Tercero"),
-        web3.utils.utf8ToHex("cooperative"),
-        web3.utils.utf8ToHex("Honduras"),
-        web3.utils.utf8ToHex("Francisco Morazan"),
-        web3.utils.utf8ToHex("freederick@stark.com"),
-        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus.",
-        { from: accounts[5] }
-      );
       const receipt = await this.tokenInstance.cooperativeAddFarm(
         web3.utils.utf8ToHex("Cual Tricicleta"),
         web3.utils.utf8ToHex("Honduras"),
@@ -379,94 +394,96 @@ contract(FarmFactory, function(accounts) {
       );
     });
 
-    it("...should pause and unpause the contract.", async () => {
-      var receipt = await this.tokenInstance.pause({
-        from: accounts[0]
-      });
-      receipt.logs.length.should.equal(1, "trigger one event");
-      receipt.logs[0].event.should.equal(
-        "Paused",
-        "should be the Paused event"
-      );
-      var paused = await this.tokenInstance.paused({
-        from: accounts[0]
-      });
-      paused.should.be.true;
-      var revert = false;
-      try {
-        await this.tokenInstance.pause({
-          from: accounts[1]
+    describe("Contract Validations", () => {
+      it("...should pause and unpause the contract.", async () => {
+        var receipt = await this.tokenInstance.pause({
+          from: accounts[0]
         });
-      } catch (err) {
-        revert = true;
-        assert(err.reason === "Only owner");
-      }
-      expect(revert).to.equal(true, "Should revert on no permissions");
-      var receipt = await this.tokenInstance.unpause({
-        from: accounts[0]
-      });
-      receipt.logs.length.should.equal(1, "trigger one event");
-      receipt.logs[0].event.should.equal(
-        "Unpaused",
-        "should be the Unpaused event"
-      );
-      paused = await this.tokenInstance.paused({
-        from: accounts[0]
-      });
-      paused.should.be.false;
-    });
-
-    it("...should stop on pause.", async () => {
-      await this.tokenInstance.pause({
-        from: accounts[0]
-      });
-      var revert = false;
-      try {
-        await this.tokenInstance.addFarm(
-          web3.utils.utf8ToHex("Los Encinos"),
-          web3.utils.utf8ToHex("Honduras"),
-          web3.utils.utf8ToHex("Francisco Morazan"),
-          web3.utils.utf8ToHex("Santa Lucia"),
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          { from: accounts[0] }
+        receipt.logs.length.should.equal(1, "trigger one event");
+        receipt.logs[0].event.should.equal(
+          "Paused",
+          "should be the Paused event"
         );
-      } catch (err) {
-        revert = true;
-        assert(err.reason === "Contract is paused");
-      }
-      expect(revert).to.equal(true, "Should revert on paused contract");
-      revert = false;
-      try {
-        await this.tokenInstance.updateFarm(
-          1,
-          web3.utils.utf8ToHex("Los Encinos 2"),
-          web3.utils.utf8ToHex("Honduras 2"),
-          web3.utils.utf8ToHex("Francisco Morazan 2"),
-          web3.utils.utf8ToHex("Santa Lucia 2"),
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
-          { from: accounts[0] }
+        var paused = await this.tokenInstance.paused({
+          from: accounts[0]
+        });
+        paused.should.be.true;
+        var revert = false;
+        try {
+          await this.tokenInstance.pause({
+            from: accounts[1]
+          });
+        } catch (err) {
+          revert = true;
+          assert(err.reason === "PauserRole: caller does not have the Pauser role");
+        }
+        expect(revert).to.equal(true, "Should revert on no permissions");
+        var receipt = await this.tokenInstance.unpause({
+          from: accounts[0]
+        });
+        receipt.logs.length.should.equal(1, "trigger one event");
+        receipt.logs[0].event.should.equal(
+          "Unpaused",
+          "should be the Unpaused event"
         );
-      } catch (err) {
-        revert = true;
-        assert(err.reason === "Contract is paused");
-      }
-      expect(revert).to.equal(true, "Should revert on paused contract");
-      await this.tokenInstance.unpause({
-        from: accounts[0]
+        paused = await this.tokenInstance.paused({
+          from: accounts[0]
+        });
+        paused.should.be.false;
       });
-    });
 
-    it("...should selfdestruct only by owner.", async () => {
-      revert = false;
-      try {
-        await this.tokenInstance.destroy({ from: accounts[1] });
-      } catch (err) {
-        revert = true;
-        assert(err.reason === "Only owner");
-      }
-      expect(revert).to.equal(true, "Should revert on not owner");
-      const code = await web3.eth.getCode(this.tokenInstance.address);
-      code.should.not.equal("0x");
+      it("...should stop on pause.", async () => {
+        await this.tokenInstance.pause({
+          from: accounts[0]
+        });
+        var revert = false;
+        try {
+          await this.tokenInstance.addFarm(
+            web3.utils.utf8ToHex("Los Encinos"),
+            web3.utils.utf8ToHex("Honduras"),
+            web3.utils.utf8ToHex("Francisco Morazan"),
+            web3.utils.utf8ToHex("Santa Lucia"),
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            { from: accounts[0] }
+          );
+        } catch (err) {
+          revert = true;
+          assert(err.reason === "Pausable: paused");
+        }
+        expect(revert).to.equal(true, "Should revert on paused contract");
+        revert = false;
+        try {
+          await this.tokenInstance.updateFarm(
+            1,
+            web3.utils.utf8ToHex("Los Encinos 2"),
+            web3.utils.utf8ToHex("Honduras 2"),
+            web3.utils.utf8ToHex("Francisco Morazan 2"),
+            web3.utils.utf8ToHex("Santa Lucia 2"),
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+            { from: accounts[0] }
+          );
+        } catch (err) {
+          revert = true;
+          assert(err.reason === "Pausable: paused");
+        }
+        expect(revert).to.equal(true, "Should revert on paused contract");
+        await this.tokenInstance.unpause({
+          from: accounts[0]
+        });
+      });
+
+      it("...should selfdestruct only by owner.", async () => {
+        revert = false;
+        try {
+          await this.tokenInstance.destroy({ from: accounts[1] });
+        } catch (err) {
+          revert = true;
+          assert(err.reason === "Ownable: caller is not the owner");
+        }
+        expect(revert).to.equal(true, "Should revert on not owner");
+        const code = await web3.eth.getCode(this.tokenInstance.address);
+        code.should.not.equal("0x");
+      });
     });
 
     /*TODO: Refactor everything to another test

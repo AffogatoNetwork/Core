@@ -68,9 +68,8 @@ contract FarmFactory  is Ownable, Pausable {
     }
 
     /** @notice Throws if called by any account other than a cooperative. */
-    modifier isCooperative(){
-         bytes32 actorType = bytes32("cooperative");
-        require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");
+    modifier onlyCooperative(){
+        require(actor.isCooperative(msg.sender), "not a cooperative");
         _;
     }
 
@@ -170,7 +169,7 @@ contract FarmFactory  is Ownable, Pausable {
         string memory _story,
         address _farmerAddress
     ) public whenNotPaused isAllowed(_farmerAddress, msg.sender
-    ) isCooperative {
+    ) onlyCooperative {
         uint uid = farmsCount;
         Farm memory farm = Farm(uid, _farmerAddress, _name, _country, _region, _village, _story);
         farmerToFarms[_farmerAddress].push(uid);
@@ -223,7 +222,7 @@ contract FarmFactory  is Ownable, Pausable {
         bytes32 _village,
         string memory _story,
         address _farmerAddress
-    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
+    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) onlyCooperative {
         require(farms[_uid].name != 0, "require farm to exist");
         require(farms[_uid].ownerAddress == _farmerAddress, "require the farmer to be the owner");
         Farm storage farm = farms[_uid];

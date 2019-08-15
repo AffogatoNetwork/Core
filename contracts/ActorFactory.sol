@@ -65,33 +65,9 @@ contract ActorFactory is Ownable, Pausable {
         address _cooperativeAddress
     );
 
-    /** @notice Throws if called by any account other than a farmer. */
-    modifier isFarmer(){
-        require(_farmers.has(msg.sender), "not a farmer");
-        _;
-    }
-
     /** @notice Throws if called by any account other than a cooperative. */
-    modifier isCooperative(){
-        require(_cooperatives.has(msg.sender), "not a cooperative");
-        _;
-    }
-
-    /** @notice Throws if called by any account other than a taster. */
-    modifier isTaster(){
-        require(_tasters.has(msg.sender), "not a taster");
-        _;
-    }
-
-    /** @notice Throws if called by any account other than a certifier. */
-    modifier isCertifier(){
-        require(_certifiers.has(msg.sender), "not a certifier");
-        _;
-    }
-
-    /** @notice Throws if called by any account other than a technician. */
-    modifier isTechnician(){
-        require(_technicians.has(msg.sender), "not a technician");
+    modifier onlyCooperative(){
+        require(isCooperative(msg.sender), "not a cooperative");
         _;
     }
 
@@ -160,6 +136,61 @@ contract ActorFactory is Ownable, Pausable {
         return false;
     }
 
+    /** @notice checks if account is a farmer
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isFarmer(address _accountAddress) public view returns (bool){
+        if(_farmers.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a cooperative
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isCooperative(address _accountAddress) public view returns (bool){
+        if(_cooperatives.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a taster
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isTaster(address _accountAddress) public view returns (bool){
+        if(_tasters.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a certifier
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isCertifier(address _accountAddress) public view returns (bool){
+        if(_certifiers.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a technician
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isTechnician(address _accountAddress) public view returns (bool){
+        if(_technicians.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
     /** @notice creates a new actor
       * @param _actorAddress address of the actor.
       * @param _role type of account of the actor.
@@ -196,7 +227,7 @@ contract ActorFactory is Ownable, Pausable {
     function cooperativeAddActor(
         bytes32 _role,
         address _actorAddress
-    ) public whenNotPaused isCooperative {
+    ) public whenNotPaused onlyCooperative {
         _addActor(_actorAddress, _role);
         cooperativeApprove(_actorAddress, msg.sender, true);
         emit LogCooperativeAddActor(msg.sender, _actorAddress, _role);
@@ -208,6 +239,7 @@ contract ActorFactory is Ownable, Pausable {
       * @return true if is success
       */
     function approve(address _allowed, bool _value) public whenNotPaused returns (bool) {
+        require(actorExists(msg.sender),"actor doesn't exists");
         allowed_[msg.sender][_allowed] = _value;
         emit LogApproval(msg.sender, _allowed, _value);
         return true;
@@ -220,7 +252,8 @@ contract ActorFactory is Ownable, Pausable {
       * @return true if is success
       * @dev Only Cooperatives can call this method
       */
-    function cooperativeApprove(address _allower, address _allowed, bool _value) public whenNotPaused isCooperative returns (bool) {
+    function cooperativeApprove(address _allower, address _allowed, bool _value) public whenNotPaused onlyCooperative returns (bool) {
+        require(actorExists(msg.sender),"actor doesn't exists");
         allowed_[_allower][_allowed] = _value;
         emit LogCooperativeApproval(_allower, _allowed, _value, msg.sender);
         return true;
@@ -260,7 +293,7 @@ contract ActorFactory is Ownable, Pausable {
       * @dev Only Cooperatives can call this method
       * @dev only actor can destroy account
       */
-    function cooperativeDestroyActor(address _actorAddress) public whenNotPaused isCooperative {
+    function cooperativeDestroyActor(address _actorAddress) public whenNotPaused onlyCooperative {
         bytes32 role = getAccountType(_actorAddress);
         _destroyActor(_actorAddress,role);
         emit LogCooperativeDestroyActor(msg.sender, _actorAddress);
