@@ -71,14 +71,21 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     }
 
     /** @notice Throws if called by any account other than a cooperative. */
-    modifier isCooperative(){
-         bytes32 actorType = bytes32("cooperative");
-        require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");
+    modifier onlyCooperative(){
+        require(actor.isCooperative(msg.sender), "not a cooperative");
         _;
     }
 
+    /** @notice Throws if called by any account other than a farmer. */
+    modifier onlyFarmer(){
+        require(actor.isFarmer(msg.sender), "not a farmer");
+        _;
+    }
+
+    /**@dev ActorFactory contract object */
     ActorFactory actor;
 
+    /**@dev Coffee Batch struct object */
     struct CoffeeBatch {
         uint uid;
         address owner;
@@ -176,7 +183,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         bytes32 _process,
         uint32 _size,
         address _farmerAddress
-    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
+    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) onlyCooperative {
         uint uid = coffeeBatchCount;
         CoffeeBatch memory coffeeBatch = CoffeeBatch(uid, _farmerAddress, _farmUid, _altitude, _variety, _process, _size, false);
         coffeeBatchCount++;
@@ -231,7 +238,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         bytes32 _process,
         uint32 _size,
         address _farmerAddress
-    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
+    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) onlyCooperative {
         CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeUid];
         require(coffeeBatch.owner != address(0), "require coffee batch to exist");
         require(coffeeBatch.owner == _farmerAddress, "require the farmer to be the owner");

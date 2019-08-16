@@ -8,27 +8,23 @@ var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(CoffeeBatchFactory, accounts => {
   beforeEach(async () => {
-    this.actorTokenInstance = await ActorFactory.deployed();
-
-    await this.actorTokenInstance.approve(accounts[5], true, {
-      from: accounts[0]
-    });
-    await this.actorTokenInstance.approve(accounts[5], true, {
-      from: accounts[8]
-    });
-    await this.actorTokenInstance.approve(accounts[6], true, {
-      from: accounts[0]
-    });
     this.tokenInstance = await CoffeeBatchFactory.deployed();
   });
 
   describe("Coffee Bacth Validations", () => {
+    before(async () => {
+      this.actorTokenInstance = await ActorFactory.deployed();
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[0]
+      });
+    });
+
     it("...should set an owner.", async () => {
       var owner = await this.tokenInstance.owner();
       owner.should.be.equal(accounts[0]);
     });
 
-    it("Adds a Coffee Batch", async () => {
+    it("...should add a Coffee Batch", async () => {
       const receipt = await this.tokenInstance.addCoffeeBatch(
         1,
         1200,
@@ -76,7 +72,7 @@ contract(CoffeeBatchFactory, accounts => {
       );
     });
 
-    it("Gets a Coffee Batch", async () => {
+    it("...should get a Coffee Batch", async () => {
       const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(1);
       expect(coffeeBatch[0].toNumber()).to.be.equal(
         1,
@@ -108,7 +104,7 @@ contract(CoffeeBatchFactory, accounts => {
       );
     });
 
-    it("Validates actor is owner ", async () => {
+    it("...should validates actor is owner ", async () => {
       const result = await this.tokenInstance.actorIsOwner(accounts[0], 1);
       result.should.be.true;
       const resultFail = await this.tokenInstance.actorIsOwner(accounts[1], 1);
@@ -202,18 +198,35 @@ contract(CoffeeBatchFactory, accounts => {
         "it should revert on not owner of account"
       );
     });
+  });
+
+  describe("Cooperative Validations", () => {
+    before(async () => {
+      this.actorTokenInstance = await ActorFactory.deployed();
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("COOPERATIVE"),
+        {
+          from: accounts[5]
+        }
+      );
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[6]
+      });
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[8]
+      });
+      await this.actorTokenInstance.approve(accounts[5], true, {
+        from: accounts[0]
+      });
+      await this.actorTokenInstance.approve(accounts[5], true, {
+        from: accounts[8]
+      });
+      await this.actorTokenInstance.approve(accounts[6], true, {
+        from: accounts[0]
+      });
+    });
 
     it("...should let a cooperative to add a Coffee Batch", async () => {
-      await this.actorTokenInstance.addActor(
-        web3.utils.utf8ToHex("Frederick Tercero"),
-        web3.utils.utf8ToHex("cooperative"),
-        web3.utils.utf8ToHex("Honduras"),
-        web3.utils.utf8ToHex("Francisco Morazan"),
-        web3.utils.utf8ToHex("freederick@stark.com"),
-        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus.",
-        { from: accounts[5] }
-      );
       const receipt = await this.tokenInstance.cooperativeAddCoffeeBatch(
         1,
         1200,
@@ -447,7 +460,9 @@ contract(CoffeeBatchFactory, accounts => {
         "it should revert on not a cooperative account"
       );
     });
+  });
 
+  describe("Contract Validations", () => {
     it("...should pause and unpause the contract.", async () => {
       var receipt = await this.tokenInstance.pause({
         from: accounts[0]
@@ -468,7 +483,7 @@ contract(CoffeeBatchFactory, accounts => {
         });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Only owner");
+        assert(err.reason === "PauserRole: caller does not have the Pauser role");
       }
       expect(revert).to.equal(true, "Should revert on no permissions");
       var receipt = await this.tokenInstance.unpause({
@@ -501,7 +516,7 @@ contract(CoffeeBatchFactory, accounts => {
         );
       } catch (err) {
         revert = true;
-        assert(err.reason === "Contract is paused");
+        assert(err.reason === "Pausable: paused");
       }
       await this.tokenInstance.unpause({
         from: accounts[0]
@@ -514,7 +529,7 @@ contract(CoffeeBatchFactory, accounts => {
         await this.tokenInstance.destroy({ from: accounts[1] });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Only owner");
+        assert(err.reason === "Ownable: caller is not the owner");
       }
       expect(revert).to.equal(true, "Should revert on not owner");
       const code = await web3.eth.getCode(this.tokenInstance.address);

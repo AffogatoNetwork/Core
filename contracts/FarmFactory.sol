@@ -9,8 +9,6 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "./ActorFactory.sol";
 
 /** TODO:
-  * Should be able to burn farms
-  * Only Farmers should create farms
   * use zeppelin counter
   */
 
