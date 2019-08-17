@@ -82,7 +82,7 @@ contract(FarmFactory, function(accounts) {
 
     it("...should get a farm", async () => {
       const farm = await this.tokenInstance.getFarmById(1);
-      expect(farm[0].toNumber()).to.be.equal(1, "Uid equal to inserted");
+      expect(farm[0].toNumber()).to.be.equal(1, "id equal to inserted");
       expect(web3.utils.hexToUtf8(farm[1])).to.be.equal(
         "Los Encinos",
         "name equal to inserted"
@@ -104,6 +104,11 @@ contract(FarmFactory, function(accounts) {
         "story equal to inserted"
       );
       farm[6].should.be.equal(accounts[0], "owner equal to inserted");
+    });
+
+    it("...should get the farm owner", async () => {
+      const farmOwner = await this.tokenInstance.getFarmOwner(1);
+      farmOwner.should.be.equal(accounts[0], "owner equal to inserted");
     });
 
     it("...should update a farm", async () => {
@@ -146,7 +151,7 @@ contract(FarmFactory, function(accounts) {
         "logs the added farm story"
       );
       const farm = await this.tokenInstance.getFarmById.call(1);
-      expect(farm[0].toNumber()).to.be.equal(1, "Uid equal to updated");
+      expect(farm[0].toNumber()).to.be.equal(1, "id equal to updated");
       expect(web3.utils.hexToUtf8(farm[1])).to.be.equal(
         "Los Encinos 2",
         "name equal to updated"
@@ -467,10 +472,9 @@ contract(FarmFactory, function(accounts) {
       farm[0].toNumber().should.equal(0);
       let isException = false;
       try {
-        await this.tokenInstance.cooperativeDestroyFarm(
-          2,
-          { from: accounts[4] }
-        );
+        await this.tokenInstance.cooperativeDestroyFarm(2, {
+          from: accounts[4]
+        });
       } catch (err) {
         isException = true;
         assert(err.reason === "not authorized");
@@ -483,10 +487,9 @@ contract(FarmFactory, function(accounts) {
       isException = false;
 
       try {
-        await this.tokenInstance.cooperativeDestroyFarm(
-          2,
-          { from: accounts[6] }
-        );
+        await this.tokenInstance.cooperativeDestroyFarm(2, {
+          from: accounts[6]
+        });
       } catch (err) {
         isException = true;
         assert(err.reason === "not a cooperative");

@@ -9,7 +9,6 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "openzeppelin-solidity/contracts/access/Roles.sol";
 
 contract ActorFactory is Ownable, Pausable {
-    // TODO: modifiers for other roles
 
     /** @notice Defines the roles of the actors. */
     using Roles for Roles.Role;

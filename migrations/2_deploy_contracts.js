@@ -5,10 +5,17 @@ var TastingFactory = artifacts.require("./TastingFactory.sol");
 var CertificateFactory = artifacts.require("./CertificateFactory.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(ActorFactory).then(async instance => {
-    await deployer.deploy(TastingFactory, instance.address);
-    await deployer.deploy(CertificateFactory, instance.address);
-    await deployer.deploy(FarmFactory, instance.address);
-    await deployer.deploy(CoffeeBatchFactory, instance.address);
+  deployer.deploy(ActorFactory).then(async actorInstance => {
+    await deployer
+      .deploy(FarmFactory, actorInstance.address)
+      .then(async farmInstance => {
+        await deployer.deploy(
+          CoffeeBatchFactory,
+          actorInstance.address,
+          farmInstance.address
+        );
+      });
+    await deployer.deploy(TastingFactory, actorInstance.address);
+    await deployer.deploy(CertificateFactory, actorInstance.address);
   });
 };
