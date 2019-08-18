@@ -12,7 +12,7 @@ contract(CoffeeBatchFactory, accounts => {
     this.tokenInstance = await CoffeeBatchFactory.deployed();
   });
 
-  describe("Coffee Bacth Validations", () => {
+  describe("Coffee Batch Validations", () => {
     before(async () => {
       this.actorTokenInstance = await ActorFactory.deployed();
       this.farmTokenInstance = await FarmFactory.deployed();

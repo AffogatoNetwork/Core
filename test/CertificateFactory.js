@@ -5,17 +5,51 @@ require("chai").use(require("chai-bignumber")(BN));
 
 var CertificateFactory = artifacts.require("./CertificateFactory.sol");
 var ActorFactory = artifacts.require("./ActorFactory.sol");
+var FarmFactory = artifacts.require("./FarmFactory.sol");
+var CoffeeBatchFactory = artifacts.require("./CoffeeBatchFactory");
 
 contract(CertificateFactory, function(accounts) {
   beforeEach(async () => {
     this.tokenInstance = await CertificateFactory.deployed();
-    this.actorTokenInstance = await ActorFactory.deployed();
-    const allowed = await this.actorTokenInstance.approve(accounts[4], true, {
-      from: accounts[1]
-    });
   });
 
   describe("Certificate Validations", () => {
+    before(async () => {
+      this.actorTokenInstance = await ActorFactory.deployed();
+      this.farmTokenInstance = await FarmFactory.deployed();
+      this.coffeeBatchTokenInstance = await CoffeeBatchFactory.deployed();
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[1]
+      });
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("CERTIFIER"),
+        {
+          from: accounts[4]
+        }
+      );
+      await this.actorTokenInstance.approve(accounts[4], true, {
+        from: accounts[1]
+      });
+      await this.farmTokenInstance.addFarm(
+        web3.utils.utf8ToHex("Los Encinos"),
+        web3.utils.utf8ToHex("Honduras"),
+        web3.utils.utf8ToHex("Francisco Morazan"),
+        web3.utils.utf8ToHex("Santa Lucia"),
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        { from: accounts[1] }
+      );
+      await this.coffeeBatchTokenInstance.addCoffeeBatch(
+        1,
+        1200,
+        web3.utils.utf8ToHex("Catuai Rojo"),
+        web3.utils.utf8ToHex("Washed"),
+        10000,
+        web3.utils.utf8ToHex("Oro"),
+        "{}",
+        { from: accounts[1] }
+      );
+    });
+
     it("...should set an owner.", async () => {
       var owner = await this.tokenInstance.owner();
       owner.should.be.equal(accounts[0]);
@@ -139,7 +173,9 @@ contract(CertificateFactory, function(accounts) {
       );
       expect(certificate[4]).to.be.equal("", "Value is equal to inserted");
     });
+  });
 
+  describe("Contract Validations", () => {
     it("...should pause and unpause the contract.", async () => {
       var receipt = await this.tokenInstance.pause({
         from: accounts[0]
@@ -160,7 +196,9 @@ contract(CertificateFactory, function(accounts) {
         });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Only owner");
+        assert(
+          err.reason === "PauserRole: caller does not have the Pauser role"
+        );
       }
       expect(revert).to.equal(true, "Should revert on no permissions");
       var receipt = await this.tokenInstance.unpause({
@@ -194,7 +232,7 @@ contract(CertificateFactory, function(accounts) {
         );
       } catch (err) {
         revert = true;
-        assert(err.reason === "Contract is paused");
+        assert(err.reason === "Pausable: paused");
       }
       expect(revert).to.equal(true, "Should revert on paused contract");
       revert = false;
@@ -204,7 +242,7 @@ contract(CertificateFactory, function(accounts) {
         });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Contract is paused");
+        assert(err.reason === "Pausable: paused");
       }
       await this.tokenInstance.unpause({
         from: accounts[0]
@@ -217,7 +255,7 @@ contract(CertificateFactory, function(accounts) {
         await this.tokenInstance.destroy({ from: accounts[1] });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Only owner");
+        assert(err.reason === "Ownable: caller is not the owner");
       }
       expect(revert).to.equal(true, "Should revert on not owner");
       const code = await web3.eth.getCode(this.tokenInstance.address);

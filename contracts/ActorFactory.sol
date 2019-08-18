@@ -17,6 +17,9 @@ contract ActorFactory is Ownable, Pausable {
     Roles.Role private _certifiers;
     Roles.Role private _technicians;
     Roles.Role private _tasters;
+    Roles.Role private _validators;
+    Roles.Role private _benefits;
+    Roles.Role private _roasters;
 
     /** Roles Constants */
     bytes32 public constant FARMER = "FARMER";
@@ -24,6 +27,9 @@ contract ActorFactory is Ownable, Pausable {
     bytes32 public constant CERTIFIER = "CERTIFIER";
     bytes32 public constant TECHNICIAN = "TECHNICIAN";
     bytes32 public constant TASTER = "TASTER";
+    bytes32 public constant VALIDATOR = "VALIDATOR";
+    bytes32 public constant BENEFIT = "BENEFIT";
+    bytes32 public constant ROASTER = "ROASTER";
 
     /** @notice Logs when an Actor is created. */
     event LogAddActor(
@@ -88,6 +94,12 @@ contract ActorFactory is Ownable, Pausable {
             return TECHNICIAN;
         }else if(_tasters.has(_owner)){
             return TASTER;
+        }else if(_validators.has(_owner)){
+            return VALIDATOR;
+        }else if(_benefits.has(_owner)){
+            return BENEFIT;
+        }else if(_roasters.has(_owner)){
+            return ROASTER;
         }
         return "";
     }
@@ -111,7 +123,10 @@ contract ActorFactory is Ownable, Pausable {
             _cooperatives.has(_actorAddress) ||
             _certifiers.has(_actorAddress) ||
             _technicians.has(_actorAddress) ||
-            _tasters.has(_actorAddress)
+            _tasters.has(_actorAddress) ||
+            _validators.has(_actorAddress) ||
+            _benefits.has(_actorAddress) ||
+            _roasters.has(_actorAddress)
         ){
             return true;
         }
@@ -128,7 +143,10 @@ contract ActorFactory is Ownable, Pausable {
             _role == COOPERATIVE ||
             _role == CERTIFIER ||
             _role == TECHNICIAN ||
-            _role == TASTER
+            _role == TASTER ||
+            _role == VALIDATOR ||
+            _role == BENEFIT ||
+            _role == ROASTER
         ){
             return true;
         }
@@ -157,17 +175,6 @@ contract ActorFactory is Ownable, Pausable {
         return false;
     }
 
-    /** @notice checks if account is a taster
-      * @param _accountAddress address of account to check
-      * @return true if is exists false if not
-      */
-    function isTaster(address _accountAddress) public view returns (bool){
-        if(_tasters.has(_accountAddress)){
-            return true;
-        }
-        return false;
-    }
-
     /** @notice checks if account is a certifier
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
@@ -190,6 +197,50 @@ contract ActorFactory is Ownable, Pausable {
         return false;
     }
 
+    /** @notice checks if account is a taster
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isTaster(address _accountAddress) public view returns (bool){
+        if(_tasters.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a validator
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isValidator(address _accountAddress) public view returns (bool){
+        if(_validators.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a benefit
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isBenefit(address _accountAddress) public view returns (bool){
+        if(_benefits.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    /** @notice checks if account is a roaster
+      * @param _accountAddress address of account to check
+      * @return true if is exists false if not
+      */
+    function isRoaster(address _accountAddress) public view returns (bool){
+        if(_roasters.has(_accountAddress)){
+            return true;
+        }
+        return false;
+    }
+
     /** @notice creates a new actor
       * @param _actorAddress address of the actor.
       * @param _role type of account of the actor.
@@ -207,6 +258,12 @@ contract ActorFactory is Ownable, Pausable {
             _technicians.add(_actorAddress);
         } else if( _role == TASTER){
             _tasters.add(_actorAddress);
+        } else if( _role == VALIDATOR){
+            _validators.add(_actorAddress);
+        } else if( _role == BENEFIT){
+            _benefits.add(_actorAddress);
+        } else if( _role == ROASTER){
+            _roasters.add(_actorAddress);
         }
     }
 
@@ -275,6 +332,12 @@ contract ActorFactory is Ownable, Pausable {
             _technicians.remove(_actorAddress);
         } else if( _role == TASTER){
             _tasters.remove(_actorAddress);
+        } else if( _role == VALIDATOR){
+            _validators.remove(_actorAddress);
+        } else if( _role == BENEFIT){
+            _benefits.remove(_actorAddress);
+        } else if( _role == ROASTER){
+            _roasters.remove(_actorAddress);
         }
     }
 
