@@ -8,10 +8,6 @@ import './ActorFactory.sol';
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-/** TODO:
-  * Should be able to update certificate
-  */
-
 contract CertificateFactory is Ownable, Pausable {
 
     /** @notice Logs when a Certificate is created. */

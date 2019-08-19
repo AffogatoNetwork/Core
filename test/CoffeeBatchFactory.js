@@ -213,28 +213,6 @@ contract(CoffeeBatchFactory, accounts => {
       let isException = false;
       try {
         await this.tokenInstance.updateCoffeeBatch(
-          100,
-          1,
-          1250,
-          web3.utils.utf8ToHex("Catuai Amarillo"),
-          web3.utils.utf8ToHex("Washed"),
-          20000,
-          web3.utils.utf8ToHex("Pergamino"),
-          "{1}",
-          { from: accounts[0] }
-        );
-      } catch (err) {
-        isException = true;
-        assert(err.reason === "require coffee batch to exist");
-      }
-      expect(isException).to.be.equal(
-        true,
-        "it should revert on not existing coffee batch"
-      );
-
-      isException = false;
-      try {
-        await this.tokenInstance.updateCoffeeBatch(
           1,
           1,
           1250,
@@ -456,7 +434,6 @@ contract(CoffeeBatchFactory, accounts => {
         10000,
         web3.utils.utf8ToHex("Pergamino"),
         "{1}",
-        accounts[0],
         { from: accounts[5] }
       );
       receipt.logs.length.should.be.equal(1, "triggers one event");
@@ -505,30 +482,6 @@ contract(CoffeeBatchFactory, accounts => {
         "Logs the updated cooperative address"
       );
 
-      let isException = false;
-      try {
-        await this.tokenInstance.cooperativeUpdateCoffeeBatch(
-          100,
-          1,
-          1200,
-          web3.utils.utf8ToHex("Catuai Amarillo"),
-          web3.utils.utf8ToHex("Washed"),
-          10000,
-          web3.utils.utf8ToHex("Oro"),
-          "{}",
-          accounts[0],
-          { from: accounts[5] }
-        );
-      } catch (err) {
-        isException = true;
-        assert(err.reason === "require coffee batch to exist");
-      }
-
-      expect(isException).to.be.equal(
-        true,
-        "it should revert on not existing coffee batch"
-      );
-
       isException = false;
       try {
         await this.tokenInstance.cooperativeUpdateCoffeeBatch(
@@ -540,34 +493,10 @@ contract(CoffeeBatchFactory, accounts => {
           10000,
           web3.utils.utf8ToHex("Oro"),
           "{}",
-          accounts[8],
-          { from: accounts[5] }
-        );
-      } catch (err) {
-        isException = true;
-        assert(err.reason === "require sender to be the owner");
-      }
-
-      expect(isException).to.be.equal(
-        true,
-        "it should revert on farmer not being the owner"
-      );
-
-      isException = false;
-      try {
-        await this.tokenInstance.cooperativeUpdateCoffeeBatch(
-          2,
-          1,
-          1200,
-          web3.utils.utf8ToHex("Catuai Amarillo"),
-          web3.utils.utf8ToHex("Washed"),
-          10000,
-          web3.utils.utf8ToHex("Oro"),
-          "{}",
-          accounts[0],
           { from: accounts[1] }
         );
       } catch (err) {
+        console.log("TCL: err", err);
         isException = true;
         assert(err.reason === "not authorized");
       }
@@ -588,7 +517,6 @@ contract(CoffeeBatchFactory, accounts => {
           10000,
           web3.utils.utf8ToHex("Oro"),
           "{}",
-          accounts[0],
           { from: accounts[6] }
         );
       } catch (err) {
@@ -598,6 +526,63 @@ contract(CoffeeBatchFactory, accounts => {
       expect(isException).to.be.equal(
         true,
         "it should revert on not a cooperative account"
+      );
+    });
+
+    it("...should allow a cooperative to destroy a Coffee Batch", async () => {
+      let isException = false;
+      try {
+        await this.tokenInstance.cooperativeDestroyCoffeeBatch(2, {
+          from: accounts[6]
+        });
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
+
+      const receipt = await this.tokenInstance.cooperativeDestroyCoffeeBatch(
+        2,
+        {
+          from: accounts[5]
+        }
+      );
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeDestroyCoffeeBatch",
+        "should be the LogCooperativeDestroyCoffeeBatch event"
+      );
+      receipt.logs[0].args._cooperativeAddress.should.be.equal(
+        accounts[5],
+        "logs the cooperative address"
+      );
+      receipt.logs[0].args._actorAddress.should.be.equal(
+        accounts[0],
+        "logs the deleted actor coffee batch address"
+      );
+      expect(receipt.logs[0].args._coffeeBatchId.toNumber()).to.be.equal(
+        2,
+        "logs the deleted actor coffeeBatch id"
+      );
+      const coffeeBatch = await this.tokenInstance.getCoffeeBatchById(2);
+      coffeeBatch[0].toNumber().should.equal(0);
+
+      isException = false;
+      try {
+        await this.tokenInstance.cooperativeDestroyCoffeeBatch(2, {
+          from: accounts[4]
+        });
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
       );
     });
   });

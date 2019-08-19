@@ -70,6 +70,13 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         uint _id
     );
 
+    /** @notice Logs when a Cooperative destroys a Coffee Batch. */
+    event LogCooperativeDestroyCoffeeBatch(
+        address _cooperativeAddress,
+        address _actorAddress,
+        uint _coffeeBatchId
+    );
+
     /** @notice Throws if called by any account not allowed.
       * @param _farmerAddress address of the farmer
       * @param _target address of the cooperative or technician
@@ -92,6 +99,15 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     modifier onlyFarmer(uint _farmId, address _farmerAddress){
         require(actor.isFarmer(_farmerAddress), "not a farmer");
         require(farm.getFarmOwner(_farmId) == _farmerAddress, "not the owner of the farm");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a coffee batch owner
+      * @param _coffeeBatchId id of the certificate
+      * @param _farmerAddress address of the coffee batch owner
+      */
+    modifier onlyCoffeeBatchOwner(uint _coffeeBatchId, address _farmerAddress){
+        require(coffeeBatches[_coffeeBatchId].ownerAddress == _farmerAddress, "require sender to be the owner");
         _;
     }
 
@@ -279,7 +295,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     }
 
     /** @notice updates a Coffee Batch.
-      * @param _coffeecoffeeBatchId id of the coffee batch
+      * @param _coffeeBatchId id of the coffee batch
       * @param _ownerAddress address of the coffee batch owner
       * @param _farmId id of the farm.
       * @param _altitude altitude of the farm.
@@ -291,7 +307,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
       * @dev sender must owner and a farmer
       */
     function _updateCoffeeBatch(
-        uint _coffeecoffeeBatchId,
+        uint _coffeeBatchId,
         address _ownerAddress,
         uint _farmId,
         uint16 _altitude,
@@ -300,10 +316,9 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         uint32 _size,
         bytes32 _coffeeState,
         string memory _additionalInformation
-    ) public whenNotPaused {
-        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeecoffeeBatchId];
+    ) public whenNotPaused onlyCoffeeBatchOwner(_coffeeBatchId, _ownerAddress) {
+        CoffeeBatch storage coffeeBatch = coffeeBatches[_coffeeBatchId];
         require(coffeeBatch.ownerAddress != address(0), "require coffee batch to exist");
-        require(coffeeBatch.ownerAddress == _ownerAddress, "require sender to be the owner");
         coffeeBatch.farmId = _farmId;
         coffeeBatch.altitude = _altitude;
         coffeeBatch.variety = _variety;
@@ -314,7 +329,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     }
 
     /** @notice updates a Coffee Batch.
-      * @param _coffeecoffeeBatchId id of the coffee batch
+      * @param _coffeeBatchId id of the coffee batch
       * @param _farmId id of the farm.
       * @param _altitude altitude of the farm.
       * @param _variety variety of the coffee.
@@ -325,7 +340,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
       * @dev sender must owner and a farmer
       */
     function updateCoffeeBatch(
-        uint _coffeecoffeeBatchId,
+        uint _coffeeBatchId,
         uint _farmId,
         uint16 _altitude,
         bytes32 _variety,
@@ -335,7 +350,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         string memory _additionalInformation
     ) public whenNotPaused {
         _updateCoffeeBatch(
-            _coffeecoffeeBatchId,
+            _coffeeBatchId,
             msg.sender,
             _farmId,
             _altitude,
@@ -346,7 +361,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
             _additionalInformation
         );
         emit LogUpdateCoffeeBatch(
-            _coffeecoffeeBatchId,
+            _coffeeBatchId,
             _farmId,
             msg.sender,
             _altitude,
@@ -359,7 +374,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     }
 
     /** @notice Cooperative updates a Coffee Batch.
-      * @param _coffeecoffeeBatchId coffeeBatchId of the coffee batch
+      * @param _coffeeBatchId coffeeBatchId of the coffee batch
       * @param _farmId coffeeBatchId of the farm.
       * @param _altitude altitude of the farm.
       * @param _variety variety of the coffee.
@@ -367,23 +382,21 @@ contract CoffeeBatchFactory is Ownable, Pausable {
       * @param _size batch size of the coffee in QQ.
       * @param _coffeeState bytes32 with the coffee state
       * @param _additionalInformation json string with additional information of the coffee
-      * @param _farmerAddress address of the farmer.
       * @dev sender must be a cooperative and must be allowed
       */
     function cooperativeUpdateCoffeeBatch(
-        uint _coffeecoffeeBatchId,
+        uint _coffeeBatchId,
         uint _farmId,
         uint16 _altitude,
         bytes32 _variety,
         bytes32 _process,
         uint32 _size,
         bytes32 _coffeeState,
-        string memory _additionalInformation,
-        address _farmerAddress
-    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) onlyCooperative {
+        string memory _additionalInformation
+    ) public whenNotPaused isAllowed(coffeeBatches[_coffeeBatchId].ownerAddress, msg.sender) onlyCooperative {
         _updateCoffeeBatch(
-            _coffeecoffeeBatchId,
-            _farmerAddress,
+            _coffeeBatchId,
+            coffeeBatches[_coffeeBatchId].ownerAddress,
             _farmId,
             _altitude,
             _variety,
@@ -393,9 +406,9 @@ contract CoffeeBatchFactory is Ownable, Pausable {
             _additionalInformation
         );
         emit LogCooperativeUpdateCoffeeBatch(
-            _coffeecoffeeBatchId,
+            _coffeeBatchId,
             _farmId,
-            _farmerAddress,
+            coffeeBatches[_coffeeBatchId].ownerAddress,
             _altitude,
             _variety,
             _process,
@@ -418,12 +431,22 @@ contract CoffeeBatchFactory is Ownable, Pausable {
       * @param _coffeeBatchId uint id of the coffee batch.
       * @dev only owner can destroy a farm
       */
-    function destroyCoffeeBatch(uint _coffeeBatchId) public whenNotPaused {
-        require(coffeeBatches[_coffeeBatchId].ownerAddress == msg.sender, "require sender to be the owner");
+    function destroyCoffeeBatch(uint _coffeeBatchId) public whenNotPaused onlyCoffeeBatchOwner(_coffeeBatchId, msg.sender) {
         _destroyCoffeeBatch(_coffeeBatchId);
         emit LogDestroyCoffeeBatch(msg.sender, _coffeeBatchId);
     }
-    //TODO: Cooperative destroy coffee batch
+
+    /** @notice cooperative destroys a coffee Batch
+      * @param _coffeeBatchId uint id of the coffee batch.
+      * @dev only cooperative can destroy a farm
+      */
+    function cooperativeDestroyCoffeeBatch(uint _coffeeBatchId)
+    public isAllowed(coffeeBatches[_coffeeBatchId].ownerAddress, msg.sender) onlyCooperative whenNotPaused {
+        address farmerAddress = coffeeBatches[_coffeeBatchId].ownerAddress;
+        _destroyCoffeeBatch(_coffeeBatchId);
+        emit LogCooperativeDestroyCoffeeBatch(msg.sender, farmerAddress, _coffeeBatchId);
+    }
+
 
     /** @notice destroys contract
       * @dev Only Owner can call this method
