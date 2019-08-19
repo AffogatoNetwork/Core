@@ -241,6 +241,71 @@ contract(CertificateFactory, function(accounts) {
       expect(certificate[5]).to.be.equal("", "Value is equal to inserted");
     });
 
+    it("...should update a certificate", async () => {
+      const receipt = await this.tokenInstance.updateCertificate(
+        1,
+        web3.utils.utf8ToHex("DO Marcala2"),
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq2",
+        "Denominación de Origen de Marcala2",
+        "{}",
+        {
+          from: accounts[4]
+        }
+      );
+      expect(receipt.logs.length).to.be.equal(1, "trigger one event");
+      expect(receipt.logs[0].event).to.be.equal(
+        "LogUpdateCertificate",
+        "should be the LogUpdateCertificate event"
+      );
+      expect(receipt.logs[0].args._id.toNumber()).to.be.equal(
+        1,
+        "logs the updated certificate id"
+      );
+      expect(receipt.logs[0].args._certifierAddress).to.be.equal(
+        accounts[4],
+        "logs the updated certificate certifier address"
+      );
+      expect(web3.utils.hexToUtf8(receipt.logs[0].args._name)).to.be.equal(
+        "DO Marcala2",
+        "logs the updated certificate name"
+      );
+      expect(receipt.logs[0].args._imageHash).to.be.equal(
+        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq2",
+        "logs the updated certificate image hash"
+      );
+      expect(receipt.logs[0].args._description).to.be.equal(
+        "Denominación de Origen de Marcala2",
+        "logs the updated certificate Description"
+      );
+      expect(receipt.logs[0].args._additionalInformation).to.be.equal(
+        "{}",
+        "logs the updated certificate Additional information"
+      );
+
+      let isException = false;
+      try {
+        await this.tokenInstance.updateCertificate(
+          1,
+          web3.utils.utf8ToHex("DO Marcala2"),
+          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq2",
+          "Denominación de Origen de Marcala2",
+          "{}",
+          {
+            from: accounts[3]
+          }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be the owner");
+      }
+      isException.should.equal(
+        true,
+        "should revert on not a owner of the certificate"
+      );
+    });
+
+    it("...should unassign a certificate", async () => {});
+
     it("...should destroy a certificate", async () => {
       const receipt = await this.tokenInstance.destroyCertificate(1, {
         from: accounts[4]

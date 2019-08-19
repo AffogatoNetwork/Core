@@ -9,7 +9,6 @@ import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /** TODO:
-  * Should be able to burn certificate
   * Should be able to update certificate
   */
 
@@ -17,6 +16,16 @@ contract CertificateFactory is Ownable, Pausable {
 
     /** @notice Logs when a Certificate is created. */
     event LogAddCertificate(
+        uint indexed _id,
+        address _certifierAddress,
+        bytes32 _name,
+        string _imageHash,
+        string _description,
+        string _additionalInformation
+    );
+
+    /** @notice Logs when a Certificate is updated. */
+    event LogUpdateCertificate(
         uint indexed _id,
         address _certifierAddress,
         bytes32 _name,
@@ -128,6 +137,30 @@ contract CertificateFactory is Ownable, Pausable {
         certificates[id] = certificate;
         certificatesCount++;
         emit LogAddCertificate(id, msg.sender, _name, _imageHash, _description, _additionalInformation);
+    }
+
+    /** @notice updates a certificate
+      * @param _certificateId id of the certificate.
+      * @param _name name of the certificate.
+      * @param _imageHash image of the certificate.
+      * @param _description description of the certificate.
+      * @param _additionalInformation json string with additional data.
+      */
+    function updateCertificate(
+        uint _certificateId,
+        bytes32 _name,
+        string memory _imageHash,
+        string memory _description,
+        string memory _additionalInformation
+    )
+        public whenNotPaused onlyCertificateOwner(_certificateId)
+    {
+        Certificate storage certificate = certificates[_certificateId];
+        certificate.name = _name;
+        certificate.imageHash = _imageHash;
+        certificate.description = _description;
+        certificate.additionalInformation = _additionalInformation;
+        emit LogUpdateCertificate(_certificateId, msg.sender, _name, _imageHash, _description, _additionalInformation);
     }
 
     /** @notice assigns a certificate
