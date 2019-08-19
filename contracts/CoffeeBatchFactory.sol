@@ -9,11 +9,6 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "./ActorFactory.sol";
 import "./FarmFactory.sol";
 
-/** TODO:
-  * Should be able to burn coffeeBatch
-  * Update coffee Batch to save more information of the state of the coffee, cherry, wet, etc.
-  */
-
 contract CoffeeBatchFactory is Ownable, Pausable {
     /** @notice Logs when a Coffee Batch is created. */
     event LogAddCoffeeBatch(
@@ -75,7 +70,10 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         uint _id
     );
 
-    /** @notice Throws if called by any account not allowed. */
+    /** @notice Throws if called by any account not allowed.
+      * @param _farmerAddress address of the farmer
+      * @param _target address of the cooperative or technician
+      */
     modifier isAllowed(address _farmerAddress, address _target){
         require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
         _;
@@ -409,7 +407,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     }
 
     /** @notice destroys a coffee Batch
-      * @param _coffeeBatchId uint id of the farm.
+      * @param _coffeeBatchId uint id of the coffee batch.
       * @dev only owner can destroy account
       */
     function _destroyCoffeeBatch(uint _coffeeBatchId) private whenNotPaused {
@@ -417,7 +415,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
     }
 
     /** @notice destroys a coffee Batch
-      * @param _coffeeBatchId uint id of the farm.
+      * @param _coffeeBatchId uint id of the coffee batch.
       * @dev only owner can destroy a farm
       */
     function destroyCoffeeBatch(uint _coffeeBatchId) public whenNotPaused {
@@ -425,6 +423,7 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         _destroyCoffeeBatch(_coffeeBatchId);
         emit LogDestroyCoffeeBatch(msg.sender, _coffeeBatchId);
     }
+    //TODO: Cooperative destroy coffee batch
 
     /** @notice destroys contract
       * @dev Only Owner can call this method

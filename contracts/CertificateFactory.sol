@@ -11,7 +11,6 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 /** TODO:
   * Should be able to burn certificate
   * Should be able to update certificate
-  * Only Certifiers should create farms
   */
 
 contract CertificateFactory is Ownable, Pausable {
@@ -34,17 +33,48 @@ contract CertificateFactory is Ownable, Pausable {
         uint _certificateId
     );
 
+    /** @notice Logs when a Certificate is destroyed. */
+    event LogDestroyCertificate(
+        address _actorAddress,
+        uint _id
+    );
+
+    /** @notice Throws if called by any account not allowed.
+      * @param _farmerAddress address of the farmer
+      * @param _target address of the certifier
+      */
+    modifier isAllowed(address _farmerAddress, address _target){
+        require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a certifier*/
+    modifier onlyCertifier(){
+        require(actor.isCertifier(msg.sender), "not a certifier");
+        _;
+    }
+
+    /** @notice Throws if called by any account other than a certificate owner
+      * @param _certificateId id of the certificate
+      */
+    modifier onlyCertificateOwner(uint _certificateId){
+        require(certificates[_certificateId].certfierAddress == msg.sender, "require sender to be the owner");
+        _;
+    }
+
+    /**@dev ActorFactory contract object */
     ActorFactory actor;
 
+    /**@dev Certificate struct object */
     struct Certificate {
-        uint uid;
+        uint id;
+        address certfierAddress;
         bytes32 name;
         string imageHash;
         string description;
         string additionalInformation;
     }
 
-    mapping(address => uint[]) public actorToCertificates;
     mapping(uint => uint[]) public coffeeBatchToCertificates;
     mapping(uint => Certificate) public certificates;
     uint certificatesCount = 1;
@@ -56,26 +86,22 @@ contract CertificateFactory is Ownable, Pausable {
         actor = ActorFactory(_actorAddress);
     }
 
-    /** @notice Gets the number of Farms
-      * @param _certifier address of the certifier to count
-      * @return returns a uint with the amount of certificates
-      */
-    function getCertifierCertificateCount(address _certifier) public view returns (uint) {
-        return actorToCertificates[_certifier].length;
-    }
-
     /** @notice Gets the data of the certificate by id.
-      * @param _uid uint with the id of the certificate.
+      * @param _id uint with the id of the certificate.
       * @return the values of the certificate.
       */
-    function getCertificateById(uint _uid) public view returns (uint,
-    bytes32,
-    string memory,
-    string memory,
-    string memory) {
-        Certificate memory certificate = certificates[_uid];
+    function getCertificateById(uint _id) public view returns (
+      uint,
+      address,
+      bytes32,
+      string memory,
+      string memory,
+      string memory
+    ) {
+        Certificate memory certificate = certificates[_id];
         return (
-            certificate.uid,
+            certificate.id,
+            certificate.certfierAddress,
             certificate.name,
             certificate.imageHash,
             certificate.description,
@@ -95,14 +121,13 @@ contract CertificateFactory is Ownable, Pausable {
         string memory _description,
         string memory _additionalInformation
     )
-        public whenNotPaused
+        public whenNotPaused onlyCertifier
     {
-        uint uid = certificatesCount;
-        Certificate memory certificate = Certificate(uid, _name, _imageHash, _description, _additionalInformation);
-        actorToCertificates[msg.sender].push(uid);
-        certificates[uid] = certificate;
+        uint id = certificatesCount;
+        Certificate memory certificate = Certificate(id, msg.sender, _name, _imageHash, _description, _additionalInformation);
+        certificates[id] = certificate;
         certificatesCount++;
-        emit LogAddCertificate(uid, msg.sender, _name, _imageHash, _description, _additionalInformation);
+        emit LogAddCertificate(id, msg.sender, _name, _imageHash, _description, _additionalInformation);
     }
 
     /** @notice assigns a certificate
@@ -114,10 +139,18 @@ contract CertificateFactory is Ownable, Pausable {
         address _farmerAddress,
         uint _coffeeBatchId,
         uint _certificateId
-    ) public whenNotPaused {
-        require(actor.isAllowed(_farmerAddress, msg.sender),"not authorized");
+    ) public whenNotPaused onlyCertifier onlyCertificateOwner(_certificateId) isAllowed(_farmerAddress, msg.sender)  {
         coffeeBatchToCertificates[_coffeeBatchId].push(_certificateId);
         emit LogAssignCertificate(_farmerAddress, msg.sender, _coffeeBatchId, _certificateId);
+    }
+
+    /** @notice destroys a certificate
+      * @param _certificateId uint id of the farm.
+      * @dev only owner can destroy account
+      */
+    function destroyCertificate(uint _certificateId) public onlyCertificateOwner(_certificateId) whenNotPaused {
+       delete certificates[_certificateId];
+       emit LogDestroyCertificate(msg.sender, _certificateId);
     }
 
     /** @notice destroys contract
