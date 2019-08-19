@@ -171,6 +171,17 @@ contract CoffeeBatchFactory is Ownable, Pausable {
         );
     }
 
+    /** @notice Gets the address of the owner of a coffee batch by id.
+      * @param _coffeeBatchId uint with the id of the farm.
+      * @return the values of the coffee batch.
+      */
+    function getCoffeeBatchOwner(uint _coffeeBatchId) public view returns (
+        address
+    ) {
+        CoffeeBatch memory coffeeBatch = coffeeBatches[_coffeeBatchId];
+        return coffeeBatch.ownerAddress;
+    }
+
     /** @notice creates a new Coffee Batch\
       * @param _ownerAddress address of the farmer.
       * @param _farmId id of the farm.

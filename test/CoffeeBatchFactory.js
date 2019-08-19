@@ -496,7 +496,6 @@ contract(CoffeeBatchFactory, accounts => {
           { from: accounts[1] }
         );
       } catch (err) {
-        console.log("TCL: err", err);
         isException = true;
         assert(err.reason === "not authorized");
       }

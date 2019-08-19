@@ -5,6 +5,7 @@ pragma solidity ^0.5.9;
  */
 
 import './ActorFactory.sol';
+import "./CoffeeBatchFactory.sol";
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
@@ -32,7 +33,15 @@ contract CertificateFactory is Ownable, Pausable {
 
     /** @notice Logs when a Certificate is Assigned to a CoffeeBatch. */
     event LogAssignCertificate(
-        address _farmerAddress,
+        address _actorAddress,
+        address _certifierAddress,
+        uint _coffeeBatchId,
+        uint _certificateId
+    );
+
+    /** @notice Logs when a Certificate is Assigned to a CoffeeBatch. */
+    event LogUnassignCertificate(
+        address _actorAddress,
         address _certifierAddress,
         uint _coffeeBatchId,
         uint _certificateId
@@ -45,11 +54,11 @@ contract CertificateFactory is Ownable, Pausable {
     );
 
     /** @notice Throws if called by any account not allowed.
-      * @param _farmerAddress address of the farmer
+      * @param _actorAddress address of the farmer
       * @param _target address of the certifier
       */
-    modifier isAllowed(address _farmerAddress, address _target){
-        require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
+    modifier isAllowed(address _actorAddress, address _target){
+        require(actor.isAllowed(_actorAddress, msg.sender), "not authorized");
         _;
     }
 
@@ -67,8 +76,19 @@ contract CertificateFactory is Ownable, Pausable {
         _;
     }
 
+    /** @notice Throws if called by any account other than a coffee batch owner
+      * @param _coffeeBatchId id of the certificate
+      * @param _actorAddress address of the coffee batch owner
+      */
+    modifier onlyCoffeeBatchOwner(uint _coffeeBatchId, address _actorAddress){
+        require(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId) == _actorAddress, "require sender to be the owner");
+        _;
+    }
+
     /**@dev ActorFactory contract object */
     ActorFactory actor;
+    /**@dev CoffeeBatch contract object */
+    CoffeeBatchFactory coffeeBatch;
 
     /**@dev Certificate struct object */
     struct Certificate {
@@ -86,9 +106,21 @@ contract CertificateFactory is Ownable, Pausable {
 
     /** @notice Sets the actor factory
       * @param _actorAddress contract address of ActorFactory
+      * @param _coffeeBatchAddress contract address of CoffeeBatchFactory
       */
-    constructor(address payable _actorAddress) public {
+    constructor(address payable _actorAddress, address payable _coffeeBatchAddress) public {
         actor = ActorFactory(_actorAddress);
+        coffeeBatch = CoffeeBatchFactory(_coffeeBatchAddress);
+    }
+
+    /** @notice Gets the number of certificates of a coffee batch.
+      * @param _coffeeBatchId uint with the id of the coffeeBatch.
+      * @return the values of the certificate.
+      */
+    function getCoffeeBatchCertificatesCount(uint _coffeeBatchId) public view returns (
+      uint
+    ) {
+        return coffeeBatchToCertificates[_coffeeBatchId].length;
     }
 
     /** @notice Gets the data of the certificate by id.
@@ -160,17 +192,50 @@ contract CertificateFactory is Ownable, Pausable {
     }
 
     /** @notice assigns a certificate
-      * @param _farmerAddress address of the farmer.
       * @param _coffeeBatchId id of the coffee batch.
       * @param _certificateId id of the certificate.
       */
     function assignCertificate(
-        address _farmerAddress,
         uint _coffeeBatchId,
         uint _certificateId
-    ) public whenNotPaused onlyCertifier onlyCertificateOwner(_certificateId) isAllowed(_farmerAddress, msg.sender)  {
+    ) public whenNotPaused onlyCertifier
+      onlyCertificateOwner(_certificateId)
+      isAllowed(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender)
+      onlyCoffeeBatchOwner(_coffeeBatchId, coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId))
+    {
         coffeeBatchToCertificates[_coffeeBatchId].push(_certificateId);
-        emit LogAssignCertificate(_farmerAddress, msg.sender, _coffeeBatchId, _certificateId);
+        emit LogAssignCertificate(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender, _coffeeBatchId, _certificateId);
+    }
+
+    /** @notice unassigns a certificate
+      * @param _coffeeBatchId id of the coffee batch.
+      * @param _certificateId id of the certificate.
+      * @dev iterates through the array and removes the element
+      */
+    function unassignCertificate(
+        uint _coffeeBatchId,
+        uint _certificateId
+    ) public whenNotPaused onlyCertifier
+      onlyCertificateOwner(_certificateId)
+      isAllowed(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender)
+      onlyCoffeeBatchOwner(_coffeeBatchId, coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId))
+    {
+        uint index = 0;
+        bool exists = false;
+        for(uint i = 0; i < coffeeBatchToCertificates[_coffeeBatchId].length; i++){
+            if(coffeeBatchToCertificates[_coffeeBatchId][i] == _certificateId){
+                index = i;
+                exists = true;
+            }
+        }
+        if(exists){
+          for (uint i = index; i < coffeeBatchToCertificates[_coffeeBatchId].length-1; i++){
+            coffeeBatchToCertificates[_coffeeBatchId][i] = coffeeBatchToCertificates[_coffeeBatchId][i+1];
+          }
+          delete coffeeBatchToCertificates[_coffeeBatchId][coffeeBatchToCertificates[_coffeeBatchId].length-1];
+          coffeeBatchToCertificates[_coffeeBatchId].length--;
+        }
+        emit LogUnassignCertificate(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender, _coffeeBatchId, _certificateId);
     }
 
     /** @notice destroys a certificate

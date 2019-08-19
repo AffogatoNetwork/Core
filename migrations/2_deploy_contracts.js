@@ -9,13 +9,20 @@ module.exports = function(deployer) {
     await deployer
       .deploy(FarmFactory, actorInstance.address)
       .then(async farmInstance => {
-        await deployer.deploy(
-          CoffeeBatchFactory,
-          actorInstance.address,
-          farmInstance.address
-        );
+        await deployer
+          .deploy(
+            CoffeeBatchFactory,
+            actorInstance.address,
+            farmInstance.address
+          )
+          .then(async coffeeBatchInstance => {
+            await deployer.deploy(TastingFactory, actorInstance.address);
+            await deployer.deploy(
+              CertificateFactory,
+              actorInstance.address,
+              coffeeBatchInstance.address
+            );
+          });
       });
-    await deployer.deploy(TastingFactory, actorInstance.address);
-    await deployer.deploy(CertificateFactory, actorInstance.address);
   });
 };

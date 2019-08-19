@@ -138,14 +138,9 @@ contract(CertificateFactory, function(accounts) {
     });
 
     it("...should assign a certificate", async () => {
-      const receipt = await this.tokenInstance.assignCertificate(
-        accounts[1],
-        1,
-        1,
-        {
-          from: accounts[4]
-        }
-      );
+      const receipt = await this.tokenInstance.assignCertificate(1, 1, {
+        from: accounts[4]
+      });
       receipt.logs.length.should.be.equal(1, "trigger one event");
       receipt.logs[0].event.should.be.equal(
         "LogAssignCertificate",
@@ -159,7 +154,7 @@ contract(CertificateFactory, function(accounts) {
         1,
         "logs the added certificate coffee batch id"
       );
-      receipt.logs[0].args._farmerAddress.should.be.equal(
+      receipt.logs[0].args._actorAddress.should.be.equal(
         accounts[1],
         "logs the added certificate owner address"
       );
@@ -178,7 +173,7 @@ contract(CertificateFactory, function(accounts) {
       );
       let isException = false;
       try {
-        await this.tokenInstance.assignCertificate(accounts[1], 1, 2, {
+        await this.tokenInstance.assignCertificate(1, 2, {
           from: accounts[5]
         });
       } catch (err) {
@@ -192,7 +187,7 @@ contract(CertificateFactory, function(accounts) {
 
       isException = false;
       try {
-        await this.tokenInstance.assignCertificate(accounts[1], 1, 1, {
+        await this.tokenInstance.assignCertificate(1, 1, {
           from: accounts[2]
         });
       } catch (err) {
@@ -206,7 +201,7 @@ contract(CertificateFactory, function(accounts) {
 
       isException = false;
       try {
-        await this.tokenInstance.assignCertificate(accounts[1], 1, 1, {
+        await this.tokenInstance.assignCertificate(1, 1, {
           from: accounts[3]
         });
       } catch (err) {
@@ -304,7 +299,41 @@ contract(CertificateFactory, function(accounts) {
       );
     });
 
-    it("...should unassign a certificate", async () => {});
+    it("...should unassign a certificate", async () => {
+      let certificates = await this.tokenInstance.getCoffeeBatchCertificatesCount(
+        1
+      );
+      certificates.toNumber().should.be.equal(1);
+      const receipt = await this.tokenInstance.unassignCertificate(1, 1, {
+        from: accounts[4]
+      });
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogUnassignCertificate",
+        "should be the LogUnassignCertificate event"
+      );
+      receipt.logs[0].args._actorAddress.should.be.equal(
+        accounts[1],
+        "logs the certifier address"
+      );
+      receipt.logs[0].args._certifierAddress.should.be.equal(
+        accounts[4],
+        "logs the certifier address"
+      );
+      expect(receipt.logs[0].args._coffeeBatchId.toNumber()).to.be.equal(
+        1,
+        "logs the coffee batch id"
+      );
+      expect(receipt.logs[0].args._certificateId.toNumber()).to.be.equal(
+        1,
+        "logs the certificate id"
+      );
+
+      certificates = await this.tokenInstance.getCoffeeBatchCertificatesCount(
+        1
+      );
+      certificates.toNumber().should.be.equal(0);
+    });
 
     it("...should destroy a certificate", async () => {
       const receipt = await this.tokenInstance.destroyCertificate(1, {
@@ -403,7 +432,7 @@ contract(CertificateFactory, function(accounts) {
       expect(revert).to.equal(true, "Should revert on paused contract");
       revert = false;
       try {
-        await this.tokenInstance.assignCertificate(accounts[1], 1, 1, {
+        await this.tokenInstance.assignCertificate(1, 1, {
           from: accounts[4]
         });
       } catch (err) {
