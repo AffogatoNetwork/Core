@@ -7,13 +7,13 @@ pragma solidity ^0.5.9;
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "./ActorFactory.sol";
+import "./CoffeeBatchFactory.sol";
 
 /** TODO:
   * Should be able to burn Tastings
-  * Refactor to CupProfileFactory
   */
 
-contract TastingFactory is Ownable, Pausable{
+contract CupProfileFactory is Ownable, Pausable{
 
     /** @notice Logs when a Cup Profile is created. */
     event LogAddCupProfile(
@@ -39,13 +39,13 @@ contract TastingFactory is Ownable, Pausable{
         _;
     }
 
-    /** @notice Throws if called by any account other than a taster. */
-    modifier isTaster(){
-        bytes32 actorType = bytes32("taster");
-        require(actor.getAccountType(msg.sender) == actorType, "require sender to be a taster");
+    /** @notice Throws if called by any account other than a taster*/
+    modifier onlyTaster(){
+        require(actor.isTaster(msg.sender), "not a taster");
         _;
     }
 
+    /**@dev ActorFactory contract object */
     ActorFactory actor;
 
     struct CupProfile {
@@ -56,7 +56,6 @@ contract TastingFactory is Ownable, Pausable{
         address tasterAddress;
     }
 
-    mapping(address => uint[]) public tasterToCupProfiles;
     mapping(uint => uint[]) public coffeeBatchToCupProfiles;
     mapping(uint => CupProfile) public cupProfiles;
     uint tastingCount = 1;
@@ -66,14 +65,6 @@ contract TastingFactory is Ownable, Pausable{
       */
     constructor(address payable _actorAddress) public {
         actor = ActorFactory(_actorAddress);
-    }
-
-    /** @notice Gets the number of Tastings per taster
-      * @param _taster address of the farmer to count
-      * @return returns a uint with the amount of tastings
-      */
-    function getTasterCupProfileCount(address _taster) public view returns (uint) {
-        return tasterToCupProfiles[_taster].length;
     }
 
     /** @notice Gets the number of Tastings per coffee batch
@@ -123,7 +114,7 @@ contract TastingFactory is Ownable, Pausable{
         string memory _profile,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public whenNotPaused  isAllowed(_farmerAddress, msg.sender) isTaster{
+    ) public whenNotPaused  isAllowed(_farmerAddress, msg.sender) onlyTaster{
         uint uid = tastingCount;
         CupProfile memory cupProfile = CupProfile(
             uid,
@@ -132,7 +123,6 @@ contract TastingFactory is Ownable, Pausable{
             _cuppingNote,
             msg.sender
         );
-        tasterToCupProfiles[msg.sender].push(uid);
         coffeeBatchToCupProfiles[_coffeeBatchId].push(uid);
         cupProfiles[uid] = cupProfile;
         tastingCount++;
@@ -157,7 +147,7 @@ contract TastingFactory is Ownable, Pausable{
         string memory _profile,
         string memory _imageHash,
         uint16 _cuppingNote
-    ) public whenNotPaused isTaster {
+    ) public whenNotPaused onlyTaster {
         require(cupProfiles[_uid].cuppingNote != 0, "cup profile should't be empty");
         require(cupProfiles[_uid].tasterAddress == msg.sender,"updater should be the taster");
         CupProfile storage cupProfile = cupProfiles[_uid];

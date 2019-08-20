@@ -1,7 +1,7 @@
 var ActorFactory = artifacts.require("./ActorFactory.sol");
 var FarmFactory = artifacts.require("./FarmFactory.sol");
 var CoffeeBatchFactory = artifacts.require("./CoffeeBatchFactory.sol");
-var TastingFactory = artifacts.require("./TastingFactory.sol");
+var CupProfileFactory = artifacts.require("./CupProfileFactory.sol");
 var CertificateFactory = artifacts.require("./CertificateFactory.sol");
 
 module.exports = function(deployer) {
@@ -16,7 +16,7 @@ module.exports = function(deployer) {
             farmInstance.address
           )
           .then(async coffeeBatchInstance => {
-            await deployer.deploy(TastingFactory, actorInstance.address);
+            await deployer.deploy(CupProfileFactory, actorInstance.address);
             await deployer.deploy(
               CertificateFactory,
               actorInstance.address,
