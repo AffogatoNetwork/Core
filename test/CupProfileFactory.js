@@ -67,7 +67,6 @@ contract(CupProfileFactory, function(accounts) {
 
     it("Adds a cup profile", async () => {
       const receipt = await this.tokenInstance.addCupProfile(
-        accounts[1],
         1,
         "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
@@ -107,17 +106,9 @@ contract(CupProfileFactory, function(accounts) {
         "logs the added profile coffee cupping note"
       );
 
-      const countCoffeeBatch = await this.tokenInstance.getCoffeeCupProfileCount(
-        1
-      );
-      expect(countCoffeeBatch.toNumber()).to.be.equal(
-        1,
-        "Coffee Batches Cup Profiles counter should increase"
-      );
       let isException = false;
       try {
         await this.tokenInstance.addCupProfile(
-          accounts[1],
           1,
           "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
@@ -136,7 +127,6 @@ contract(CupProfileFactory, function(accounts) {
       isException = false;
       try {
         await this.tokenInstance.addCupProfile(
-          accounts[1],
           1,
           "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
@@ -156,20 +146,27 @@ contract(CupProfileFactory, function(accounts) {
 
     it("Gets a cup profile", async () => {
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
-      expect(cupProfile[0].toNumber()).to.be.equal(1);
-      expect(cupProfile[1]).to.be.equal(
-        "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
-        "lValue is equal to inserted"
+      expect(cupProfile[0].toNumber()).to.be.equal(
+        1,
+        "cup profile id should be equal to inserted"
+      );
+      expect(cupProfile[1].toNumber()).to.be.equal(
+        1,
+        "coffee batch id should be equal to inserted"
       );
       expect(cupProfile[2]).to.be.equal(
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
+        "Value is equal to inserted"
+      );
+      expect(cupProfile[3]).to.be.equal(
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "Value is equal to inserted"
       );
-      expect(cupProfile[3].toNumber()).to.be.equal(
+      expect(cupProfile[4].toNumber()).to.be.equal(
         80,
         "Value is equal to inserted"
       );
-      expect(cupProfile[4]).to.be.equal(
+      expect(cupProfile[5]).to.be.equal(
         accounts[3],
         "Value is equal to inserted"
       );
@@ -196,15 +193,17 @@ contract(CupProfileFactory, function(accounts) {
         "logs the updated cup profile id"
       );
       const cupProfile = await this.tokenInstance.getCupProfileById(1);
-      expect(cupProfile[1]).to.be.equal(
-        "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
-        "lValue is equal to inserted"
-      );
+      cupProfile[0].toNumber().should.be.equal(1);
+      cupProfile[1].toNumber().should.be.equal(1);
       expect(cupProfile[2]).to.be.equal(
+        "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
+        "Value is equal to inserted"
+      );
+      expect(cupProfile[3]).to.be.equal(
         "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
         "Value is equal to updated"
       );
-      expect(cupProfile[3].toNumber()).to.be.equal(
+      expect(cupProfile[4].toNumber()).to.be.equal(
         90,
         "Value is equal to updated"
       );
@@ -231,25 +230,6 @@ contract(CupProfileFactory, function(accounts) {
       isException = false;
       try {
         await this.tokenInstance.updateCupProfileById(
-          100,
-          "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
-          "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-          80,
-          { from: accounts[3] }
-        );
-      } catch (err) {
-        isException = true;
-        assert(err.reason === "cup profile should't be empty");
-      }
-
-      expect(isException).to.be.equal(
-        true,
-        "it should revert on empty cup profile"
-      );
-
-      isException = false;
-      try {
-        await this.tokenInstance.updateCupProfileById(
           1,
           "Caramelo, Panela, Frutas, citrica, ligero, prolongado 2",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
@@ -258,12 +238,46 @@ contract(CupProfileFactory, function(accounts) {
         );
       } catch (err) {
         isException = true;
-        assert(err.reason === "updater should be the taster");
+        assert(err.reason === "require sender to be the owner");
       }
 
       expect(isException).to.be.equal(
         true,
         "it should revert on updater not being the taster"
+      );
+    });
+
+    it("...should destroy a cup profile", async () => {
+      const receipt = await this.tokenInstance.destroyCupProfile(1, {
+        from: accounts[3]
+      });
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogDestroyCupProfile",
+        "should be the LogDestroyCupProfile event"
+      );
+      receipt.logs[0].args._actorAddress.should.be.equal(
+        accounts[3],
+        "logs the deleted taster address"
+      );
+      receipt.logs[0].args._id
+        .toNumber()
+        .should.be.equal(1, "logs the deleted cup profile id");
+      const cupProfile = await this.tokenInstance.getCupProfileById(1);
+      cupProfile[0].toNumber().should.equal(0);
+
+      let isException = false;
+      try {
+        await this.tokenInstance.destroyCupProfile(1, {
+          from: accounts[2]
+        });
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be the owner");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not owner of certificate"
       );
     });
   });
@@ -315,7 +329,6 @@ contract(CupProfileFactory, function(accounts) {
       var revert = false;
       try {
         await this.tokenInstance.addCupProfile(
-          accounts[1],
           1,
           "Caramelo, Panela, Frutas, citrica, ligero, prolongado",
           "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",

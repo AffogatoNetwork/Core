@@ -76,15 +76,6 @@ contract CertificateFactory is Ownable, Pausable {
         _;
     }
 
-    /** @notice Throws if called by any account other than a coffee batch owner
-      * @param _coffeeBatchId id of the certificate
-      * @param _actorAddress address of the coffee batch owner
-      */
-    modifier onlyCoffeeBatchOwner(uint _coffeeBatchId, address _actorAddress){
-        require(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId) == _actorAddress, "require sender to be the owner");
-        _;
-    }
-
     /**@dev ActorFactory contract object */
     ActorFactory actor;
     /**@dev CoffeeBatch contract object */
@@ -201,7 +192,6 @@ contract CertificateFactory is Ownable, Pausable {
     ) public whenNotPaused onlyCertifier
       onlyCertificateOwner(_certificateId)
       isAllowed(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender)
-      onlyCoffeeBatchOwner(_coffeeBatchId, coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId))
     {
         coffeeBatchToCertificates[_coffeeBatchId].push(_certificateId);
         emit LogAssignCertificate(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender, _coffeeBatchId, _certificateId);
@@ -218,7 +208,6 @@ contract CertificateFactory is Ownable, Pausable {
     ) public whenNotPaused onlyCertifier
       onlyCertificateOwner(_certificateId)
       isAllowed(coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId), msg.sender)
-      onlyCoffeeBatchOwner(_coffeeBatchId, coffeeBatch.getCoffeeBatchOwner(_coffeeBatchId))
     {
         uint index = 0;
         bool exists = false;
@@ -239,7 +228,7 @@ contract CertificateFactory is Ownable, Pausable {
     }
 
     /** @notice destroys a certificate
-      * @param _certificateId uint id of the farm.
+      * @param _certificateId uint id of the certificate.
       * @dev only owner can destroy account
       */
     function destroyCertificate(uint _certificateId) public onlyCertificateOwner(_certificateId) whenNotPaused {

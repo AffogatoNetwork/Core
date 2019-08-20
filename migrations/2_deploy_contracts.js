@@ -16,7 +16,11 @@ module.exports = function(deployer) {
             farmInstance.address
           )
           .then(async coffeeBatchInstance => {
-            await deployer.deploy(CupProfileFactory, actorInstance.address);
+            await deployer.deploy(
+              CupProfileFactory,
+              actorInstance.address,
+              coffeeBatchInstance.address
+            );
             await deployer.deploy(
               CertificateFactory,
               actorInstance.address,
