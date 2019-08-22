@@ -104,6 +104,18 @@ contract(ActorFactory, function(accounts) {
       result.should.be.true;
     });
 
+    it("...should validate account ownership", async () => {
+      const role = await this.tokenInstance.getSenderRole({
+        from: accounts[1]
+      });
+      expect(web3.utils.hexToUtf8(role)).to.be.equal("FARMER");
+      const roleFail = await this.tokenInstance.getSenderRole({
+        from: accounts[8]
+      });
+      expect(web3.utils.hexToUtf8(roleFail), "It shouldn't exist any user").to
+        .be.empty;
+    });
+
     it("...should destroy an Actor", async () => {
       const receipt = await this.tokenInstance.destroyActor({
         from: accounts[1]

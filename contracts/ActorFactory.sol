@@ -104,6 +104,14 @@ contract ActorFactory is Ownable, Pausable {
         return "";
     }
 
+    /** @notice Gets the type of the sender account.
+      * @return returns a bytes32 with the type of account or empty if there is no account
+      */
+    function getSenderRole() public view returns (bytes32) {
+        return getAccountType(msg.sender);
+    }
+
+
     /** @notice Checks if a user has permission from another user.
       * @param _allower address of the allower.
       * @param _allowed address of the actor to check if has permission.
