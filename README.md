@@ -64,7 +64,3 @@ Run migration with the rinkeby network
 ```
 truffle migrate --network rinkeby
 ``` 
-
-## Authors
-
-* **Cristian Espinoza** - *Initial work* - [Crisgarner](https://github.com/crisgarner)
