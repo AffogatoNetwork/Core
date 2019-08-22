@@ -8,24 +8,23 @@ var ActorFactory = artifacts.require("./ActorFactory.sol");
 
 contract(FarmFactory, function(accounts) {
   beforeEach(async () => {
-    this.actorTokenInstance = await ActorFactory.deployed();
-
     this.tokenInstance = await FarmFactory.deployed();
-    await this.actorTokenInstance.approve(accounts[5], true, {
-      from: accounts[1]
-    });
-    await this.actorTokenInstance.approve(accounts[6], true, {
-      from: accounts[1]
-    });
   });
 
   describe("Farm Validations", () => {
+    before(async () => {
+      this.actorTokenInstance = await ActorFactory.deployed();
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[0]
+      });
+    });
+
     it("...should set an owner.", async () => {
       var owner = await this.tokenInstance.owner();
       owner.should.be.equal(accounts[0]);
     });
 
-    it("Adds a farm", async () => {
+    it("...should create a farm", async () => {
       const receipt = await this.tokenInstance.addFarm(
         web3.utils.utf8ToHex("Los Encinos"),
         web3.utils.utf8ToHex("Honduras"),
@@ -64,13 +63,26 @@ contract(FarmFactory, function(accounts) {
         "logs the added farm story"
       );
 
-      const count = await this.tokenInstance.getFarmersFarmsCount(accounts[0]);
-      count.toNumber().should.be.equal(1, "Farms counter should increase");
+      let isException = false;
+      try {
+        await this.tokenInstance.addFarm(
+          web3.utils.utf8ToHex("Los Encinos 2"),
+          web3.utils.utf8ToHex("Honduras 2"),
+          web3.utils.utf8ToHex("Francisco Morazan 2"),
+          web3.utils.utf8ToHex("Santa Lucia 2"),
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 2",
+          { from: accounts[1] }
+        );
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a farmer");
+      }
+      isException.should.equal(true, "should rever on not a farmer account");
     });
 
-    it("Gets a farm", async () => {
+    it("...should get a farm", async () => {
       const farm = await this.tokenInstance.getFarmById(1);
-      expect(farm[0].toNumber()).to.be.equal(1, "Uid equal to inserted");
+      expect(farm[0].toNumber()).to.be.equal(1, "id equal to inserted");
       expect(web3.utils.hexToUtf8(farm[1])).to.be.equal(
         "Los Encinos",
         "name equal to inserted"
@@ -94,7 +106,12 @@ contract(FarmFactory, function(accounts) {
       farm[6].should.be.equal(accounts[0], "owner equal to inserted");
     });
 
-    it("Updates a farm", async () => {
+    it("...should get the farm owner", async () => {
+      const farmOwner = await this.tokenInstance.getFarmOwner(1);
+      farmOwner.should.be.equal(accounts[0], "owner equal to inserted");
+    });
+
+    it("...should update a farm", async () => {
       const receipt = await this.tokenInstance.updateFarm(
         1,
         web3.utils.utf8ToHex("Los Encinos 2"),
@@ -134,7 +151,7 @@ contract(FarmFactory, function(accounts) {
         "logs the added farm story"
       );
       const farm = await this.tokenInstance.getFarmById.call(1);
-      expect(farm[0].toNumber()).to.be.equal(1, "Uid equal to updated");
+      expect(farm[0].toNumber()).to.be.equal(1, "id equal to updated");
       expect(web3.utils.hexToUtf8(farm[1])).to.be.equal(
         "Los Encinos 2",
         "name equal to updated"
@@ -187,20 +204,76 @@ contract(FarmFactory, function(accounts) {
         isException = true;
         assert(err.reason === "require farm to exist");
       }
-      expect(isException).to.be.equal(true, "it should revert on farm not existing");
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on farm not existing"
+      );
+    });
+
+    it("...should destroy a Farm", async () => {
+      const receipt = await this.tokenInstance.destroyFarm(1, {
+        from: accounts[0]
+      });
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogDestroyFarm",
+        "should be the LogDestroyFarm event"
+      );
+      receipt.logs[0].args._actorAddress.should.be.equal(
+        accounts[0],
+        "logs the deleted actor farm address"
+      );
+      receipt.logs[0].args._farmId
+        .toNumber()
+        .should.be.equal(1, "logs the deleted actor farm id");
+      const farm = await this.tokenInstance.getFarmById(1);
+      farm[0].toNumber().should.equal(0);
+      let isException = false;
+      try {
+        await this.tokenInstance.destroyFarm(1, {
+          from: accounts[1]
+        });
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "require sender to be the owner");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not owner of farm"
+      );
+    });
+  });
+
+  describe("Cooperative Validations", () => {
+    before(async () => {
+      this.actorTokenInstance = await ActorFactory.deployed();
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[1]
+      });
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("COOPERATIVE"),
+        {
+          from: accounts[4]
+        }
+      );
+      await this.actorTokenInstance.addActor(
+        web3.utils.utf8ToHex("COOPERATIVE"),
+        {
+          from: accounts[5]
+        }
+      );
+      await this.actorTokenInstance.addActor(web3.utils.utf8ToHex("FARMER"), {
+        from: accounts[6]
+      });
+      await this.actorTokenInstance.approve(accounts[5], true, {
+        from: accounts[1]
+      });
+      await this.actorTokenInstance.approve(accounts[6], true, {
+        from: accounts[1]
+      });
     });
 
     it("...should allow a cooperative to add a farm", async () => {
-      await this.actorTokenInstance.addActor(
-        web3.utils.utf8ToHex("Frederick Tercero"),
-        web3.utils.utf8ToHex("cooperative"),
-        web3.utils.utf8ToHex("Honduras"),
-        web3.utils.utf8ToHex("Francisco Morazan"),
-        web3.utils.utf8ToHex("freederick@stark.com"),
-        "QmarHSr9aSNaPSR6G9KFPbuLV9aEqJfTk1y9B8pdwqK4Rq",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui nunc, fermentum id fermentum sit amet, ornare id risus.",
-        { from: accounts[5] }
-      );
       const receipt = await this.tokenInstance.cooperativeAddFarm(
         web3.utils.utf8ToHex("Cual Tricicleta"),
         web3.utils.utf8ToHex("Honduras"),
@@ -244,8 +317,6 @@ contract(FarmFactory, function(accounts) {
         "logs the added cooperative address"
       );
 
-      const count = await this.tokenInstance.getFarmersFarmsCount(accounts[1]);
-      count.toNumber().should.be.equal(1, "Farms counter should increase");
       let isException = false;
       try {
         await this.tokenInstance.cooperativeAddFarm(
@@ -333,8 +404,6 @@ contract(FarmFactory, function(accounts) {
         "logs the updated cooperative address"
       );
 
-      const count = await this.tokenInstance.getFarmersFarmsCount(accounts[1]);
-      count.toNumber().should.be.equal(1, "Farms counter should stay the same");
       let isException = false;
       try {
         await this.tokenInstance.cooperativeUpdateFarm(
@@ -379,6 +448,60 @@ contract(FarmFactory, function(accounts) {
       );
     });
 
+    it("...should allow a cooperative to destroy a Farm", async () => {
+      const receipt = await this.tokenInstance.cooperativeDestroyFarm(2, {
+        from: accounts[5]
+      });
+      receipt.logs.length.should.be.equal(1, "trigger one event");
+      receipt.logs[0].event.should.be.equal(
+        "LogCooperativeDestroyFarm",
+        "should be the LogCooperativeDestroyFarm event"
+      );
+      receipt.logs[0].args._cooperativeAddress.should.be.equal(
+        accounts[5],
+        "logs the cooperative address"
+      );
+      receipt.logs[0].args._actorAddress.should.be.equal(
+        accounts[1],
+        "logs the deleted actor farm address"
+      );
+      receipt.logs[0].args._farmId
+        .toNumber()
+        .should.be.equal(2, "logs the deleted actor farm id");
+      const farm = await this.tokenInstance.getFarmById(2);
+      farm[0].toNumber().should.equal(0);
+      let isException = false;
+      try {
+        await this.tokenInstance.cooperativeDestroyFarm(2, {
+          from: accounts[4]
+        });
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not authorized");
+      }
+
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not allowed account"
+      );
+      isException = false;
+
+      try {
+        await this.tokenInstance.cooperativeDestroyFarm(2, {
+          from: accounts[6]
+        });
+      } catch (err) {
+        isException = true;
+        assert(err.reason === "not a cooperative");
+      }
+      expect(isException).to.be.equal(
+        true,
+        "it should revert on not a cooperative account"
+      );
+    });
+  });
+
+  describe("Contract Validations", () => {
     it("...should pause and unpause the contract.", async () => {
       var receipt = await this.tokenInstance.pause({
         from: accounts[0]
@@ -399,7 +522,9 @@ contract(FarmFactory, function(accounts) {
         });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Only owner");
+        assert(
+          err.reason === "PauserRole: caller does not have the Pauser role"
+        );
       }
       expect(revert).to.equal(true, "Should revert on no permissions");
       var receipt = await this.tokenInstance.unpause({
@@ -432,7 +557,7 @@ contract(FarmFactory, function(accounts) {
         );
       } catch (err) {
         revert = true;
-        assert(err.reason === "Contract is paused");
+        assert(err.reason === "Pausable: paused");
       }
       expect(revert).to.equal(true, "Should revert on paused contract");
       revert = false;
@@ -448,7 +573,7 @@ contract(FarmFactory, function(accounts) {
         );
       } catch (err) {
         revert = true;
-        assert(err.reason === "Contract is paused");
+        assert(err.reason === "Pausable: paused");
       }
       expect(revert).to.equal(true, "Should revert on paused contract");
       await this.tokenInstance.unpause({
@@ -462,7 +587,7 @@ contract(FarmFactory, function(accounts) {
         await this.tokenInstance.destroy({ from: accounts[1] });
       } catch (err) {
         revert = true;
-        assert(err.reason === "Only owner");
+        assert(err.reason === "Ownable: caller is not the owner");
       }
       expect(revert).to.equal(true, "Should revert on not owner");
       const code = await web3.eth.getCode(this.tokenInstance.address);

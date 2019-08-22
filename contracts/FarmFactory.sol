@@ -4,15 +4,15 @@ pragma solidity ^0.5.9;
   * @author Affogato
   */
 
-import './Libraries/Pausable.sol';
+import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "./ActorFactory.sol";
 
 /** TODO:
-  * Should be able to burn farms
-  * Only Farmers should create farms
+  * use zeppelin counter
   */
 
-contract FarmFactory  is Ownable, Pausable {
+contract FarmFactory is Ownable, Pausable {
 
     /** @notice Logs when a Farm is created. */
     event LogAddFarm(
@@ -60,6 +60,19 @@ contract FarmFactory  is Ownable, Pausable {
         address _cooperativeAddress
     );
 
+    /** @notice Logs when a Farm is destroyed. */
+    event LogDestroyFarm(
+        address _actorAddress,
+        uint _farmId
+    );
+
+    /** @notice Logs when a cooperative destroys a Farm. */
+    event LogCooperativeDestroyFarm(
+        address _cooperativeAddress,
+        address _actorAddress,
+        uint _farmId
+    );
+
     /** @notice Throws if called by any account not allowed. */
     modifier isAllowed(address _farmerAddress, address _target){
         require(actor.isAllowed(_farmerAddress, msg.sender), "not authorized");
@@ -67,17 +80,23 @@ contract FarmFactory  is Ownable, Pausable {
     }
 
     /** @notice Throws if called by any account other than a cooperative. */
-    modifier isCooperative(){
-         bytes32 actorType = bytes32("cooperative");
-        require(actor.getAccountType(msg.sender) == actorType, "not a cooperative");
+    modifier onlyCooperative(){
+        require(actor.isCooperative(msg.sender), "not a cooperative");
         _;
     }
 
+    /** @notice Throws if called by any account other than a farmer. */
+    modifier onlyFarmer(){
+        require(actor.isFarmer(msg.sender), "not a farmer");
+        _;
+    }
+
+    /**@dev ActorFactory contract object */
     ActorFactory actor;
 
-    //Farms
+    /**@dev Farm struct object */
     struct Farm {
-        uint uid;
+        uint id;
         address ownerAddress;
         bytes32 name;
         bytes32 country;
@@ -86,30 +105,21 @@ contract FarmFactory  is Ownable, Pausable {
         string story;
     }
 
-    mapping(address => uint[]) public farmerToFarms;
     mapping(uint => Farm) public farms;
     uint farmsCount = 1;
 
     /** @notice Sets the actor factory
-      * @param _actorAddress contract address of ActorFactory
+      * @param _actorFactoryAddress contract address of ActorFactory
       */
-    constructor(address _actorAddress) public {
-        actor = ActorFactory(_actorAddress);
-    }
-
-    /** @notice Gets the number of Farms
-      * @param _farmer address of the farmer to count
-      * @return returns a uint with the amount of farms
-      */
-    function getFarmersFarmsCount(address _farmer) public view returns (uint) {
-        return farmerToFarms[_farmer].length;
+    constructor(address payable _actorFactoryAddress) public {
+        actor = ActorFactory(_actorFactoryAddress);
     }
 
     /** @notice Gets the data of the farm by id.
-      * @param _uid uint with the id of the farm.
+      * @param _id uint with the id of the farm.
       * @return the values of the farm.
       */
-    function getFarmById(uint _uid) public view returns (
+    function getFarmById(uint _id) public view returns (
         uint,
         bytes32,
         bytes32,
@@ -118,9 +128,9 @@ contract FarmFactory  is Ownable, Pausable {
         string memory,
         address
     ) {
-        Farm memory farm = farms[_uid];
+        Farm memory farm = farms[_id];
         return (
-            farm.uid,
+            farm.id,
             farm.name,
             farm.country,
             farm.region,
@@ -128,6 +138,38 @@ contract FarmFactory  is Ownable, Pausable {
             farm.story,
             farm.ownerAddress
         );
+    }
+
+    /** @notice Gets the address of the owner of a farm.
+      * @param _id uint with the id of the farm.
+      * @return address of the owner.
+      */
+    function getFarmOwner(uint _id) public view returns (address) {
+        Farm memory farm = farms[_id];
+        return farm.ownerAddress;
+    }
+
+    /** @notice creates a new farm
+      * @param _ownerAddress address of the farmer.
+      * @param _name name of the farm.
+      * @param _country country of the farm.
+      * @param _region region of the farm.
+      * @param _village village of the farm.
+      * @param _story story of the farm.
+      */
+    function _addFarm(
+        address _ownerAddress,
+        bytes32 _name,
+        bytes32 _country,
+        bytes32 _region,
+        bytes32 _village,
+        string memory _story
+    ) private whenNotPaused returns (uint) {
+        uint id = farmsCount;
+        Farm memory farm = Farm(id,_ownerAddress, _name, _country, _region, _village, _story);
+        farms[id] = farm;
+        farmsCount++;
+        return id;
     }
 
     /** @notice creates a new farm
@@ -143,13 +185,16 @@ contract FarmFactory  is Ownable, Pausable {
         bytes32 _region,
         bytes32 _village,
         string memory _story
-    ) public whenNotPaused {
-        uint uid = farmsCount;
-        Farm memory farm = Farm(uid,msg.sender, _name, _country, _region, _village, _story);
-        farmerToFarms[msg.sender].push(uid);
-        farms[uid] = farm;
-        farmsCount++;
-        emit LogAddFarm(uid, msg.sender, _name, _country, _region, _village, _story);
+    ) public whenNotPaused onlyFarmer {
+        uint id = _addFarm(
+          msg.sender,
+          _name,
+          _country,
+          _region,
+          _village,
+          _story
+        );
+        emit LogAddFarm(id, msg.sender, _name, _country, _region, _village, _story);
     }
 
     /** @notice cooperative creates a new farm
@@ -169,17 +214,48 @@ contract FarmFactory  is Ownable, Pausable {
         string memory _story,
         address _farmerAddress
     ) public whenNotPaused isAllowed(_farmerAddress, msg.sender
-    ) isCooperative {
-        uint uid = farmsCount;
-        Farm memory farm = Farm(uid, _farmerAddress, _name, _country, _region, _village, _story);
-        farmerToFarms[_farmerAddress].push(uid);
-        farms[uid] = farm;
-        farmsCount++;
-        emit LogCooperativeAddFarm(uid,_farmerAddress, _name, _country, _region, _village, _story, msg.sender);
+    ) onlyCooperative {
+        uint id = _addFarm(
+          _farmerAddress,
+          _name,
+          _country,
+          _region,
+          _village,
+          _story
+        );
+        emit LogCooperativeAddFarm(id,_farmerAddress, _name, _country, _region, _village, _story, msg.sender);
     }
 
     /** @notice updates a farm
-      * @param _uid id of the farm.
+      * @param _id id of the farm.
+      * @param _ownerAddress address of farm owner.
+      * @param _name name of the farm.
+      * @param _country country of the farm.
+      * @param _region region of the farm.
+      * @param _village village of the farm.
+      * @param _story story of the farm.
+      */
+    function _updateFarm(
+        uint _id,
+        address _ownerAddress,
+        bytes32 _name,
+        bytes32 _country,
+        bytes32 _region,
+        bytes32 _village,
+        string memory _story
+    ) private whenNotPaused {
+        require(farms[_id].name != 0, "require farm to exist");
+        require(farms[_id].ownerAddress == _ownerAddress, "require sender to be the owner");
+        Farm storage farm = farms[_id];
+        farm.name = _name;
+        farm.country = _country;
+        farm.region = _region;
+        farm.village = _village;
+        farm.story = _story;
+    }
+
+    /** @notice updates a farm
+      * @param _id id of the farm.
       * @param _name name of the farm.
       * @param _country country of the farm.
       * @param _region region of the farm.
@@ -187,26 +263,19 @@ contract FarmFactory  is Ownable, Pausable {
       * @param _story story of the farm.
       */
     function updateFarm(
-        uint _uid,
+        uint _id,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
         bytes32 _village,
         string memory _story
     ) public whenNotPaused {
-        require(farms[_uid].name != 0, "require farm to exist");
-        require(farms[_uid].ownerAddress == msg.sender, "require sender to be the owner");
-        Farm storage farm = farms[_uid];
-        farm.name = _name;
-        farm.country = _country;
-        farm.region = _region;
-        farm.village = _village;
-        farm.story = _story;
-        emit LogUpdateFarm(_uid, farm.ownerAddress, _name, _country, _region, _village, _story);
+        _updateFarm(_id, msg.sender, _name, _country, _region, _village, _story);
+        emit LogUpdateFarm(_id, msg.sender, _name, _country, _region, _village, _story);
     }
 
     /** @notice cooperative updates a farm
-      * @param _uid id of the farm.
+      * @param _id id of the farm.
       * @param _name name of the farm.
       * @param _country country of the farm.
       * @param _region region of the farm.
@@ -215,29 +284,59 @@ contract FarmFactory  is Ownable, Pausable {
       * @dev sender must be a cooperative and must be allowed
       */
     function cooperativeUpdateFarm(
-        uint _uid,
+        uint _id,
         bytes32 _name,
         bytes32 _country,
         bytes32 _region,
         bytes32 _village,
         string memory _story,
         address _farmerAddress
-    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) isCooperative {
-        require(farms[_uid].name != 0, "require farm to exist");
-        require(farms[_uid].ownerAddress == _farmerAddress, "require the farmer to be the owner");
-        Farm storage farm = farms[_uid];
-        farm.name = _name;
-        farm.country = _country;
-        farm.region = _region;
-        farm.village = _village;
-        farm.story = _story;
-        emit LogCooperativeUpdateFarm(_uid, farm.ownerAddress, _name, _country, _region, _village, _story, msg.sender);
+    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) onlyCooperative {
+        _updateFarm(_id, _farmerAddress, _name, _country, _region, _village, _story);
+        emit LogCooperativeUpdateFarm(_id, _farmerAddress, _name, _country, _region, _village, _story, msg.sender);
+    }
+
+    /** @notice destroys a farm
+      * @param _farmId uint id of the farm.
+      * @dev only owner can destroy account
+      */
+    function _destroyFarm(uint _farmId) private whenNotPaused {
+       delete farms[_farmId];
+    }
+
+    /** @notice destroys a farm
+      * @param _farmId uint id of the farm.
+      * @dev only owner can destroy a farm
+      */
+    function destroyFarm(uint _farmId) public whenNotPaused {
+        require(farms[_farmId].ownerAddress == msg.sender, "require sender to be the owner");
+        _destroyFarm(_farmId);
+        emit LogDestroyFarm(msg.sender, _farmId);
+    }
+
+    /** @notice cooperative destroys a farm
+      * @param _farmId uint id of the farm.
+      * @dev only an allowed cooperative can destroy a farm
+      */
+    function cooperativeDestroyFarm(uint _farmId)
+        public whenNotPaused onlyCooperative
+        isAllowed(farms[_farmId].ownerAddress, msg.sender)
+    {
+        address farmerAddress = farms[_farmId].ownerAddress;
+        _destroyFarm(_farmId);
+        emit LogCooperativeDestroyFarm(msg.sender,farmerAddress, _farmId);
     }
 
     /** @notice destroys contract
       * @dev Only Owner can call this method
       */
     function destroy() public onlyOwner {
-        selfdestruct(owner());
+        address payable owner = address(uint160(owner()));
+        selfdestruct(owner);
+    }
+
+    /** @notice reverts if ETH is sent */
+    function() external payable{
+      revert("Contract can't receive Ether");
     }
 }
