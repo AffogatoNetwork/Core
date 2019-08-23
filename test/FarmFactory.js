@@ -367,7 +367,6 @@ contract(FarmFactory, function(accounts) {
         web3.utils.utf8ToHex("Francisco Morazan"),
         web3.utils.utf8ToHex("Santa Lucia"),
         "Lorem ipsum.",
-        accounts[1],
         { from: accounts[5] }
       );
       receipt.logs.length.should.be.equal(1, "trigger one event");
@@ -413,7 +412,6 @@ contract(FarmFactory, function(accounts) {
           web3.utils.utf8ToHex("Francisco Morazan"),
           web3.utils.utf8ToHex("Santa Lucia"),
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          accounts[1],
           { from: accounts[4] }
         );
       } catch (err) {
@@ -435,7 +433,6 @@ contract(FarmFactory, function(accounts) {
           web3.utils.utf8ToHex("Francisco Morazan"),
           web3.utils.utf8ToHex("Valle de Angeles"),
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          accounts[1],
           { from: accounts[6] }
         );
       } catch (err) {
