@@ -289,11 +289,10 @@ contract FarmFactory is Ownable, Pausable {
         bytes32 _country,
         bytes32 _region,
         bytes32 _village,
-        string memory _story,
-        address _farmerAddress
-    ) public whenNotPaused isAllowed(_farmerAddress, msg.sender) onlyCooperative {
-        _updateFarm(_id, _farmerAddress, _name, _country, _region, _village, _story);
-        emit LogCooperativeUpdateFarm(_id, _farmerAddress, _name, _country, _region, _village, _story, msg.sender);
+        string memory _story
+    ) public whenNotPaused isAllowed(farms[_id].ownerAddress, msg.sender) onlyCooperative {
+        _updateFarm(_id, farms[_id].ownerAddress, _name, _country, _region, _village, _story);
+        emit LogCooperativeUpdateFarm(_id, farms[_id].ownerAddress, _name, _country, _region, _village, _story, msg.sender);
     }
 
     /** @notice destroys a farm
