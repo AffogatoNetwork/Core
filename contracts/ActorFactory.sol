@@ -7,9 +7,9 @@ pragma solidity ^0.5.9;
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "openzeppelin-solidity/contracts/access/Roles.sol";
-import "./IAffogato.sol";
+import "./IActor.sol";
 
-contract ActorFactory is Ownable, Pausable, IAffogato {
+contract ActorFactory is Ownable, Pausable, IActor {
 
     /** @notice Defines the roles of the actors. */
     using Roles for Roles.Role;
@@ -73,8 +73,23 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
 
     /** @notice Throws if called by any account other than a cooperative. */
     modifier onlyCooperative(){
-        // Modified to lift the interface
         require(_cooperatives.has(msg.sender), "not a cooperative");
+        _;
+    }
+
+    /** @notice Throws if called by any account that doesn't exist
+      * @param _actorAddress address of actor to check
+      */
+    modifier onlyExistingActor(address _actorAddress){
+        require(_getAccountType(_actorAddress) != "", "actor doesn't exists");
+        _;
+    }
+
+    /** @notice Throws if called by any account that does exist
+      * @param _actorAddress address of actor to check
+      */
+    modifier onlyNotExistingActor(address _actorAddress){
+        require(_getAccountType(_actorAddress) == "", "actor already exists");
         _;
     }
 
@@ -85,7 +100,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _owner address of the owner.
       * @return returns a bytes32 with the type of account or empty if there is no account
       */
-    function getAccountType(address _owner) public view returns (bytes32) {
+    function _getAccountType(address _owner) private view returns (bytes32) {
         if(_farmers.has(_owner)){
             return FARMER;
         }else if(_cooperatives.has(_owner)){
@@ -106,20 +121,27 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
         return "";
     }
 
+    /** @notice Gets the type of the account.
+      * @param _owner address of the owner.
+      * @return returns a bytes32 with the type of account or empty if there is no account
+      */
+    function getAccountType(address _owner) external view returns (bytes32) {
+        return (_getAccountType(_owner));
+    }
+
     /** @notice Gets the type of the sender account.
       * @return returns a bytes32 with the type of account or empty if there is no account
       */
-    function getSenderRole() public view returns (bytes32) {
-        return getAccountType(msg.sender);
+    function getSenderRole() external view returns (bytes32) {
+        return _getAccountType(msg.sender);
     }
-
 
     /** @notice Checks if a user has permission from another user.
       * @param _allower address of the allower.
       * @param _allowed address of the actor to check if has permission.
       * @return returns a boolean if it has permission.
       */
-    function isAllowed(address _allower, address _allowed) public view returns (bool) {
+    function isAllowed(address _allower, address _allowed) external view returns (bool) {
         return allowed_[_allower][_allowed];
     }
 
@@ -127,17 +149,8 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _actorAddress address of actor to check
       * @return true if is exists false if not
       */
-    function actorExists(address _actorAddress) public view returns(bool){
-        if(
-            _farmers.has(_actorAddress) ||
-            _cooperatives.has(_actorAddress) ||
-            _certifiers.has(_actorAddress) ||
-            _technicians.has(_actorAddress) ||
-            _tasters.has(_actorAddress) ||
-            _validators.has(_actorAddress) ||
-            _benefits.has(_actorAddress) ||
-            _roasters.has(_actorAddress)
-        ){
+    function actorExists(address _actorAddress) external view returns(bool){
+        if(_getAccountType(_actorAddress) != ""){
             return true;
         }
         return false;
@@ -189,7 +202,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isCertifier(address _accountAddress) public view returns (bool){
+    function isCertifier(address _accountAddress) external view returns (bool){
         if(_certifiers.has(_accountAddress)){
             return true;
         }
@@ -200,7 +213,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isTechnician(address _accountAddress) public view returns (bool){
+    function isTechnician(address _accountAddress) external view returns (bool){
         if(_technicians.has(_accountAddress)){
             return true;
         }
@@ -211,7 +224,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isTaster(address _accountAddress) public view returns (bool){
+    function isTaster(address _accountAddress) external view returns (bool){
         if(_tasters.has(_accountAddress)){
             return true;
         }
@@ -222,7 +235,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isValidator(address _accountAddress) public view returns (bool){
+    function isValidator(address _accountAddress) external view returns (bool){
         if(_validators.has(_accountAddress)){
             return true;
         }
@@ -233,7 +246,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isBenefit(address _accountAddress) public view returns (bool){
+    function isBenefit(address _accountAddress) external view returns (bool){
         if(_benefits.has(_accountAddress)){
             return true;
         }
@@ -244,7 +257,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isRoaster(address _accountAddress) public view returns (bool){
+    function isRoaster(address _accountAddress) external view returns (bool){
         if(_roasters.has(_accountAddress)){
             return true;
         }
@@ -255,8 +268,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _actorAddress address of the actor.
       * @param _role type of account of the actor.
       */
-    function _addActor(address _actorAddress, bytes32 _role) private whenNotPaused {
-        require(!actorExists(_actorAddress),"actor already exists");
+    function _addActor(address _actorAddress, bytes32 _role) private whenNotPaused onlyNotExistingActor(_actorAddress) {
         require(isValidRole(_role), "invalid role");
         if( _role == FARMER){
             _farmers.add(_actorAddress);
@@ -293,10 +305,21 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
     function cooperativeAddActor(
         bytes32 _role,
         address _actorAddress
-    ) public whenNotPaused onlyCooperative {
+    ) external whenNotPaused onlyCooperative {
         _addActor(_actorAddress, _role);
-        cooperativeApprove(_actorAddress, msg.sender, true);
+        _approve(_actorAddress,msg.sender,true);
+        emit LogCooperativeApproval(_actorAddress, msg.sender, true, msg.sender);
         emit LogCooperativeAddActor(msg.sender, _actorAddress, _role);
+    }
+
+    /** @notice approves actor
+      * @param _allower address of actor to assign the permission.
+      * @param _allowed address of actor to assign the permission.
+      * @param _value value to be set.
+      * @return true if is success
+      */
+    function _approve(address _allower, address _allowed, bool _value) private onlyExistingActor(_allower){
+        allowed_[_allower][_allowed] = _value;
     }
 
     /** @notice approves actor
@@ -304,9 +327,8 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _value value to be set.
       * @return true if is success
       */
-    function approve(address _allowed, bool _value) public whenNotPaused returns (bool) {
-        require(actorExists(msg.sender),"actor doesn't exists");
-        allowed_[msg.sender][_allowed] = _value;
+    function approve(address _allowed, bool _value) external whenNotPaused returns (bool) {
+        _approve(msg.sender,_allowed,_value);
         emit LogApproval(msg.sender, _allowed, _value);
         return true;
     }
@@ -318,9 +340,10 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @return true if is success
       * @dev Only Cooperatives can call this method
       */
-    function cooperativeApprove(address _allower, address _allowed, bool _value) public whenNotPaused onlyCooperative returns (bool) {
-        require(actorExists(msg.sender),"actor doesn't exists");
-        allowed_[_allower][_allowed] = _value;
+    function cooperativeApprove(address _allower, address _allowed, bool _value) external
+        whenNotPaused onlyCooperative returns (bool)
+    {
+        _approve(_allower,_allowed,_value);
         emit LogCooperativeApproval(_allower, _allowed, _value, msg.sender);
         return true;
     }
@@ -329,8 +352,7 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @param _actorAddress type of account of the actor.
       * @param _role type of account of the actor.
       */
-    function _destroyActor(address _actorAddress, bytes32 _role) private whenNotPaused {
-        require(actorExists(_actorAddress),"actor doesn't exists");
+    function _destroyActor(address _actorAddress, bytes32 _role) private whenNotPaused onlyExistingActor(msg.sender){
         require(isValidRole(_role), "invalid role");
         if( _role == FARMER){
             _farmers.remove(_actorAddress);
@@ -354,8 +376,8 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
     /** @notice destroys an actor
       * @dev only actor can destroy account
       */
-    function destroyActor() public whenNotPaused {
-        bytes32 role = getAccountType(msg.sender);
+    function destroyActor() external whenNotPaused {
+        bytes32 role = _getAccountType(msg.sender);
         _destroyActor(msg.sender,role);
         emit LogDestroyActor(msg.sender);
     }
@@ -365,8 +387,8 @@ contract ActorFactory is Ownable, Pausable, IAffogato {
       * @dev Only Cooperatives can call this method
       * @dev only actor can destroy account
       */
-    function cooperativeDestroyActor(address _actorAddress) public whenNotPaused onlyCooperative {
-        bytes32 role = getAccountType(_actorAddress);
+    function cooperativeDestroyActor(address _actorAddress) external whenNotPaused onlyCooperative {
+        bytes32 role = _getAccountType(_actorAddress);
         _destroyActor(_actorAddress,role);
         emit LogCooperativeDestroyActor(msg.sender, _actorAddress);
     }
