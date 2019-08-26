@@ -7,8 +7,9 @@ pragma solidity ^0.5.9;
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import "openzeppelin-solidity/contracts/access/Roles.sol";
+import "./IAffogato.sol";
 
-contract ActorFactory is Ownable, Pausable {
+contract ActorFactory is Ownable, Pausable, IAffogato {
 
     /** @notice Defines the roles of the actors. */
     using Roles for Roles.Role;
@@ -72,7 +73,8 @@ contract ActorFactory is Ownable, Pausable {
 
     /** @notice Throws if called by any account other than a cooperative. */
     modifier onlyCooperative(){
-        require(isCooperative(msg.sender), "not a cooperative");
+        // Modified to lift the interface
+        require(_cooperatives.has(msg.sender), "not a cooperative");
         _;
     }
 
@@ -165,7 +167,7 @@ contract ActorFactory is Ownable, Pausable {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isFarmer(address _accountAddress) public view returns (bool){
+    function isFarmer(address _accountAddress) external view returns (bool){
         if(_farmers.has(_accountAddress)){
             return true;
         }
@@ -176,7 +178,7 @@ contract ActorFactory is Ownable, Pausable {
       * @param _accountAddress address of account to check
       * @return true if is exists false if not
       */
-    function isCooperative(address _accountAddress) public view returns (bool){
+    function isCooperative(address _accountAddress) external view returns (bool){
         if(_cooperatives.has(_accountAddress)){
             return true;
         }
