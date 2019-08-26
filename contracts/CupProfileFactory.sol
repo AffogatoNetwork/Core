@@ -6,7 +6,7 @@ pragma solidity ^0.5.9;
 
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
-import "./ActorFactory.sol";
+import "./IActor.sol";
 import "./CoffeeBatchFactory.sol";
 
 /** TODO:
@@ -60,7 +60,7 @@ contract CupProfileFactory is Ownable, Pausable{
     }
 
     /**@dev ActorFactory contract object */
-    ActorFactory actor;
+    IActor actor;
     /**@dev CoffeeBatch contract object */
     CoffeeBatchFactory coffeeBatch;
 
@@ -80,8 +80,8 @@ contract CupProfileFactory is Ownable, Pausable{
       * @param _actorAddress contract address of ActorFactory
       * @param _coffeeBatchAddress contract address of CoffeeBatchFactory
       */
-    constructor(address payable _actorAddress, address payable _coffeeBatchAddress) public {
-        actor = ActorFactory(_actorAddress);
+    constructor(IActor _actorAddress, address payable _coffeeBatchAddress) public {
+        actor = IActor(_actorAddress);
         coffeeBatch = CoffeeBatchFactory(_coffeeBatchAddress);
     }
 

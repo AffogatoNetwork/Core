@@ -6,7 +6,7 @@ pragma solidity ^0.5.9;
 
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
-import "./ActorFactory.sol";
+import "./IActor.sol";
 
 /** TODO:
   * use zeppelin counter
@@ -92,7 +92,7 @@ contract FarmFactory is Ownable, Pausable {
     }
 
     /**@dev ActorFactory contract object */
-    ActorFactory actor;
+    IActor actor;
 
     /**@dev Farm struct object */
     struct Farm {
@@ -111,8 +111,8 @@ contract FarmFactory is Ownable, Pausable {
     /** @notice Sets the actor factory
       * @param _actorFactoryAddress contract address of ActorFactory
       */
-    constructor(address payable _actorFactoryAddress) public {
-        actor = ActorFactory(_actorFactoryAddress);
+    constructor(IActor _actorFactoryAddress) public {
+        actor = IActor(_actorFactoryAddress);
     }
 
     /** @notice Gets the data of the farm by id.
