@@ -1,0 +1,53 @@
+version: '3'
+services:
+  graph-node:
+    image: graphprotocol/graph-node
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+      - '8020:8020'
+    depends_on:
+      - ipfs
+      - graph-postgres
+      - ganache-node
+    environment:
+      postgres_host: graph-postgres:5432
+      postgres_user: graph-node
+      postgres_pass: let-me-in
+      postgres_db: graph-node
+      ipfs: 'ipfs:5001'
+      ethereum: 'affogato:http://ganache-node:8545'
+      RUST_LOG: info
+  ipfs:
+    image: ipfs/go-ipfs
+    ports:
+      - '5001:5001'
+    volumes:
+      - ./data/ipfs:/data/ipfs
+  ganache-node:
+    image: trufflesuite/ganache-cli:latest
+    command: -d -q -i 9999 --db=/var/lib/ganache/data # make the instance deterministic with 9999 as network identifier
+    ports:
+      - 8545:8545
+    volumes:
+      - ./data/ganache:/var/lib/ganache/data
+  graph-postgres:
+    image: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_DB: graph-node
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+  affogato-core:
+    depends_on: 
+      - graph-node
+    build:
+      context: .
+      dockerfile: dockerfile-core
+    environment:
+      ganache_host: ganache-node
+    # volumes:
+    #  - ./data/affogato-core:/var/lib/affogato-core/data

@@ -17,6 +17,11 @@ module.exports = {
       port: 8545,
       network_id: "*" // Match any network id
     },
+    docker: {
+      host: "ganache-node",
+      port: 8545,
+      network_id: "*" // Match any network id
+    },
     rinkeby: {
       // must be a thunk, otherwise truffle commands may hang in CI
       provider: () =>
