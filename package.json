@@ -7,11 +7,11 @@
     "test": "test"
   },
   "dependencies": {
-    "@truffle/artifactor": "^4.0.31",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "dotenv": "^6.2.0",
     "openzeppelin-solidity": "^2.3.0",
+    "shelljs": "^0.8.3",
     "truffle": "^5.0.29",
     "truffle-hdwallet-provider": "^1.0.2",
     "truffle-security": "^1.5.2"

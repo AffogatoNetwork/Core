@@ -49,5 +49,6 @@ services:
       dockerfile: dockerfile-core
     environment:
       ganache_host: ganache-node
+      network_id: 9999 #same network id to the ganache-core
     # volumes:
     #  - ./data/affogato-core:/var/lib/affogato-core/data
