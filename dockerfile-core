@@ -13,10 +13,16 @@ RUN git clone https://github.com/vishnubob/wait-for-it \
 
 WORKDIR /core
 ENV ganache_host ""
+ENV network_name ""
 ENV network_id ""
 
-
-RUN npm install -g truffle --unsafe-perm
-RUN npm install -g  @graphprotocol/graph-cli --unsafe-perm
+RUN npm install -g truffle --unsafe-perm \
+  && npm install -g  @graphprotocol/graph-cli --unsafe-perm \
+  && npm install -g shelljs
 RUN truffle compile
-CMD wait-for-it.sh $ganache_host:8545 -t 30 && truffle migrate --network $network_id
+CMD wait-for-it.sh $ganache_host:8545 -t 30 && truffle migrate --network $network_name
+CMD npm run build-graph -- --network $network_id 
+
+WORKDIR /core/sg_affogato
+RUN npm install
+CMD npm codegen && npm create-local && npm deploy-local  

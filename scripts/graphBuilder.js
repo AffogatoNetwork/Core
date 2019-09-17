@@ -37,9 +37,10 @@ const mappings = Contracts.map((contract) => {
   contractObject =  JSON.parse(fileData);
   const mapped = {name: contractObject.contractName, abi: contractObject.abi, address: contractObject.networks[network.toString()].address};  
   const replacevar = (`<${mapped.name}_address>`);
-  console.log(replacevar)
+ 
   shell.sed('-i', replacevar, `'${mapped.address}'`, path.resolve(__dirname, `../sg_affogato/subgraph.yaml`));
-  fs.writeFile(`${mapped.name}.abi`, JSON.stringify(mapped.abi, null, 2), 'utf8', () => {}) 
-
+  fs.writeFile(`${mapped.name}.abi`, JSON.stringify(mapped.abi, null, 2), 'utf8', () => {})  
   return mapped;  
 });
+
+console.log("Graph building finished---")
